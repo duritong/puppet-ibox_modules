@@ -1,0 +1,80 @@
+if v:lang =~ "utf8$" || v:lang =~ "UTF-8$"
+   set fileencodings=ucs-bom,utf-8,latin1
+endif
+
+set bs=indent,eol,start   " allow backspacing over everything in insert mode
+set viminfo='20,\"50  " read/write a .viminfo file, don't store more
+      " than 50 lines of registers
+set history=50    " keep 50 lines of command line history
+set ruler   " show the cursor position all the time
+
+" Don't wake up system with blinking cursor:
+" http://www.linuxpowertop.org/known.php
+let &guicursor = &guicursor . ",a:blinkon0"
+
+set nocompatible        " Disable vi compatibility.
+set undolevels=200      " Number of undo levels.
+set showmatch           " Show matching brackets.
+set ignorecase          " Case insensitive matching.
+set ttyfast             " We have a fast terminal connection.
+set bg=dark
+
+if has("syntax")
+  syntax on
+endif
+
+filetype plugin on
+filetype plugin indent on
+
+  " When editing a file, always jump to the last known cursor position.
+  " Don't do it when the position is invalid or when inside an event
+  " handler (happens when dropping a file on gvim).
+  " Also don't do it when the mark is in the first line, that is the
+  " default position when opening a file.
+autocmd BufReadPost *
+  \ if line("'\"") > 1 && line("'\"") <= line("$") |
+  \   exe "normal! g`\"" |
+  \ endif
+
+
+filetype plugin indent on
+
+highlight   clear
+highlight   Pmenu         ctermfg=0 ctermbg=2
+highlight   PmenuSel      ctermfg=0 ctermbg=7
+highlight   PmenuSbar     ctermfg=7 ctermbg=0
+highlight   PmenuThumb    ctermfg=0 ctermbg=7
+
+set shiftwidth=2
+set expandtab
+set tabstop=2
+set backspace=indent,eol,start
+set hlsearch
+
+setlocal spell spelllang=en
+
+set whichwrap=<,>,h,l,[,]
+
+set linebreak
+
+" arrow mapping ===============================================================
+" arrows shouldn't jump over wrapped lines
+nnoremap <Down> gj
+nnoremap <Up> gk
+nnoremap <buffer> <silent> <Home> g<Home>
+nnoremap <buffer> <silent> <End>  g<End>
+vnoremap <Down> gj
+vnoremap <Up> gk
+vnoremap <buffer> <silent> <Home> g<Home>
+vnoremap <buffer> <silent> <End>  g<End>
+inoremap <Down> <C-o>gj
+inoremap <Up> <C-o>gk
+inoremap <buffer> <silent> <Home> <C-o>g<Home>
+inoremap <buffer> <silent> <End> <C-o>g<End>
+
+" Use ctrl-[hjkl] to select the active split!
+nmap <silent> <c-k> :wincmd k<CR>
+nmap <silent> <c-j> :wincmd j<CR>
+nmap <silent> <c-h> :wincmd h<CR>
+nmap <silent> <c-l> :wincmd l<CR>
+
