@@ -5,14 +5,12 @@ class ibox::systems::linux {
 
   include gpm
   include logrotate
-  include lsb
   include mc
   include grub::first_default
   include cron_splay
 
-  $empty_arr = []
   class{'rkhunter':
-    local_conf => hiera_array('rkhunter::local_conf',$empty_arr),
+    local_conf => hiera_array('rkhunter::local_conf',[]),
   }
 
   if $ibox::use_shorewall {
@@ -26,6 +24,14 @@ class ibox::systems::linux {
     class { 'selinux':
       manage_munin    => $ibox::use_munin,
       setroubleshoot  => 'absent'
+    }
+  }
+  case $::operatingsystem {
+    debian,ubuntu: { include lsb }
+    centos: {
+      if $::operatingsystemmajrelease < 7 {
+        include lsb
+      }
     }
   }
 }

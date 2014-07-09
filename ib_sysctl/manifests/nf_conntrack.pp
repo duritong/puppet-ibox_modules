@@ -5,7 +5,7 @@ class ib_sysctl::nf_conntrack(
 ) {
 
   $ip_conntrack_max_key = $::osfamily ? {
-    RedHat => $::lsbmajdistrelease ? {
+    RedHat => $::operatingsystemmajrelease ? {
       '5'     => 'net.ipv4.netfilter.ip_conntrack_max',
       default => 'net.netfilter.nf_conntrack_max',
     }
@@ -18,7 +18,7 @@ class ib_sysctl::nf_conntrack(
   }
 
   $conntrack_hashsize_file = $::osfamily ? {
-    RedHat => $::lsbmajdistrelease ? {
+    RedHat => $::operatingsystemmajrelease ? {
       '5' => '/sys/module/ip_conntrack/parameters/hashsize',
       default => '/sys/module/nf_conntrack/parameters/hashsize'
     },
