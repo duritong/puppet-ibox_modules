@@ -7,10 +7,14 @@ class ib_yum(
     'yum':
       manage_munin                => $ibox::use_munin,
       repo_stage                  => 'yum';
-    [ 'yum::centos::cr',
-      'yum::centos::puppetlabs',
+    [ 'yum::centos::puppetlabs',
       'ib_yum::centos::glei' ]:
       stage => 'yum';
+  }
+  if $::operatingsystemmajrelease < 7 {
+    class{'yum::centos::cr':
+      stage => 'yum';
+    }
   }
 
   include yum::updatesd::disable

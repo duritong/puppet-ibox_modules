@@ -8,7 +8,4 @@ class configsets::types::debian {
 
   # do not log ips of ssh connections
   include loginrecords
-
-  # random generation for debian
-  include haveged
 }

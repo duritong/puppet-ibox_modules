@@ -5,6 +5,9 @@ class ibox::systems::base {
 
   include stdlib
   include concat::setup
+  include certs::ssl_config
+
+  include fwtools
 
   include which
   include crypto
@@ -16,6 +19,8 @@ class ibox::systems::base {
   # disable logwatch so far
   include logwatch::disable
   include ibp
+
+  include resolvconf
 
   include ib_sshd
 

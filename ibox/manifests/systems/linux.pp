@@ -1,13 +1,14 @@
 # manage things that should go on linux based
 # systems
 class ibox::systems::linux {
-  include fwtools
-
   include gpm
   include logrotate
   include mc
   include grub::first_default
   include cron_splay
+
+  # random generation for debian or EL > 5
+  include haveged
 
   class{'rkhunter':
     local_conf => hiera_array('rkhunter::local_conf',[]),
@@ -19,6 +20,8 @@ class ibox::systems::linux {
 
   include denyhosts
   include mlocate
+
+  include rsyslog
 
   if str2bool($::selinux) {
     class { 'selinux':

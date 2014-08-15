@@ -13,6 +13,7 @@ class ibox(
   }
   case $::osfamily {
     redhat: { include ibox::systems::redhat }
+    debian,ubuntu: { include ibox::systems::debian }
     default: { } # do nothing
   }
 
@@ -21,14 +22,12 @@ class ibox(
     'xen0': { include ibox::systems::xen0 }
     default: {
       # do nothing
-    }   
+    }
   }
-  case $::virtual {
-    'xen0','physical': { include ibox::systems::physical }
-    'xenu': { include ibox::systems::xenu }
-    default: {
-      # do nothing
-    }   
+  if str2bool($::is_virtual) {
+    include ibox::systems::guests
+  } else {
+    include ibox::systems::physical
   }
 
 }
