@@ -19,12 +19,15 @@ class ibox::systems::redhat {
   include abrt::disable
   include kexec_tools::disable
 
-  include hal::disable
   include kudzu::disable
   include readahead::disable
   include avahi::disable
   include autofs::disable
-  include iscsi::disable
+
+  if $::operatingsystemmajrelease < 7 {
+    include iscsi::disable
+    include hal::disable
+  }
 
   case $::operatingsystemmajrelease {
     5: {
