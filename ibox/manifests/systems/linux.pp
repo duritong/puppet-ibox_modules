@@ -8,7 +8,9 @@ class ibox::systems::linux {
   include cron_splay
 
   # random generation for debian or EL > 5
-  include haveged
+  if !(($::operatingsystem in [ 'CentOS', 'RedHat' ]) and ($::operatingsystemmajrelease == '5')){
+    include haveged
+  }
 
   class{'rkhunter':
     local_conf => hiera_array('rkhunter::local_conf',[]),
