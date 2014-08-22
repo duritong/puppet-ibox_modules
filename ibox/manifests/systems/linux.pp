@@ -1,6 +1,8 @@
 # manage things that should go on linux based
 # systems
-class ibox::systems::linux {
+class ibox::systems::linux(
+  $use_denyhosts = true,
+) {
   include gpm
   include logrotate
   include mc
@@ -19,8 +21,13 @@ class ibox::systems::linux {
   if $ibox::use_shorewall {
     include ib_shorewall
   }
+  if $ibox::use_munin {
+    include ib_munin::plugins::linux
+  }
 
-  include denyhosts
+  if $use_denyhosts {
+    include denyhosts
+  }
   include mlocate
 
   include rsyslog

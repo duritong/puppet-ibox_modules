@@ -35,7 +35,9 @@ class ib_yum::centos::glei {
       require => File['/etc/pki/rpm-gpg/RPM-GPG-KEY-glei'];
   }
   file{'/etc/pki/rpm-gpg/RPM-GPG-KEY-glei':
-  	source => 'puppet:///modules/ib_yum/gpg/packages_glei.ch.asc',
-  	owner => root, group => 0, mode => 0600;
+    source  => 'puppet:///modules/ib_yum/gpg/packages_glei.ch.asc',
+    owner   => root,
+    group   => 0,
+    mode    => '0600';
   }
 }

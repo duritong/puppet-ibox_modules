@@ -13,5 +13,4 @@ class ib_virt(
         value => 0;
     }
   }
-
 }

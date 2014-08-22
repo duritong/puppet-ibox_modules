@@ -19,6 +19,27 @@ class ibox::systems::redhat {
   include abrt::disable
   include kexec_tools::disable
 
+  include hal::disable
+  include kudzu::disable
+  include readahead::disable
+  include avahi::disable
+  include autofs::disable
+  include iscsi::disable
+
+  case $::operatingsystemmajrelease {
+    5: {
+      include syslog
+      include dbus::disable
+      include cups::disable
+    }
+    default: {
+      include rsyslog
+      include dbus
+      include abrt::disable
+      include kexec_tools::disable
+    }
+  }
+
   # some tiny fix due to anaconda putting that there
   exec{'sed -i /DNS1=/d /etc/sysconfig/network-scripts/ifcfg-eth0':
     onlyif => 'grep -q DNS1 /etc/sysconfig/network-scripts/ifcfg-eth0';

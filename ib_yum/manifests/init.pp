@@ -11,6 +11,7 @@ class ib_yum(
       'ib_yum::centos::glei' ]:
       stage => 'yum';
   }
+  # TODO: enable when available
   if $::operatingsystemmajrelease < 7 {
     class{'yum::centos::cr':
       stage => 'yum';
