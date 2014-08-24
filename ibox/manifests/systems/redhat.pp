@@ -30,11 +30,9 @@ class ibox::systems::redhat {
   }
 
   if $::operatingsystemmajrelease < 6 {
-    include syslog
     include dbus::disable
     include cups::disable
   } else {
-    include rsyslog
     include dbus
     include abrt::disable
     include kexec_tools::disable

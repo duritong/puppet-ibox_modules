@@ -30,7 +30,11 @@ class ibox::systems::linux(
   }
   include mlocate
 
-  include rsyslog
+  if $::operatingsystem in ['CentOS', 'RedHat'] and $::operatingsystemmajrelease < 6 {
+    include syslog
+  } else {
+    include rsyslog
+  }
 
   if str2bool($::selinux) {
     class { 'selinux':
