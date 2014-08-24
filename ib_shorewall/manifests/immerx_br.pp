@@ -7,7 +7,7 @@ class ib_shorewall::immerx_br inherits ib_shorewall {
 
   # add routeback to internal bridged interface
   # http://www.shorewall.net/SimpleBridge.html
-  Shorewall::Interface[$ib_shorewall::shorewall_main_interface]{
+  Shorewall::Interface[$ib_shorewall::main_interface]{
     options => 'tcpflags,blacklist,nosmurfs,routeback',
   }
 
