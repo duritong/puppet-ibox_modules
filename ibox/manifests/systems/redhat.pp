@@ -29,18 +29,15 @@ class ibox::systems::redhat {
     include hal::disable
   }
 
-  case $::operatingsystemmajrelease {
-    5: {
-      include syslog
-      include dbus::disable
-      include cups::disable
-    }
-    default: {
-      include rsyslog
-      include dbus
-      include abrt::disable
-      include kexec_tools::disable
-    }
+  if $::operatingsystemmajrelease < 6 {
+    include syslog
+    include dbus::disable
+    include cups::disable
+  } else {
+    include rsyslog
+    include dbus
+    include abrt::disable
+    include kexec_tools::disable
   }
 
   # some tiny fix due to anaconda putting that there
