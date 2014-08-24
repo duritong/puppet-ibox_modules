@@ -1,7 +1,8 @@
 # all the configs for your ibox
 class ibox(
-  $use_munin     = false,
-  $use_shorewall = false,
+  $use_munin      = false,
+  $use_shorewall  = false,
+  $is_kvm         = false,
 ) {
 
   include ibox::systems::base
