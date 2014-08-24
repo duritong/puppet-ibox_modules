@@ -1,13 +1,22 @@
 ####
 #### Managed by puppet, modify only on the puppetmaster
-###
-###############################################################################
+####
+###################O############################################################
+#  /etc/shorewall/shorewall.conf V4.0 - Change the following variables to
+#  match your setup
 #
-#  Shorewall Version 4 -- /etc/shorewall/shorewall.conf
+#  This program is under GPL
+#  [http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt]
+#
+#  This file should be placed in /etc/shorewall
+#
+#  (c) 1999,2000,2001,2002,2003,2004,2005,
+#      2006,2007 - Tom Eastep (teastep@shorewall.net)
 #
 #  For information about the settings in this file, type "man shorewall.conf"
 #
-#  Manpage also online at http://www.shorewall.net/manpages/shorewall.conf.html
+#  Additional information is available at 
+#  http://www.shorewall.net/Documentation.htm#Conf
 ###############################################################################
 #		       S T A R T U P   E N A B L E D
 ###############################################################################
@@ -21,14 +30,17 @@ STARTUP_ENABLED=Yes
 VERBOSITY=1
 
 ###############################################################################
-#		                L O G G I N G
+#                              C O M P I L E R
+#      (setting this to 'perl' requires installation of Shorewall-perl)
+###############################################################################
+
+SHOREWALL_COMPILER=
+
+###############################################################################
+#			       L O G G I N G
 ###############################################################################
 
 LOGFILE=/var/log/messages
-
-STARTUP_LOG=/var/log/shorewall-init.log
-
-LOG_VERBOSITY=2
 
 LOGFORMAT="Shorewall:%s:%s:"
 
@@ -46,6 +58,8 @@ MACLIST_LOG_LEVEL=info
 
 TCP_FLAGS_LOG_LEVEL=info
 
+RFC1918_LOG_LEVEL=info
+
 SMURF_LOG_LEVEL=info
 
 LOG_MARTIANS=No
@@ -56,19 +70,11 @@ LOG_MARTIANS=No
 
 IPTABLES=
 
-IP=
-
-TC=
-
-IPSET=
-
-PERL=/usr/bin/perl
-
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin
 
 SHOREWALL_SHELL=/bin/sh
 
-SUBSYSLOCK=""
+SUBSYSLOCK=/var/lock/subsys/shorewall
 
 MODULESDIR=
 
@@ -113,8 +119,6 @@ TC_ENABLED=Internal
 
 TC_EXPERT=No
 
-TC_PRIOMAP="2 3 3 3 2 3 1 1 2 2 2 2 2 2 2 2"
-
 CLEAR_TC=Yes
 
 MARK_IN_FORWARD_CHAIN=Yes
@@ -123,7 +127,7 @@ CLAMPMSS=No
 
 ROUTE_FILTER=No
 
-DETECT_DNAT_IPADDRS=YES
+DETECT_DNAT_IPADDRS=Yes
 
 MUTEX_TIMEOUT=60
 
@@ -133,7 +137,7 @@ BLACKLISTNEWONLY=Yes
 
 DELAYBLACKLISTLOAD=No
 
-MODULE_SUFFIX=ko
+MODULE_SUFFIX=
 
 DISABLE_IPV6=Yes
 
@@ -141,9 +145,9 @@ BRIDGING=No
 
 DYNAMIC_ZONES=No
 
-PKTTYPE=Yes
+PKTTYPE=No
 
-NULL_ROUTE_RFC1918=No
+RFC1918_STRICT=No
 
 MACLIST_TABLE=mangle
 
@@ -174,34 +178,6 @@ DELETE_THEN_ADD=Yes
 MULTICAST=No
 
 DONT_LOAD=
-
-AUTO_COMMENT=Yes
-
-MANGLE_ENABLED=Yes
-
-USE_DEFAULT_RT=No
-
-RESTORE_DEFAULT_ROUTE=Yes
-
-AUTOMAKE=No
-
-WIDE_TC_MARKS=No
-
-TRACK_PROVIDERS=No
-
-ZONE2ZONE=2
-
-ACCOUNTING=Yes
-
-DYNAMIC_BLACKLIST=Yes
-
-OPTIMIZE_ACCOUNTING=No
-
-LOAD_HELPERS_ONLY=No
-
-REQUIRE_INTERFACE=No
-
-FORWARD_CLEAR_MARK=Yes
 
 ###############################################################################
 #			P A C K E T   D I S P O S I T I O N
