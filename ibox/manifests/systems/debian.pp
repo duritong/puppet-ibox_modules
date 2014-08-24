@@ -1,5 +1,5 @@
 # debian specific things for our environment
-class configsets::types::debian {
+class ibox::systems::debian {
   class{'apt':
     disable_update => true,
   }
