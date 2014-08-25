@@ -1,7 +1,7 @@
 # an authpf user
 class ib_user::authpf(
-  $user   => 'iboxssh',
-  $sshkey => 'some_class_with_ssh_authorized_keys',
+  $user   = 'iboxssh',
+  $sshkey = 'some_class_with_ssh_authorized_keys',
 ) {
   user::managed{$user:
     uid     => '1001',
