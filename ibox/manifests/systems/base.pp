@@ -27,4 +27,5 @@ class ibox::systems::base {
   include motd::client
 
   include ib_virt
+  include ib_ntp
 }
