@@ -1,6 +1,9 @@
 # our basic shorewall setup
 class ib_shorewall(
-  $main_interface  = 'eth0',
+  $main_interface  = $::virtual ? {
+    'virtualbox' => 'enp0s3',
+    default      => 'eth0',
+  },
   $rfc1918_maineth = true,
 ) {
   class{'shorewall':
