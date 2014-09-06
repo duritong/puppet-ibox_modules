@@ -15,7 +15,6 @@ class ib_ntp {
       manage_shorewall  => $ibox::use_shorewall,
       manage_munin      => $ntp_munin,
       manage_nagios     => $ibox::use_nagios,
-      servers           => hiera('ntp_servers',false),
     }
   }
 
