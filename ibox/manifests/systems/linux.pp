@@ -50,4 +50,9 @@ class ibox::systems::linux(
       }
     }
   }
+
+  # deploy unbound for local caching
+  if '127.0.0.1' in $resolvconf::nameservers {
+    include ib_unbound::local_only
+  }
 }
