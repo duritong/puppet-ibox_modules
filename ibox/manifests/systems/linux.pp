@@ -55,4 +55,6 @@ class ibox::systems::linux(
   if '127.0.0.1' in $resolvconf::nameservers {
     include ib_unbound::local_only
   }
+
+  include ib_certs::custom_cas
 }
