@@ -2,6 +2,6 @@
 class ib_certs::custom_cas {
   certs::manage_custom_cacert{
     'immerda':
-      source => 'puppet:///ib_certs/custom_cas/immer-ca.crt'
+      source => 'puppet:///modules/ib_certs/custom_cas/immer-ca.crt'
   }
 }
