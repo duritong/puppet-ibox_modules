@@ -4,7 +4,6 @@ class ibox::systems::base {
   include bash
 
   include stdlib
-  include concat::setup
   include certs::ssl_config
 
   include fwtools
