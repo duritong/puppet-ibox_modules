@@ -10,6 +10,9 @@ class ib_ntp {
     if $ntp_munin {
       include ib_ntp::munin::chrony
     }
+    if $ibox::use_shorewall {
+      include shorewall::rules::ntp::client
+    }
   } else {
     class{'ntp':
       manage_shorewall  => $ibox::use_shorewall,
