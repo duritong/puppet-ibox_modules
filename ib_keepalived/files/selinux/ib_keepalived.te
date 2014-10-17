@@ -1,0 +1,14 @@
+module keepalived_t 1.0;
+
+require {
+  type var_run_t;
+  type init_t;
+  type keepalived_t;
+  class sock_file write;
+  class unix_stream_socket connectto;
+}
+
+#============= keepalived_t ==============
+allow keepalived_t init_t:unix_stream_socket connectto;
+allow keepalived_t var_run_t:sock_file write;
+

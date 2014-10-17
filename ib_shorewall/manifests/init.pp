@@ -12,7 +12,8 @@ class ib_shorewall(
       "puppet:///modules/ib_shorewall/shorewall.conf.${::operatingsystem}.${::operatingsystemmajrelease}",
       "puppet:///modules/ib_shorewall/shorewall.conf.${::operatingsystem}",
       'puppet:///modules/ib_shorewall/shorewall.conf',
-    ]
+    ],
+    params      => hiera_hash('shorewall::params',{}),
   }
 
   shorewall::params {
