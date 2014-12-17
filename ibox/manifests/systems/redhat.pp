@@ -39,7 +39,7 @@ class ibox::systems::redhat {
   }
 
   # some tiny fix due to anaconda putting that there
-  exec{'sed -i /DNS1=/d /etc/sysconfig/network-scripts/ifcfg-eth0':
-    onlyif => 'grep -q DNS1 /etc/sysconfig/network-scripts/ifcfg-eth0';
+  exec{'sed -i /^DNS1=/d /etc/sysconfig/network-scripts/ifcfg-*':
+    onlyif => 'grep -qE \'^DNS1\' /etc/sysconfig/network-scripts/ifcfg-*';
   }
 }
