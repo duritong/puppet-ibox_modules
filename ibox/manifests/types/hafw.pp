@@ -2,7 +2,7 @@
 class ibox::types::hafw(
   $out_interface,
   $out_ipaddress,
-  $auth_pass,
+  $auth_password        = false,
   $in_interface,
   $in_ipaddress,
   $conntrackd_interface,
@@ -16,6 +16,13 @@ class ibox::types::hafw(
     $conntrackd_destip = $conntrackd_destips[1]
   } else {
     $conntrackd_destip = $conntrackd_destips[0]
+  }
+
+  if !$auth_password {
+    # only the first 8 characters are used by keepalived
+    $auth_pass = trocla("ibox::types::hafw::auth_password_${::icluster_name}",'plain','length: 8')
+  } else {
+    $auth_pass = $auth_password
   }
 
   include ib_conntrackd::hafw
