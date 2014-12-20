@@ -50,7 +50,7 @@ echo $1 $2 is in $3 state > /run/keepalive.$1.$2.state
       mode  => '0700';
     '/usr/local/sbin/get_vrrp_state':
       content => '#!/bin/bash
-cat /var/run/keepalive.*.*.state
+cat /run/keepalive.*.*.state
 ',
       owner => root,
       group => 0,
