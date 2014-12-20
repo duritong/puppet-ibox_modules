@@ -44,11 +44,11 @@ class ib_keepalived::hafw(
     auth_type            => 'PASS',
     auth_pass            => $auth_pass,
     virtual_ipaddress    => [
-      ## out
-      #{
-      #  ip  => $out_ipaddress,
-      #  dev => $out_interface,
-      #},
+      # out
+      {
+        ip  => $out_ipaddress,
+        dev => $out_interface,
+      },
       # in
       {
         ip  => $in_ipaddress,
