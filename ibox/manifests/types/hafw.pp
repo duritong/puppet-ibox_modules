@@ -8,14 +8,15 @@ class ibox::types::hafw(
   $conntrackd_interface,
   $conntrackd_destips,
   $net_in_rules         = {},
-  $is_master            = true,
 ) {
   include ibox
 
   if has_ip_address($conntrackd_destips[0]) {
     $conntrackd_destip = $conntrackd_destips[1]
+    $is_master = true
   } else {
     $conntrackd_destip = $conntrackd_destips[0]
+    $is_master = false
   }
 
   if !$auth_password {
