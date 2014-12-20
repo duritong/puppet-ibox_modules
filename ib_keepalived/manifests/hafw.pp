@@ -36,7 +36,26 @@ class ib_keepalived::hafw(
     $priority = '100'
   }
 
-  keepalived::vrrp::instance { 'VI_50':
+  file{
+    '/usr/local/sbin/set_vrrp_state':
+      content => '#!/bin/bash
+if [ -z $1 ] || [ -z $2 ] || [-z $3 ]; then
+  echo "$0 GROUP|INSTANCE <name> <state>"
+  exit 1
+fi
+echo $1 $2 is in $3 state > /run/keepalive.$1.$2.state
+',
+      owner => root,
+      group => 0,
+      mode  => '0700';
+    '/usr/local/sbin/get_vrrp_state':
+      content => '#!/bin/bash
+cat /var/run/keepalive.*.*.state
+',
+      owner => root,
+      group => 0,
+      mode  => '0700';
+  } -> keepalived::vrrp::instance { 'VI_50':
     interface            => $conntrackd_interface,
     state                => $state,
     virtual_router_id    => '50',
@@ -59,6 +78,7 @@ class ib_keepalived::hafw(
     notify_script_master => '"/etc/conntrackd/primary-backup.sh primary"',
     notify_script_backup => '"/etc/conntrackd/primary-backup.sh backup"',
     notify_script_fault  => '"/etc/conntrackd/primary-backup.sh fault"',
-    #smtp_alert            => true,
+    notify_script        => '"/usr/local/bin/set_vrrp_state.sh"',
+    smtp_alert           => true,
   }
 }
