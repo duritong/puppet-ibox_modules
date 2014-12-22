@@ -78,7 +78,7 @@ cat /run/keepalive.*.*.state
     notify_script_master => '"/etc/conntrackd/primary-backup.sh primary"',
     notify_script_backup => '"/etc/conntrackd/primary-backup.sh backup"',
     notify_script_fault  => '"/etc/conntrackd/primary-backup.sh fault"',
-    notify_script        => '"/usr/local/bin/set_vrrp_state.sh"',
+    notify_script        => '"/usr/local/sbin/set_vrrp_state"',
     smtp_alert           => true,
   }
 }
