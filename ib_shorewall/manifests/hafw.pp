@@ -1,6 +1,12 @@
 # manage a ha fw cluster
 # only an internal calls hence referring
 # to the types class
+#
+# Zones:
+#   - net:  external network
+#   - loc:  the dmz
+#   - sync: sync network for conntrack
+#   - fw:   the firewall itself
 class ib_shorewall::hafw(
   $out_interface          = $ibox::types::hafw::out_interface,
   $in_interface           = $ibox::types::hafw::in_interface,
@@ -28,9 +34,21 @@ class ib_shorewall::hafw(
       destinationzone => 'loc',
       policy          => 'DROP',
       order           => 130;
+    # reflect on failover
+    'net-to-net':
+      sourcezone      => 'net',
+      destinationzone => 'net',
+      policy          => 'ACCEPT',
+      order           => 130;
     'loc-to-net':
       sourcezone      => 'loc',
       destinationzone => 'net',
+      policy          => 'ACCEPT',
+      order           => 130;
+    # reflect on failover
+    'loc-to-loc':
+      sourcezone      => 'loc',
+      destinationzone => 'loc',
       policy          => 'ACCEPT',
       order           => 130;
     'fw-to-loc':
