@@ -21,12 +21,9 @@ class ib_keepalived::hafw(
     te_source => 'puppet:///modules/ib_keepalived/selinux/ib_keepalived.te',
     before    => Service['keepalived'],
   }
-  #class{'keepalived::global_defs':
-  #  notification_email => "root@${::fqdn}",
-  #}
-  $track_interface = reject(reject(
-    split($::interfaces,','),
-      $conntrackd_interface),'lo')
+  class{'keepalived::global_defs':
+    notification_email => "root@${::fqdn}",
+  }
 
   if $is_master {
     $state = 'MASTER'
@@ -59,6 +56,7 @@ cat /run/keepalive.*.*.state
     interface            => $conntrackd_interface,
     state                => $state,
     virtual_router_id    => '50',
+    dont_track_primary   => true,
     priority             => $priority,
     auth_type            => 'PASS',
     auth_pass            => $auth_pass,
@@ -74,7 +72,6 @@ cat /run/keepalive.*.*.state
         dev => $in_interface,
       },
     ],
-    track_interface      => $track_interface,
     notify_script_master => '"/etc/conntrackd/primary-backup.sh primary"',
     notify_script_backup => '"/etc/conntrackd/primary-backup.sh backup"',
     notify_script_fault  => '"/etc/conntrackd/primary-backup.sh fault"',
