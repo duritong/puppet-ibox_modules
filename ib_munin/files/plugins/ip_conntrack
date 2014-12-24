@@ -1,0 +1,103 @@
+#!/usr/bin/perl -w
+=head1 NAME
+
+fw_conntrack - Plugin to monitor the number of tracked connections
+through a Linux 2.4/2.6 firewall
+
+=head1 CONFIGURATION
+
+This plugin must run with root privileges
+
+=head2 CONFIGURATION EXAMPLE
+
+/etc/munin/plugin-conf.d/munin-node or other file in that dir must contain:
+
+[ip_conntrack]
+user root
+
+=head1 NOTES
+
+=head1 AUTHORS
+
+=over
+
+=item 2013.04.08: Hirai
+
+=back
+
+=head1 LICENSE
+
+GPL
+
+=head1 MAGIC MARKERS
+
+ #%# capabilities=autoconf
+
+=cut
+
+use strict;
+use Munin::Plugin;
+
+my @conntrack_count_files = qw(
+        /proc/sys/net/netfilter/nf_conntrack_count
+        /proc/sys/net/ipv4/netfilter/ip_conntrack_count
+);
+
+my $count_ip_conntrack;
+foreach (@conntrack_count_files) {
+    if ( -r $_) {
+        chomp($count_ip_conntrack = `cat $_`);
+        last;
+    }
+}
+
+
+my @conntrack_max_files = qw(
+        /proc/sys/net/nf_conntrack_max
+        /proc/sys/net/netfilter/nf_conntrack_max
+        /proc/sys/net/ipv4/ip_conntrack_max
+        /proc/sys/net/ipv4/netfilter/ip_conntrack_max
+);
+
+my $max_ip_conntrack;
+foreach (@conntrack_max_files) {
+    if ( -r $_) {
+        chomp($max_ip_conntrack = `cat $_`);
+        last;
+    }
+}
+
+my $warning;
+my $critical;
+$warning = $max_ip_conntrack*80/100;
+$critical = $max_ip_conntrack*100/100;
+
+if ( $ARGV[0] and $ARGV[0] eq "config" )
+{
+    print "graph_category network\n";
+    print "graph_title ip conntrack\n";
+    print "graph_scale  no\n";
+    print "graph_vlabel Count\n";
+    print "graph_order max_ip_conntrack used_ip_conntrack\n";
+#    print "graph_args --lower-limit 0 --upper-limit $max_ip_conntrack\n";
+
+    print "max_ip_conntrack.draw AREA\n";
+    print "max_ip_conntrack.colour cdcfc4\n";
+    print "max_ip_conntrack.min 0\n";
+    print "max_ip_conntrack.label max\n";
+    print "max_ip_conntrack.type GAUGE\n";
+
+    print "used_ip_conntrack.draw AREA\n";
+    print "used_ip_conntrack.colour ffd660\n";
+    print "used_ip_conntrack.min 0\n";
+    print "used_ip_conntrack.label used\n";
+    print "used_ip_conntrack.type GAUGE\n";
+
+#    print "max_ip_conntrack.warning $warning\n";
+#    print "max_ip_conntrack.critical $critical\n";
+
+    exit 0;
+}
+
+print "max_ip_conntrack.value " . $max_ip_conntrack . "\n";
+print "used_ip_conntrack.value " . $count_ip_conntrack . "\n";

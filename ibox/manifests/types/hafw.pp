@@ -29,4 +29,8 @@ class ibox::types::hafw(
   include ib_conntrackd::hafw
   include ib_keepalived::hafw
   include ib_shorewall::hafw
+
+  if $ibox::use_munin {
+    include ib_munin::plugins::firewall
+  }
 }
