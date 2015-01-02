@@ -13,7 +13,7 @@ class ib_shorewall::immerx_xen inherits ib_shorewall::immerx_br {
       broadcast => '-',
       zone      =>  'net',
       rfc1918   => true,
-      options   =>  'tcpflags,blacklist,nosmurfs';
+      options   =>  'routeback,tcpflags,blacklist,nosmurfs';
     }
   }
 }
