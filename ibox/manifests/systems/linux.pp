@@ -58,7 +58,7 @@ class ibox::systems::linux(
 
   include ib_certs::custom_cas
 
-  if $::ekeyd_key or hiera('ekeyd::client::host',false) {
+  if $::ekeyd_key or hiera('ekeyd::egd::host',false) {
     if $::operatingsystem == 'CentOS' and $::operatingsystemmajrelease >  6 {
       $manage_monit = false
     } else {
@@ -73,9 +73,9 @@ class ibox::systems::linux(
         manage_monit     => $manage_monit,
         masterkey        => file("${ekeyd_key_path}/${::fqdn}.masterkey")
       }
-    } elsif hiera('ekeyd::client::host',false) {
+    } elsif hiera('ekeyd::egd::host',false) {
       $default_net = [ 'net' ]
-      class{'ekeyd::client':
+      class{'ekeyd::egd':
         manage_shorewall => true,
         manage_monit     => $manage_monit,
         shorewall_zones  => hiera('ekeyd::shorewall_zones',$default_net)
