@@ -38,8 +38,8 @@ class ibox::systems::linux(
 
   if str2bool($::selinux) {
     class { 'selinux':
-      manage_munin    => $ibox::use_munin,
-      setroubleshoot  => 'absent'
+      manage_munin   => $ibox::use_munin,
+      setroubleshoot => 'absent'
     }
   }
   case $::operatingsystem {
@@ -57,4 +57,29 @@ class ibox::systems::linux(
   }
 
   include ib_certs::custom_cas
+
+  if $::ekeyd_key or hiera('ekeyd::client::host',false) {
+    if $::operatingsystem == 'CentOS' and $::operatingsystemmajrelease >  6 {
+      $manage_monit = false
+    } else {
+      $manage_monit = true
+    }
+    if $::ekeyd_key {
+      $ekeyd_key_path = hiera('ekeyd::key_path','/var/lib/puppet/ekeyd_keys')
+      class{'ekeyd':
+        host             => true,
+        manage_munin     => true,
+        manage_shorewall => true,
+        manage_monit     => $manage_monit,
+        masterkey        => file("${ekeyd_key_path}/${::fqdn}.masterkey")
+      }
+    } elsif hiera('ekeyd::client::host',false) {
+      $default_net = [ 'net' ]
+      class{'ekeyd::client':
+        manage_shorewall => true,
+        manage_monit     => $manage_monit,
+        shorewall_zones  => hiera('ekeyd::shorewall_zones',$default_net)
+      }
+    }
+  }
 }
