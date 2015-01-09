@@ -1,6 +1,6 @@
 # setup for our munin host
 class ib_munin::host(
-  $header_source = 'puppet:///modules/ib_munin/config/munin.conf.header',
+  $header_source = 'puppet:///modules/ib_munin/config/host/munin.conf.header',
 ) {
   include mod_fcgid
   class{'munin::host':
