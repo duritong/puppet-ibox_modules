@@ -4,7 +4,8 @@ class ib_munin::host(
 ) {
   include mod_fcgid
   class{'munin::host':
-    header_source => $header_source,
+    header_source    => $header_source,
+    manage_shorewall => $ibox::use_shorewall,
   }
   include ib_disks::muninhost
 
