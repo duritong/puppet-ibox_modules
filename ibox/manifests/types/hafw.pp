@@ -32,6 +32,6 @@ class ibox::types::hafw(
   include ibox::lib::firewall
 
   if $ibox::use_munin {
-    include ib_munin::plugins::firewall
+    include ib_munin::plugins::firewall::with_conntrack
   }
 }
