@@ -27,4 +27,8 @@ class ibox::systems::base {
 
   include ib_virt
   include ib_ntp
+
+  if $ibox::use_munin {
+    include ib_munin::client
+  }
 }

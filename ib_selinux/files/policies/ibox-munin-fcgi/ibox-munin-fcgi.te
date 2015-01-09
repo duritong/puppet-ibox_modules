@@ -1,0 +1,22 @@
+module ibox_munin_fcgi 1.0;
+
+require {
+        type httpd_t;
+        type httpd_munin_script_t;
+        type fonts_cache_t;
+        class process { siginh noatsecure rlimitinh };
+        class unix_stream_socket { write ioctl shutdown read getattr accept };
+        class dir setattr;
+}
+
+#============= httpd_munin_script_t ==============
+allow httpd_munin_script_t fonts_cache_t:dir setattr;
+
+#!!!! This avc has a dontaudit rule in the current policy
+allow httpd_munin_script_t httpd_t:unix_stream_socket { read write };
+allow httpd_munin_script_t httpd_t:unix_stream_socket { ioctl accept getattr shutdown };
+
+#============= httpd_t ==============
+
+#!!!! This avc has a dontaudit rule in the current policy
+allow httpd_t httpd_munin_script_t:process { siginh rlimitinh noatsecure };

@@ -1,0 +1,24 @@
+
+module ibox-munin 1.0;
+
+require {
+        type home_root_t;
+        type munin_t;
+        type system_mail_t;
+        type munin_disk_plugin_t;
+        type munin_plugin_state_t;
+        class capability { kill sys_ptrace };
+        class process { signal siginh noatsecure rlimitinh };
+        class dir { search write create add_name setattr remove_name };
+        class file { write create unlink }; 
+}
+
+#============= munin_disk_plugin_t ==============
+allow munin_disk_plugin_t home_root_t:dir search;
+
+#============= munin_t ==============
+allow munin_t self:capability { kill sys_ptrace };
+allow munin_t system_mail_t:process signal;
+allow munin_t munin_plugin_state_t:dir { write create add_name setattr remove_name };
+allow munin_t munin_plugin_state_t:file { write create unlink };
+allow munin_t munin_disk_plugin_t:process { siginh rlimitinh noatsecure };
