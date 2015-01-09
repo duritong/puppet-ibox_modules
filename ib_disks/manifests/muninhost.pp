@@ -16,6 +16,7 @@ class ib_disks::muninhost(
       size    => $size_tmp,
       owner   => 'apache',
       group   => 'apache',
+      seltype => 'httpd_munin_rw_content_t',
       require => Package['apache'];
   } -> file{'/var/lib/munin/plugin-state':
     ensure  => directory,
