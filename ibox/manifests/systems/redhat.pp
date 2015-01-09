@@ -1,5 +1,7 @@
 # manage things on RedHat based systems
-class ibox::systems::redhat {
+class ibox::systems::redhat(
+  $with_abrt = false,
+) {
   include ib_yum
 
   class{[ 'authconfig' ]:
@@ -16,7 +18,11 @@ class ibox::systems::redhat {
   include etc_updates
 
   include dbus
-  include abrt::disable
+  if $with_abrt {
+    include abrt
+  } else {
+    include abrt::disable
+  }
   include kexec_tools::disable
 
   include kudzu::disable
@@ -34,7 +40,6 @@ class ibox::systems::redhat {
     include cups::disable
   } else {
     include dbus
-    include abrt::disable
     include kexec_tools::disable
   }
 
