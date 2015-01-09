@@ -6,13 +6,17 @@ class ib_disks::muninhost(
 
   disks::lv_mount{
     'munin_liblv':
-      folder        => '/var/lib/munin',
-      size          => $size_lib,
-      before        => Package['munin-node'];
+      folder  => '/var/lib/munin',
+      size    => $size_lib,
+      owner   => 'munin',
+      group   => 'munin',
+      require => Package['munin-node'];
     'munin_tmplv':
-      folder        => '/var/tmp/munin-cgi-graph',
-      size          => $size_tmp,
-      before        => Package['munin-node'];
+      folder  => '/var/tmp/munin-cgi-graph',
+      size    => $size_tmp,
+      owner   => 'apache',
+      group   => 'apache',
+      require => Package['apache'];
   } -> file{'/var/lib/munin/plugin-state':
     ensure  => directory,
     seltype => 'munin_plugin_state_t',
