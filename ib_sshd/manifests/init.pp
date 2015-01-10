@@ -19,13 +19,10 @@ class ib_sshd(
     ports            => $ports,
     hardened         => node_type() != 'immerx',
     harden_moduli    => node_type() != 'immerx',
+    hardened_client  => true,
   }
 
   if $shorewall_out_remove and $manage_shorewall {
     include shorewall::rules::out::ssh::remove
-  }
-
-  Sshd::Client{
-    hardened => true,
   }
 }
