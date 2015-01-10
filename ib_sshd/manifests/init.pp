@@ -17,9 +17,9 @@ class ib_sshd(
     allowed_groups   => $allowed_groups,
     manage_shorewall => $manage_shorewall,
     ports            => $ports,
-    hardened         => node_type() != 'immerx',
-    harden_moduli    => node_type() != 'immerx',
-    hardened_client  => true,
+    hardened         => hiera('sshd::hardened',true),
+    harden_moduli    => hiera('sshd::harden_moduli',true),
+    hardened_client  => hiera('sshd::hardened_client',true),
   }
 
   if $shorewall_out_remove and $manage_shorewall {
