@@ -24,4 +24,8 @@ class ib_sshd(
   if $shorewall_out_remove and $manage_shorewall {
     include shorewall::rules::out::ssh::remove
   }
+
+  Sshd::Client{
+    hardened => true,
+  }
 }
