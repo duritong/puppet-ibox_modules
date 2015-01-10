@@ -17,7 +17,8 @@ class ib_sshd(
     allowed_groups   => $allowed_groups,
     manage_shorewall => $manage_shorewall,
     ports            => $ports,
-    hardened_ssl     => 'no', # we would like to change that
+    hardened         => true,
+    harden_moduli    => true,
   }
 
   if $shorewall_out_remove and $manage_shorewall {
