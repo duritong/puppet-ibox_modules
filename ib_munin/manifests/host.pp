@@ -7,7 +7,7 @@ class ib_munin::host(
     header_source    => $header_source,
     manage_shorewall => $ibox::use_shorewall,
   }
-  include ib_disks::muninhost
+  include ib_disks::datavgs::muninhost
 
   file{
     '/etc/httpd/conf.d/munin.conf':

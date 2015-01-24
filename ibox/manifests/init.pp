@@ -3,6 +3,7 @@ class ibox(
   $use_munin      = false,
   $use_shorewall  = false,
   $is_kvm         = false,
+  $types          = [],
 ) {
 
   include ibox::systems::base
@@ -29,6 +30,10 @@ class ibox(
     include ibox::systems::guests
   } else {
     include ibox::systems::physical
+  }
+
+  if !empty($types) {
+    include prefix($types,'ibox::types::')
   }
 
 }
