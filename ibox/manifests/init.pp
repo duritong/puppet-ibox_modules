@@ -1,6 +1,7 @@
 # all the configs for your ibox
 class ibox(
   $use_munin      = false,
+  $use_nagios     = false,
   $use_shorewall  = false,
   $is_kvm         = false,
   $types          = [],

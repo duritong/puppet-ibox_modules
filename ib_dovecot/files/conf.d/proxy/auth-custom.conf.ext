@@ -1,0 +1,14 @@
+# Authentication for users. Included from auth.conf.
+#
+
+passdb {
+  driver = sql
+
+  # Path for SQL configuration file, see example-config/dovecot-sql.conf.ext
+  args = /etc/dovecot/dovecot-sql.conf.ext
+}
+
+userdb {
+  driver = static
+  args = static uid=39999 gid=39999 home=/dev/null
+}
