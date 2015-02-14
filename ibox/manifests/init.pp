@@ -7,6 +7,7 @@ class ibox(
   $types          = [],
 ) {
 
+  $root_keys = hiera_hash('ibox::root_keys',{})
   include ibox::systems::base
 
   case $::kernel {

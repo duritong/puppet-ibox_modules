@@ -2,7 +2,7 @@
 class ib_yum(
   $elrepo_enable = false,
 ) {
-  stage{'yum': } -> Stage['setup']
+  Stage['root'] -> stage{'yum': } -> Stage['setup']
   class {
     'yum':
       manage_munin                => $ibox::use_munin,

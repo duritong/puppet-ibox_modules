@@ -31,4 +31,9 @@ class ibox::systems::base {
   if $ibox::use_munin {
     include ib_munin::client
   }
+
+  stage{'root': } -> Stage['setup']
+  class{'ibox::lib::root_user':
+    stage => 'root',
+  }
 }
