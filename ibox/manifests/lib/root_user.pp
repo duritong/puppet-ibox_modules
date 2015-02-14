@@ -5,8 +5,6 @@ class ibox::lib::root_user {
     home => '/root',
   }
   if !empty($ibox::root_keys) {
-    $purge_keys = true
-
     create_resources('sshd::authorized_key',$ibox::root_keys,{ user => 'root' })
     User['root']{
       purge_ssh_keys => true
