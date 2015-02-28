@@ -9,6 +9,8 @@ require {
         type munin_plugin_state_t;
         type httpd_sys_rw_content_t;
         type httpd_sys_content_t;
+        type mysqld_db_t;
+        type postgresql_db_t;
         class capability { kill sys_ptrace dac_read_search dac_override };
         class process { signal siginh noatsecure rlimitinh };
         class dir { search write create add_name setattr remove_name };
@@ -20,6 +22,8 @@ allow munin_disk_plugin_t home_root_t:dir search;
 allow munin_disk_plugin_t self:capability { dac_read_search dac_override };
 allow munin_disk_plugin_t httpd_sys_content_t:dir search;
 allow munin_disk_plugin_t httpd_sys_rw_content_t:dir search;
+allow munin_disk_plugin_t mysqld_db_t:dir search;
+allow munin_disk_plugin_t postgresql_db_t:dir search;
 
 #============= munin_t ==============
 allow munin_t self:capability { kill sys_ptrace };
