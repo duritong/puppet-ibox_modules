@@ -12,7 +12,6 @@ class ibox(
 
   case $::kernel {
     linux: { include ibox::systems::linux }
-    openbsd: { include ibox::systems::openbsd }
     default: { fail('Not supported kernel') }
   }
   case $::osfamily {
