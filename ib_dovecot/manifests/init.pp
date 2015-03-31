@@ -34,6 +34,7 @@ ${::operatingsystem}.${::operatingsystemmajrelease}.erb")
       sqlite             => $sqlite,
       site_source        => 'ib_dovecot',
       munin_checks       => $ibox::use_munin;
+      manage_shorewall   => $ibox::use_shorewall;
     'dovecot::managesieve':
       type               => $type,
       legacy_port        => true, # until we migrated

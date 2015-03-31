@@ -1,0 +1,89 @@
+#!/bin/sh
+
+ROOT="/etc/exim/sql"
+STAGE="/etc/exim/sql/stage"
+rubyscript="$ROOT/getFromDB.rb"
+rubyscriptrelay="$ROOT/getFromDB_relay.rb"
+rubyscriptblocked="$ROOT/getFromDB_blocked.rb"
+grep="/bin/grep"
+
+function cdb() {
+  if [ -f /usr/bin/cdb ]; then
+    /usr/bin/cdb -m -c -t $3 $1 $2
+  else
+    /usr/bin/cdbmake-12 $1 $3 < $2
+  fi
+}
+
+if [ ! -d $ROOT ]; then
+  echo "$HOME does not exist"
+  exit 1
+fi
+if [ ! -d $STAGE ]; then
+  echo "$STAGE does not exist"
+  exit 1
+fi
+
+if [ ! -f $rubyscript ]; then
+  echo "$rubyscript does not exists or is not executable"
+  exit 1
+fi
+if [ ! -f $rubyscriptrelay ]; then
+  echo "$rubyscriptrelay does not exists or is not executable"
+  exit 1
+fi
+if [ ! -f $rubyscriptblocked ]; then
+  echo "$rubyscriptblocked does not exists or is not executable"
+  exit 1
+fi
+
+ruby $rubyscript  > $STAGE/local.txt
+
+# 2. make cdb datebase
+if [ -s $STAGE/local.txt ]; then
+  if [ ! -s $STAGE/local.txt ]; then
+    echo "Creating empty local.cdb!"
+    echo > $STAGE/local.txt
+  fi
+  diff -aur $STAGE/local.txt $ROOT/local.txt > /dev/null
+  if [ ! $? -eq "0" ]; then
+    cp $STAGE/local.txt $ROOT/local.txt
+    cdb $ROOT/local.cdb $ROOT/local.txt $STAGE/local_tmp.cdb
+  fi
+else
+  echo "$STAGE/local.txt is 0 sized!"
+fi
+
+###### relay
+ruby $rubyscriptrelay  > $STAGE/relayto.txt
+
+if [ -f $STAGE/relayto.txt ]; then
+  if [ ! -s $STAGE/relayto.txt ]; then
+    echo "Creating empty relayto.cdb!"
+    echo > $STAGE/relayto.txt
+  fi
+  diff -aur $STAGE/relayto.txt $ROOT/relayto.txt > /dev/null
+  if [ ! $? -eq "0" ]; then
+    cp $STAGE/relayto.txt $ROOT/relayto.txt
+    cdb $ROOT/relayto.cdb $ROOT/relayto.txt $STAGE/relayto_tmp.cdb
+  fi
+else
+  echo "$STAGE/relayto.txt does not exist!"
+fi
+
+##### blocked addresses
+ruby $rubyscriptblocked  > $STAGE/blocked.txt
+
+if [ -f $STAGE/blocked.txt ]; then
+  if [ ! -s $STAGE/blocked.txt ]; then
+    echo "Creating empty blocked.cdb!"
+    echo > $STAGE/blocked.txt
+  fi
+  diff -aur $STAGE/blocked.txt $ROOT/blocked.txt > /dev/null
+  if [ ! $? -eq "0" ]; then
+    cp $STAGE/blocked.txt $ROOT/blocked.txt
+    cdb $ROOT/blocked.cdb $ROOT/blocked.txt $STAGE/blocked_tmp.cdb
+  fi
+else
+  echo "$STAGE/blocked.txt does not exist!"
+fi

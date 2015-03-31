@@ -1,0 +1,10 @@
+# send everything unlocal to our remote host
+send_to_gateway:
+  driver = manualroute
+  domains = ! +local_domains
+  transport = local_component_relay
+  # place the FQDN or IP address of where the
+  # messages are being relayed too here
+  route_list = * REMOTE_SMTP_HOSTS REMOTE_SMTP_HOST_OPTIONS
+  no_more
+

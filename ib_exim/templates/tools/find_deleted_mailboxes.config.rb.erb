@@ -1,0 +1,13 @@
+#!/usr/bin/ruby
+
+class Options
+  DBHOST       = '<%= scope['ib_exim::types::database::config']['dbhost'] %>'
+
+  DBUSER       = '<%= scope['ib_exim::types::database::config']['dbuser'] %>'
+  DBPWD        = '<%= scope['ib_exim::types::database::config']['dbpwd'] || scope.function_trocla_get(["postgres_#{scope['ib_exim::types::database::config']['dbuser']}",'plain']) %>'
+  DB           = '<%= scope['ib_exim::types::database::config']['dbname'] %>'
+
+  MAIL_STORAGE = '<%= @maildir %>'
+
+  HOST         = '<%= scope['::ipaddress_eth0'] %>'
+end

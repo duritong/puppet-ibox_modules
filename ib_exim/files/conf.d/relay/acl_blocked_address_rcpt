@@ -1,0 +1,2 @@
+deny condition = ${if eq{${lookup{$local_part@$domain} cdb {/etc/exim/sql/blocked.cdb} {$value} {0}}}{1}{yes}{no}}
+     message = The address ($local_part@$domain) has been blocked by postmaster(at)$domain

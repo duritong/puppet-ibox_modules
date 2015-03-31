@@ -1,0 +1,4 @@
+# When smtp_accept_max is set greater than zero, this option specifies a
+# number of SMTP connections that are reserved for connections from the
+# hosts that are specified in smtp_reserve_hosts. Default is 0
+smtp_accept_reserve = 5

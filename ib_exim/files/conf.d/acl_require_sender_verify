@@ -1,0 +1,5 @@
+  # Deny unless the sender address can be routed. For proper verification of the
+  # address, read the documentation on callouts and add the /callout modifier.
+
+  # We disable this feature as this is a backend host!
+  #require verify        = sender

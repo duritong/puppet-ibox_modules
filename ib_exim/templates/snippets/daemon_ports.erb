@@ -1,0 +1,5 @@
+daemon_smtp_ports = <%= (dp=Array(scope['ib_exim::daemon_ports'])).join(' : ') %>
+<% tls_ports = dp & ['465'] -%>
+<% unless tls_ports.empty? -%>
+tls_on_connect_ports = <%= tls_ports.join(' : ') %>
+<% end -%>

@@ -1,0 +1,16 @@
+dovecot_delivery_local:
+  driver = pipe
+  command = /usr/libexec/dovecot/deliver -e -k -s \
+      -f "$sender_address" -a "$original_local_part@$original_domain" -d "$local_part@$domain"
+  environment = USER=$local_part@$domain
+  umask = 002
+  message_prefix =
+  message_suffix =
+  delivery_date_add
+  envelope_to_add
+  return_path_add
+  log_output
+  log_defer_output
+  return_fail_output
+  freeze_exec_fail
+  temp_errors = 64 : 69 : 70 : 71 : 72 : 73 : 74 : 75 : 78

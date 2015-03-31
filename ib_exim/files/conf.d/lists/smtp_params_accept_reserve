@@ -1,0 +1,8 @@
+# When smtp_accept_max is set greater than zero, this option specifies a
+# number of SMTP connections that are reserved for connections from the
+# hosts that are specified in smtp_reserve_hosts. Default is 0
+
+# We set more than the half of the actual allowed connections,
+# due to the current schleuder limitations
+
+smtp_accept_reserve = 13

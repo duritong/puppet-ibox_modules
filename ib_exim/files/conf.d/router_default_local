@@ -1,0 +1,4 @@
+# per default reroute everything to the local incoming mailhost
+default:
+  driver = accept
+  transport = local_component_relay

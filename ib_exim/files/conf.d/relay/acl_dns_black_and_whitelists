@@ -1,0 +1,20 @@
+  accept  domains       = +local_domains
+          hosts         = IGNORE_BL_HOSTS
+          verify        = recipient
+          logwrite      = $sender_host_address is white-whitelisted (bypasses blacklists)
+
+  deny    message       = DNSBL listed at $dnslist_domain\n$dnslist_text
+          !hosts        = +relay_from_hosts
+          !authenticated = *
+          dnslists      = zen.spamhaus.org:drone.abuse.ch:ix.dnsbl.manitu.net:smtp.dnsbl.sorbs.net:http.dnsbl.sorbs.net:socks.dnsbl.sorbs.net:web.dnsbl.sorbs.net:zombie.dnsbl.sorbs.net
+
+  accept  domains       = +local_domains
+          dnslists      = list.dnswl.org
+          verify        = recipient
+#          logwrite = $sender_host_address is whitelisted
+
+  accept  domains       = +local_domains
+          hosts         = WHITELISTED_HOSTS
+          verify        = recipient
+#          logwrite      = $sender_host_address is manually whitelisted
+

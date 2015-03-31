@@ -1,0 +1,48 @@
+# The next three settings create two lists of domains and one list of hosts.
+# These lists are referred to later in this configuration using the syntax
+# +local_domains, +relay_to_domains, and +relay_from_hosts, respectively. They
+# are all colon-separated lists:
+
+domainlist local_domains = cdb;/etc/exim/sql/local.cdb
+domainlist relay_domains = cdb;/etc/exim/sql/relayto.cdb
+hostlist   relay_from_hosts = RELAY_FROM_HOSTS
+
+# Most straightforward access control requirements can be obtained by
+# appropriate settings of the above options. In more complicated situations,
+# you may need to modify the Access Control Lists (ACLs) which appear later in
+# this file.
+
+# The first setting specifies your local domains, for example:
+#
+#   domainlist local_domains = my.first.domain : my.second.domain
+#
+# You can use "@" to mean "the name of the local host", as in the default
+# setting above. This is the name that is specified by primary_hostname,
+# as specified above (or defaulted). If you do not want to do any local
+# deliveries, remove the "@" from the setting above. If you want to accept mail
+# addressed to your host's literal IP address, for example, mail addressed to
+# "user@[192.168.23.44]", you can add "@[]" as an item in the local domains
+# list. You also need to uncomment "allow_domain_literals" below. This is not
+# recommended for today's Internet.
+
+# The second setting specifies domains for which your host is an incoming relay.
+# If you are not doing any relaying, you should leave the list empty. However,
+# if your host is an MX backup or gateway of some kind for some domains, you
+# must set relay_to_domains to match those domains. For example:
+#
+# domainlist relay_to_domains = *.myco.com : my.friend.org
+#
+# This will allow any host to relay through your host to those domains.
+# See the section of the manual entitled "Control of relaying" for more
+# information.
+
+# The third setting specifies hosts that can use your host as an outgoing relay
+# to any other host on the Internet. Such a setting commonly refers to a
+# complete local network as well as the localhost. For example:
+#
+# hostlist relay_from_hosts = 127.0.0.1 : 192.168.0.0/16
+#
+# The "/16" is a bit mask (CIDR notation), not a number of hosts. Note that you
+# have to include 127.0.0.1 if you want to allow processes on your host to send
+# SMTP mail by using the loopback address. A number of MUAs use this method of
+# sending mail.

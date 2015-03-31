@@ -1,0 +1,21 @@
+  # Add Message-ID if missing and from a relaying host
+  warn  condition = ${if !def:h_Message-ID: {1}}
+        hosts     = +relay_from_hosts
+        message   = Message-ID: <E$message_id@$primary_hostname>
+
+  # Put simple tests first. A good one is to check for the presence of a
+  # Message-Id: header, which RFC2822 says SHOULD be present. Some broken
+  # or misconfigured mailer software occasionally omits this from genuine
+  # messages too, though -- although it's not hard for the offender to fix
+  # after they receive a bounce because of it.
+  #
+  #deny    condition  = ${if !def:h_Message-ID: {1}}
+  #        message    = RFC2822 says that all mail SHOULD have a Message-ID header.\n\
+  #                     Most messages without it are spam, so your mail has been rejected.
+
+  # Alternatively if we're feeling more lenient we could just use it to 
+  # trigger greylisting instead:
+
+  warn    condition  = ${if !def:h_Message-ID: {1}}
+          !hosts     = +relay_from_hosts
+          set acl_m_greylistreasons = Message lacks Message-Id: header. Consult RFC2822.\n$acl_m_greylistreasons

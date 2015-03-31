@@ -1,0 +1,2 @@
+# mailman is trusted
+trusted_users = mailman

@@ -1,0 +1,9 @@
+  # Reject bounce (null sender) messages to the list
+  deny     message = "Recipient never sends mail so cannot cause bounces"
+           senders = :
+           domains = +local_domains
+           local_parts = \N^.*-(admin|join|leave|owner|request)$\N
+  deny     message = "Recipient never sends mail so cannot cause bounces"
+           senders = :
+           domains = +local_domains
+           local_parts = \N^.*-(subscribe|unsubscribe)$\N

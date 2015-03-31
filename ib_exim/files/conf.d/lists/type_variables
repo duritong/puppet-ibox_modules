@@ -1,0 +1,9 @@
+# mailman
+MAILMAN_HOME=/usr/lib/mailman
+MAILMAN_LISTS=/var/lib/mailman/lists/
+MAILMAN_WRAP=MAILMAN_HOME/mail/mailman
+MAILMAN_USER=mailman
+MAILMAN_GROUP=mailman
+
+# schleuder
+SCHLEUDER_GROUP = schleuder

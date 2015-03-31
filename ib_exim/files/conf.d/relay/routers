@@ -1,0 +1,259 @@
+# The following router chain follows the idea posted on
+# http://www.ijs.si/software/amavisd/README.exim_v4_app2
+#
+# In detail this means, we
+# 1st) validate the recipient by runninng verify only routers
+# 2nd) reject address via failed_address_router if address can't be verified
+# 3rd) check for spam and/or viri via amavis
+# 4th) deliver the mail to the real routers.
+
+## ATTENTION: if you change/add/remove a router, you should always also remove
+##            the corresponding validation router. All validation routers are
+##            named with the check_ prefix.
+
+# A description for each router can be found in the "real" router section
+
+## <validation>
+
+check_virtual_domain_alias:
+    driver = accept
+    condition = ${if eq{${lookup{$domain} cdb {/etc/exim/sql/local.cdb} {${substr_1_1:$value}} {0}}}{1}{yes}{no}}
+    verify_only
+    pass_router = amavis
+    no_more
+
+check_dnslookup_relay_to_domains:
+  driver    = accept
+  domains   = ! +local_domains : +relay_domains
+  verify_only
+  pass_router = amavis
+  no_more
+
+check_dnslookup:
+  driver    = dnslookup
+  domains   = ! +local_domains
+  # same_domain_copy_routing = yes
+  # ignore private rfc1918 and APIPA addresses
+  ignore_target_hosts = 0.0.0.0 : 127.0.0.0/8 : 192.168.0.0/16 :\
+                          172.16.0.0/12 : 10.0.0.0/8 : 169.254.0.0/16
+  verify_only
+  pass_router = amavis
+  no_more
+
+check_virtual_user_forward:
+  driver = accept
+  local_part_suffix_optional
+  local_part_suffix = +*
+  domains = ${lookup pgsql {DB_USR_FORWARD}{$value}}
+  verify_only
+  pass_router = amavis
+
+check_virtual_user_forward_copy:
+  driver = accept
+  local_part_suffix_optional
+  local_part_suffix = +*
+  domains = ${lookup pgsql {DB_USR_COPY}{$value}}
+  verify_only
+  pass_router = amavis
+
+check_mailman_list:
+    driver = accept
+    local_part_suffix_optional
+    local_part_suffix = -admin : -bounces : -bounces+* : \
+                        -confirm : -confirm+* : \
+                        -join : -leave : \
+                        -owner : -request : \
+                        -subscribe : -unsubscribe
+    domains = ${lookup pgsql {DB_MM_LIST_IN}{$value}}
+    verify_only
+    pass_router = amavis
+
+check_mlschleuder:
+    driver = accept
+    local_part_suffix_optional
+    local_part_suffix = +* : -bounce : -sendkey : -request
+    domains = ${lookup pgsql {SCHL_DB_MAILINGLIST_IN}{$value}}
+    verify_only
+    pass_router = amavis
+
+check_localuser:
+  driver = accept
+  local_part_suffix_optional
+  local_part_suffix = +*
+  domains = ${lookup pgsql {DB_USER_IN}{$value}}
+  verify_only
+  pass_router = amavis
+
+check_virtual_domain_catchall:
+  driver = accept
+  local_part_suffix_optional
+  local_part_suffix = +*
+  condition = ${if eq{${lookup{$domain} cdb {/etc/exim/sql/local.cdb} {${substr_0_1:$value}} {0}}}{1}{yes}{no}}
+  verify_only
+  pass_router = amavis
+  no_more
+
+check_virtual_postmaster:
+  driver = accept
+  local_parts = postmaster
+  verify_only
+  pass_router = amavis
+  no_more
+
+check_virtual_abuse:
+  driver = accept
+  local_parts = abuse
+  verify_only
+  pass_router = amavis
+  no_more
+
+#check_bad_user:
+#  driver = redirect
+#  domains = +local_domains
+#  allow_fail
+#  data = :fail: Unknown Virtualuser / Unbekannte User-Adresse
+
+failed_address:
+  driver = redirect
+  data = :fail: Unknown Virtualuser / Unbekannte User-Adresse <$local_part@$domain>
+  verify_only
+  fail_verify
+  allow_fail
+
+# Amavis Virus Scanner
+# http://www.ijs.si/software/amavisd/README.exim_v4_app2
+#
+amavis:
+    #debug_print = "R: amavis for $local_part@$domain"
+    driver            = manualroute
+    local_part_suffix_optional
+    local_part_suffix = +*
+    condition = "${if eq {$interface_port}{10025} {0}{1}}"
+#    condition         = "${if or {{eq {$interface_port}{10025}} \
+#                                  {eq {$received_protocol}{spam-scanned}} \
+#                                  {eq {$sender_address}{}} \
+#                         }{0}{1}}"
+# Note: to enable relay_domains we need to adjust the USER query
+    domains           = +local_domains : +relay_domains
+#    domains           = ${lookup pgsql {DB_USER_IN}{$value}}
+    transport         = amavis
+    route_list        = "* 127.0.0.1 byname"
+    self              = send
+
+# Check for Domain Alias, write new address with correct domain name
+virtual_domain_alias:
+    driver = redirect
+    condition = ${if eq{${lookup{$domain} cdb {/etc/exim/sql/local.cdb} {${substr_1_1:$value}} {0}}}{1}{yes}{no}}
+    data = ${local_part}@${lookup pgsql {DB_DOMAIN_ALIAS}{$value}fail}
+    no_more
+
+# deliver mail to the recipient if recipient domain is a domain we
+# relay for. We do not ignore any target hosts here since delivering to
+# a site local or even a link local address might be wanted here, and if
+# such an address has found its way into the MX record of such a domain,
+# the local admin is probably in a place where that broken MX record
+# could be fixed.
+#
+dnslookup_relay_to_domains:
+  driver    = dnslookup
+  domains   = ! +local_domains : +relay_domains
+  transport = remote_smtp
+  # same_domain_copy_routing = yes
+  no_more
+
+# This router routes addresses that are not in local domains by doing a DNS
+# lookup on the domain name. Any domain that resolves to 0.0.0.0 or to a
+# loopback interface address (127.0.0.0/8) is treated as if it had no DNS
+# entry. Note that 0.0.0.0 is the same as 0.0.0.0/32, which is commonly treated
+# as the local host inside the network stack. It is not 0.0.0.0/0, the default
+# route. If the DNS lookup fails, no further routers are tried because of
+# the no_more setting, and consequently the address is unrouteable.
+
+dnslookup:
+  driver    = dnslookup
+  domains   = ! +local_domains
+  transport = remote_smtp
+  # same_domain_copy_routing = yes
+  # ignore private rfc1918 and APIPA addresses
+  ignore_target_hosts = 0.0.0.0 : 127.0.0.0/8 : 192.168.0.0/16 :\
+                          172.16.0.0/12 : 10.0.0.0/8 : 169.254.0.0/16
+  no_more
+
+# Forwarding / Aliases!
+virtual_user_forward:
+  driver = redirect
+  local_part_suffix_optional
+  local_part_suffix = +*
+  domains = ${lookup pgsql {DB_USR_FORWARD}{$value}}
+  data = ${lookup pgsql {DB_FORWARDTO}{$value}fail}
+
+virtual_user_forward_copy:
+  driver = redirect
+  local_part_suffix_optional
+  local_part_suffix = +*
+  domains = ${lookup pgsql {DB_USR_COPY}{$value}}
+  data = ${lookup pgsql {DB_FORWARDTO}{$value}fail}
+  unseen = true
+
+# Mailman handling
+mailman_list:
+    #debug_print = "mailman_list for $local_part@$domain"
+    driver = manualroute
+    local_part_suffix_optional
+    local_part_suffix = -admin : -bounces : -bounces+* : \
+                        -confirm : -confirm+* : \
+                        -join : -leave : \
+                        -owner : -request : \
+                        -subscribe : -unsubscribe
+    domains = ${lookup pgsql {DB_MM_LIST_IN}{$value}}
+    route_data = ${lookup pgsql {DB_MM_LISTHOST}{$value}}
+    transport = list_transport
+
+mlschleuder:
+    #debug_print = "mlschleuder: for $local_part@$domain"
+    driver = manualroute
+    local_part_suffix_optional
+    local_part_suffix = +* : -bounce : -sendkey : -request
+    domains = ${lookup pgsql {SCHL_DB_MAILINGLIST_IN}{$value}}
+    route_data = ${lookup pgsql {SCHL_DB_LISTHOST}{$value}}
+    transport = list_transport
+
+localuser:
+  #debug_print = "DynBackend for $local_part@$domain"
+  driver = manualroute
+  local_part_suffix_optional
+  local_part_suffix = +*
+  domains = ${lookup pgsql {DB_USER_IN}{$value}}
+  route_data = ${lookup pgsql {MAIL_DB_STORAGE_HOST}{$value}}
+  transport = remote_smtp
+  cannot_route_message = Unknown user
+
+######################
+# Catchall Domains
+#
+virtual_domain_catchall:
+  driver = redirect
+  local_part_suffix_optional
+  local_part_suffix = +*
+  condition = ${if eq{${lookup{$domain} cdb {/etc/exim/sql/local.cdb} {${substr_0_1:$value}} {0}}}{1}{yes}{no}}
+  data = ${lookup pgsql {DB_DOM_CATCHALL}{$value}fail}
+  no_more
+
+virtual_postmaster:
+  driver = redirect
+  local_parts = postmaster
+  data = postmaster@$MAIN_DOMAIN
+  no_more
+
+virtual_abuse:
+  driver = redirect
+  local_parts = abuse
+  data = postmaster@$MAIN_DOMAIN
+  no_more
+
+bad_user:
+  driver = redirect
+  domains = +local_domains
+  allow_fail
+  data = :fail: Unknown Virtualuser / Unbekannte User-Adresse
+

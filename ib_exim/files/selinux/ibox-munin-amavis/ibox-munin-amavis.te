@@ -1,0 +1,21 @@
+module ibox-munin-amavis 1.0;
+
+require {
+        type munin_t;
+        type amavis_spool_t;
+        type system_mail_t;
+        class tcp_socket ioctl;
+        class dir search;
+        class file { read write getattr open };
+}
+
+#============= munin_t ==============
+allow munin_t amavis_spool_t:dir search;
+#!!!! The source type 'munin_t' can write to a 'file' of the following types:
+# munin_var_lib_t, munin_var_run_t, httpd_munin_content_t, munin_tmp_t, munin_log_t, munin_plugin_state_t, root_t
+# but we need to look there for the db
+
+allow munin_t amavis_spool_t:file { read write getattr open };
+
+#============= system_mail_t ==============
+allow system_mail_t munin_t:tcp_socket ioctl;

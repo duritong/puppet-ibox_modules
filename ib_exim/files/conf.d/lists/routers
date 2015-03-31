@@ -1,0 +1,35 @@
+.include CONFSNIPPETDIR/router_send_to_gateway
+
+# mailman
+mailman_router:
+ driver = accept
+ require_files = MAILMAN_LISTS/$local_part/config.pck
+ local_part_suffix_optional
+ local_part_suffix = -admin : -bounces : -bounces+* : \
+                     -confirm : -confirm+* : \
+                     -join : -leave : \
+                     -owner : -request : \
+                     -subscribe : -unsubscribe
+ domains = ${lookup pgsql {DB_MM_LIST}{$value}}
+ transport = mailman_transport_local
+ no_more
+
+# schleuder
+mlschleuder_test:
+ driver = accept
+ local_part_suffix_optional
+ local_part_suffix = +* : -bounce : -sendkey : -request
+ domains = ${lookup pgsql {SCHL_DB_TEST_MAILINGLIST}{$value}}
+ transport = mlschleuder_transport_local_test
+ no_more
+
+mlschleuder:
+ driver = accept
+ local_part_suffix_optional
+ local_part_suffix = +* : -bounce : -sendkey : -request
+ domains = ${lookup pgsql {SCHL_DB_MAILINGLIST}{$value}}
+ transport = mlschleuder_transport_local
+ no_more
+
+.include CONFSNIPPETDIR/router_default_local
+

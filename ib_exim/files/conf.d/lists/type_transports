@@ -1,0 +1,37 @@
+mailman_transport_local:
+    driver = pipe
+    command = MAILMAN_WRAP \
+              '${if def:local_part_suffix \
+                    {${sg{$local_part_suffix}{-(\\w+)(\\+.*)?}{\$1}}} \
+                    {post}}' \
+              $local_part
+    current_directory = MAILMAN_HOME
+    home_directory = MAILMAN_HOME
+    user = MAILMAN_USER
+    group = MAILMAN_GROUP
+
+mlschleuder_transport_local_test:
+  driver = pipe
+  user = ${lookup pgsql {SCHL_DB_RUN_AS}{$value}}
+  group = SCHLEUDER_GROUP
+  # schleuders generates nice log messages for some of the problems
+  return_fail_output = true
+  # this needs to be 002 as we need to ensure the global logfile stays
+  # group writeable while schleuder is logrotating
+  umask = 007
+  home_directory = "/var/schleuderlists/$domain/$local_part"
+  command = "\"${lookup pgsql {SCHL_DB_BIN}{$value}}\" $local_part@$domain"
+  message_size_limit = 3M
+
+mlschleuder_transport_local:
+  driver = pipe
+  user = ${lookup pgsql {SCHL_DB_RUN_AS}{$value}}
+  group = SCHLEUDER_GROUP
+  # schleuders generates nice log messages for some of the problems
+  return_fail_output = true
+  # this needs to be 002 as we need to ensure the global logfile stays
+  # group writeable while schleuder is logrotating
+  umask = 007
+  home_directory = "/var/schleuderlists/$local_part"
+  command = "\"${lookup pgsql {SCHL_DB_BIN}{$value}}\" $local_part"
+  message_size_limit = 3M

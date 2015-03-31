@@ -1,0 +1,17 @@
+.include CONFSNIPPETDIR/router_send_to_gateway
+
+# deliver local user
+localuser_storage:
+#  debug_print = "R: local_user for $local_part@$domain"
+  driver = accept
+  local_part_suffix_optional
+  local_part_suffix = +*
+  domains =  ${lookup pgsql {DB_USER}{$value}}
+  transport_home_directory = TRANSPORT_HOME
+  user = ${lookup pgsql {DB_UID_USER}{$value}}
+  # deliver everybody with the same group for logfile writing
+  group = 12
+  transport = dovecot_delivery_local
+  no_more
+
+.include CONFSNIPPETDIR/router_default_local

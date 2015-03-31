@@ -1,0 +1,8 @@
+  ### set greylist if not from amavisd and not from a realyed host
+  warn  condition  = ${if or {{eq {$interface_port}{10025}} \
+                              {eq {$received_protocol}{spam-scanned}} \
+                              {eq {$sender_address}{}} \
+                     }{0}{1}}
+        !hosts = +relay_from_hosts
+        set acl_m_greylistreasons = We greylist most mail\n$acl_m_greylistreasons
+

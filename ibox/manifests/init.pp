@@ -8,33 +8,36 @@ class ibox(
 ) {
 
   $root_keys = hiera_hash('ibox::root_keys',{})
-  include ibox::systems::base
+  include ::ibox::systems::base
 
   case $::kernel {
-    linux: { include ibox::systems::linux }
+    linux: { include ::ibox::systems::linux }
     default: { fail('Not supported kernel') }
   }
   case $::osfamily {
-    redhat: { include ibox::systems::redhat }
-    debian,ubuntu: { include ibox::systems::debian }
+    redhat: { include ::ibox::systems::redhat }
+    debian,ubuntu: { include ::ibox::systems::debian }
     default: { } # do nothing
   }
 
-  include ib_virt
+  include ::ib_virt
   case $::virtual {
-    'xen0': { include ibox::systems::xen0 }
+    'xen0': { include ::ibox::systems::xen0 }
     default: {
       # do nothing
     }
   }
   if str2bool($::is_virtual) {
-    include ibox::systems::guests
+    include ::ibox::systems::guests
   } else {
-    include ibox::systems::physical
+    include ::ibox::systems::physical
   }
 
   if !empty($types) {
-    include prefix($types,'ibox::types::')
+    include prefix($types,'::ibox::types::')
   }
+
+  # this must be after the types
+  include ::ibox::systems::mail
 
 }

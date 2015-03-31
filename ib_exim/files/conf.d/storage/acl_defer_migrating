@@ -1,0 +1,4 @@
+  # defer messages that are in migration process
+  defer message = Migrating - please try again shortly.
+        !hosts = +relay_from_hosts
+        domains = ${lookup pgsql {DB_MIGRATING_USER}{$value}}

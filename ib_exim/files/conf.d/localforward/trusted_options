@@ -1,0 +1,4 @@
+local_sender_retain = true
+local_from_check = false
+untrusted_set_sender = *
+trusted_groups = wwwmailers

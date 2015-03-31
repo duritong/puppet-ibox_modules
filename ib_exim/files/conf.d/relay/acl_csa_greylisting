@@ -1,0 +1,4 @@
+  # Alternatively, greylist for it if it is not a host we realy for:
+  warn !verify = csa
+       !hosts = +relay_hosts
+       set acl_m_greylistreasons = Host failed CSA check\n$acl_m_greylistreasons

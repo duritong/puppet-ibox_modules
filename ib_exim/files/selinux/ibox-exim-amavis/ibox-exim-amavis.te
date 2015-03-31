@@ -1,0 +1,10 @@
+module ibox-exim-amavis 1.0;
+
+require {
+        type amavisd_recv_port_t;
+        type exim_t;
+        class tcp_socket name_connect;
+}
+
+#============= exim_t ==============
+allow exim_t amavisd_recv_port_t:tcp_socket name_connect;

@@ -1,0 +1,82 @@
+# These values can be overridden by editing ~/.spamassassin/user_prefs.cf 
+# (see spamassassin(1) for details)
+
+# These should be safe assumptions and allow for simple visual sifting
+# without risking lost emails.
+
+required_score 5
+report_safe 0
+
+# we don't train (currently)
+use_bayes 0
+
+# check body of url traps
+urirhsbl  URIBL_SC_SWINOG uribl.swinog.ch.   A
+body      URIBL_SC_SWINOG eval:check_uridnsbl('URIBL_SC_SWINOG')
+describe  URIBL_SC_SWINOG URI's listed in uribl.swinog.ch.
+tflags    URIBL_SC_SWINOG net
+score     URIBL_SC_SWINOG 0 0.900 0 1.500
+
+# swiss specific spammers
+header    RCVD_IN_SWINOG_SPAM eval:check_rbl('swinog', 'dnsrbl.swinog.ch.', '127.0.0.3')
+describe  RCVD_IN_SWINOG_SPAM Listed in dnsrbl.swinog.ch.
+tflags    RCVD_IN_SWINOG_SPAM net
+score     RCVD_IN_SWINOG_SPAM 2.500
+
+# add you ip range here
+header    __FROM_POSTMASTER From =~ /^(postmaster|mailer-daemon)\@/i
+full      __FROM_MYSITE /212\.103\.72\./
+meta      POSTMASTER_NOT_LOCAL __FROM_POSTMASTER && !__FROM_MYSITE
+describe  POSTMASTER_NOT_LOCAL From postmaster but not from our site.
+score     POSTMASTER_NOT_LOCAL 5.0
+
+# double brackets in TO
+# http://www.spamtips.org/2011/02/smfbracketsto-rule.html
+header SMF_BRACKETS_TO To:raw =~ /<<[^<>]+>>/
+describe SMF_BRACKETS_TO Double-brackets around To header address
+score SMF_BRACKETS_TO 1.5
+
+# DBL
+urirhssub URIBL_DBL_SPAM  dbl.dnsbl. A 127.0.1.2 urirhssub
+URIBL_DBL_ERROR dbl.dnsbl. A 127.0.1.255
+
+## mailspike
+## http://mailspike.net/anubis/implementation_sa.html
+## Spam sources
+header __RCVD_IN_MSPIKE          eval:check_rbl('mspike-lastexternal', 'bl.mailspike.net.')
+tflags __RCVD_IN_MSPIKE          net
+
+##### Reputation compensations
+# Definitions
+header __RCVD_IN_MSPIKE_Z     eval:check_rbl_sub('mspike-lastexternal', '^127\.0\.0\.2$')
+describe __RCVD_IN_MSPIKE_Z   Spam wave participant
+tflags __RCVD_IN_MSPIKE_Z     net
+header RCVD_IN_MSPIKE_L5     eval:check_rbl_sub('mspike-lastexternal', '^127\.0\.0\.10$')
+describe RCVD_IN_MSPIKE_L5   Very bad reputation (-5)
+tflags RCVD_IN_MSPIKE_L5     net
+header RCVD_IN_MSPIKE_L4     eval:check_rbl_sub('mspike-lastexternal', '^127\.0\.0\.11$')
+describe RCVD_IN_MSPIKE_L4   Bad reputation (-4)
+tflags RCVD_IN_MSPIKE_L4     net
+header RCVD_IN_MSPIKE_L3     eval:check_rbl_sub('mspike-lastexternal', '^127\.0\.0\.12$')
+describe RCVD_IN_MSPIKE_L3   Low reputation (-3)
+tflags RCVD_IN_MSPIKE_L3     net
+
+# *_L and *_Z may overlap each other, so account for that
+meta __RCVD_IN_MSPIKE_LOW RCVD_IN_MSPIKE_L5 || RCVD_IN_MSPIKE_L4 || RCVD_IN_MSPIKE_L3
+meta RCVD_IN_MSPIKE_ZBI __RCVD_IN_MSPIKE_Z && !__RCVD_IN_MSPIKE_LOW
+
+# Scores
+score RCVD_IN_MSPIKE_ZBI     4.1
+score RCVD_IN_MSPIKE_L5      4.1
+score RCVD_IN_MSPIKE_L4      3.5
+score RCVD_IN_MSPIKE_L3      2.9
+
+
+## additional bodychecks with scores
+rawbody		BODY_LOTTERY		/L.?(?:o|0|\(\)).?t.?t.?[e3].?r.?y.?/i
+describe	BODY_LOTTERY		contains Lottery
+score		BODY_LOTTERY		2.5
+
+rawbody		BODY_GEWINNCHANGE	/G.?[e3].?w.?[i1l\|].?n.?n.?c.?h.?(?:a|@|\/\\).?n.?c.?[e3].?/i	
+describe	BODY_GEWINNCHANGE	contains Gewinnchange
+score					2.5

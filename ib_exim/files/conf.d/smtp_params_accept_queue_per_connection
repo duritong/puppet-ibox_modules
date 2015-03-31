@@ -1,0 +1,3 @@
+# Max number of delivery processes that Exim starts automatically when
+# receiving messages via SMTP before starting to queue. Default is 10
+smtp_accept_queue_per_connection = 20

@@ -1,0 +1,23 @@
+class Options
+
+  DB_HOST               = '<%= scope['ib_exim::types::database::config']['dbhost'] %>'
+  DB                    = '<%= scope['ib_exim::types::database::config']['dbname'] %>'
+  DB_USER               = '<%= scope['ib_exim::types::database::config']['migrate_user'] %>'
+  DB_PWD                = '<%= scope['ib_exim::types::database::config']['migrate_pwd'] || scope.function_trocla_get(["postgres_#{scope['ib_exim::types::database::config']['migrate_user']}",'plain']) %>'
+
+  DB_TABLE              = 'email_users'
+  DB_STORAGEHOST_FIELD  = 'storagehost'
+  DB_UID_FIELD          = 'uid'
+  DB_MIGRATE_FIELD      = 'migrate_to'
+  DB_MIGRATE_TIME_FIELD = 'migration_started_at'
+
+  HOST                  = '<%= scope['::ipaddress_eth0'] %>'
+
+  DEFAULT_PATH          = '<%= @maildir %>'
+
+  RSYNC_SSH_OPTIONS     = '-i /e/mail/keys/<%= scope['::fqdn'] %>'
+  RSYNC_OPTIONS         = '-az --exclude=.Trash/* --exclude=.trash/* --exclude=.Junk/* --exclude=.junk/* --exclude=.Papierkorb/* --exclude=.papierkorb/* --exclude=.Spam/* --exclude=.spam/* --timeout=600'
+
+  IGNORE_EXITCODE       = 24
+  IGNORE_OUTPUT         = '^(file has vanished: |rsync warning: some files vanished before they could be transferred)'
+end

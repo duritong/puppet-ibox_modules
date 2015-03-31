@@ -1,0 +1,12 @@
+module ibox-munin-exim 1.0;
+
+require {
+        type munin_mail_plugin_t;
+        type exim_log_t;
+        class file { read ioctl open };
+        class dir { search };
+}
+
+#============= munin_mail_plugin_t ==============
+allow munin_mail_plugin_t exim_log_t:file { read ioctl open };
+allow munin_mail_plugin_t exim_log_t:dir search;

@@ -1,0 +1,8 @@
+#!/usr/bin/ruby
+
+$host = '<%= @config['dbhost'] %>'
+$user = '<%= @config['cdb_user'] %>'
+$pw   = '<%= @config['cdb_pwd'] || scope.function_trocla(["postgres_#{@config['cdb_user']}",'plain']) %>'
+$db   = '<%= @config['dbname'] %>'
+$sql1 = '/etc/exim/sql/local.sql'
+
