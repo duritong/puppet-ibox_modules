@@ -242,13 +242,13 @@ virtual_domain_catchall:
 virtual_postmaster:
   driver = redirect
   local_parts = postmaster
-  data = postmaster@$MAIN_DOMAIN
+  data = postmaster@MAIN_DOMAIN
   no_more
 
 virtual_abuse:
   driver = redirect
   local_parts = abuse
-  data = postmaster@$MAIN_DOMAIN
+  data = postmaster@MAIN_DOMAIN
   no_more
 
 bad_user:
