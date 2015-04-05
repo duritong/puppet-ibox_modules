@@ -1,7 +1,6 @@
 # setup exim our way
 class ib_exim(
   $component_type,
-  $component_cluster      = '',
   $pgsql                  = false,
   $greylist               = false,
   $localonly              = false,
@@ -28,7 +27,6 @@ class ib_exim(
     greylist          => $greylist,
     nagios_checks     => $nagios_checks,
     localonly         => $localonly,
-    component_cluster => $component_cluster,
     component_type    => $component_type,
     manage_munin      => $ibox::use_munin,
     manage_shorewall  => $ibox::use_shorewall,
