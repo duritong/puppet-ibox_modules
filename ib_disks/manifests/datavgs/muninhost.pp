@@ -1,5 +1,5 @@
 # disk setup for a munin host
-class ib_disks::datavg::muninhost(
+class ib_disks::datavgs::muninhost(
   $size_lib = '3G',
   $size_tmp = '2G',
 ) {
