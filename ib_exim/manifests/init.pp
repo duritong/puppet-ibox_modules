@@ -23,8 +23,8 @@ class ib_exim(
     default  => '/etc/pki/tls/private/exim.pem',
   },
   $dhparams               = $::operatingsystem ? {
-    'Debian' => '/etc/pki/tls/dhparams.pem',
-    default  => '/etc/pki/tls/dhparams.pem',
+    'Debian' => '/etc/ssl/dhparams.pem',
+    default  => '/etc/pki/tls/certs/dhparams.pem',
   },
 ){
   class{'::ibox::systems::mail':
