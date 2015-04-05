@@ -41,6 +41,7 @@ ${::operatingsystem}.${::operatingsystemmajrelease}.erb")
       nagios_checks      => $nagios_checks;
   }
 
+  include ::certs::ssl_config
   $ssl_cipher_list = $certs::ssl_config::ciphers
   $ssl_protocols = '!SSLv2 !SSLv3'
   dovecot::confd{
