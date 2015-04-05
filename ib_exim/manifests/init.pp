@@ -54,9 +54,9 @@ class ib_exim(
     before => Service['exim'],
   }
   $remote_smtps_str      = join($remote_smtps,':')
-  $whitelisted_hosts_str = join($whitelisted_hosts,' ')
-  $ignore_bl_hosts_str   = join($ignore_bl_hosts,' ')
-  $relay_from_hosts_str  = join($relay_from_hosts,' ')
+  $whitelisted_hosts_str = join($whitelisted_hosts,' : ')
+  $ignore_bl_hosts_str   = join($ignore_bl_hosts,' : ')
+  $relay_from_hosts_str  = join($relay_from_hosts,' : ')
   exim::config_snippet{
     'host_fields':
       content => "HOST_NAME = ${::fqdn}

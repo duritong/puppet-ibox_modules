@@ -1,8 +1,5 @@
 # an smtp gateway to and from the public
 class ib_exim::relay(
-  $ignore_bl_hosts   = [],
-  $whitelisted_hosts = [],
-  $relay_from_hosts  = [],
   $nagios_check_host = "smtp.${::domain}",
   $auth_server       = "imap.${::domain}",
 ) {
@@ -23,9 +20,6 @@ class ib_exim::relay(
     component_type         => 'relay',
     # 10025 is because of amavis anti-virus/spam scan
     local_interfaces       => '0.0.0.0 : 127.0.0.1.10025',
-    ignore_bl_hosts        => join($ignore_bl_hosts,' : '),
-    whitelisted_hosts      => join($whitelisted_hosts,' : '),
-    relay_from_hosts       => join($relay_from_hosts,' : '),
     nagios_checks          => {
       '25'        => 'tls',
       '465'       => 'ssl',
