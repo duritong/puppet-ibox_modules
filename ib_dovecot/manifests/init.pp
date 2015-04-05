@@ -25,7 +25,7 @@ ${::operatingsystem}.${::operatingsystemmajrelease}.erb")
   }
 
   class{
-    'dovecot':
+    '::dovecot':
       type               => $type,
       config_group       => $config_group,
       pgsql              => $require_sql,
@@ -33,9 +33,9 @@ ${::operatingsystem}.${::operatingsystemmajrelease}.erb")
       nagios_checks      => $nagios_checks,
       sqlite             => $sqlite,
       site_source        => 'ib_dovecot',
-      munin_checks       => $ibox::use_munin;
+      munin_checks       => $ibox::use_munin,
       manage_shorewall   => $ibox::use_shorewall;
-    'dovecot::managesieve':
+    '::dovecot::managesieve':
       type               => $type,
       legacy_port        => true, # until we migrated
       nagios_checks      => $nagios_checks;
