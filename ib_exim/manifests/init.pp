@@ -18,24 +18,24 @@ class ib_exim(
   $tls_privatekey         = '/etc/pki/tls/private/exim.pem',
   $dhparams               = '/etc/pki/tls/certs/dhparams.pem',
 ){
-  class{'ibox::systems::mail':
+  class{'::ibox::systems::mail':
     use_exim => true,
   }
-  class{'exim':
-    pgsql             => $pgsql,
-    ports             => $daemon_ports,
-    greylist          => $greylist,
-    nagios_checks     => $nagios_checks,
-    localonly         => $localonly,
-    component_type    => $component_type,
-    manage_munin      => $ibox::use_munin,
-    manage_shorewall  => $ibox::use_shorewall,
-    default_mta       => true,
-    site_source       => 'ib_exim',
+  class{'::exim':
+    pgsql            => $pgsql,
+    ports            => $daemon_ports,
+    greylist         => $greylist,
+    nagios_checks    => $nagios_checks,
+    localonly        => $localonly,
+    component_type   => $component_type,
+    manage_munin     => $ibox::use_munin,
+    manage_shorewall => $ibox::use_shorewall,
+    default_mta      => true,
+    site_source      => 'ib_exim',
   }
 
   if $::operatingsystem == 'Debian' {
-    include exim::debian::heavy
+    include ::exim::debian::heavy
     file{'/etc/default/exim4_ibox':
       content => "EXIM_DEBIAN = true\n",
       require => Package['exim'],

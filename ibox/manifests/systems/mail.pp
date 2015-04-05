@@ -14,7 +14,7 @@ class ibox::systems::mail(
     }
   } else {
     class{'::ssmtp':
-      manage_shorewall => true
+      manage_shorewall => $ibox::use_shorewall,
     } -> class{'::sendmail::disable': }
         -> class{'::exim::disable': }
         -> class{'::postfix::disable': }
