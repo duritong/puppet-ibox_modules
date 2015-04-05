@@ -16,24 +16,24 @@ function cdb() {
 }
 
 if [ ! -d $ROOT ]; then
-  echo "$HOME does not exist"
+  echo "$ROOT does not exist" > /dev/stderr
   exit 1
 fi
 if [ ! -d $STAGE ]; then
-  echo "$STAGE does not exist"
+  echo "$STAGE does not exist" > /dev/stderr
   exit 1
 fi
 
 if [ ! -f $rubyscript ]; then
-  echo "$rubyscript does not exists or is not executable"
+  echo "$rubyscript does not exists or is not executable" > /dev/stderr
   exit 1
 fi
 if [ ! -f $rubyscriptrelay ]; then
-  echo "$rubyscriptrelay does not exists or is not executable"
+  echo "$rubyscriptrelay does not exists or is not executable" > /dev/stderr
   exit 1
 fi
 if [ ! -f $rubyscriptblocked ]; then
-  echo "$rubyscriptblocked does not exists or is not executable"
+  echo "$rubyscriptblocked does not exists or is not executable" > /dev/stderr
   exit 1
 fi
 
@@ -51,7 +51,7 @@ if [ -s $STAGE/local.txt ]; then
     cdb $ROOT/local.cdb $ROOT/local.txt $STAGE/local_tmp.cdb
   fi
 else
-  echo "$STAGE/local.txt is 0 sized!"
+  echo "$STAGE/local.txt is 0 sized!" > /dev/stderr
 fi
 
 ###### relay
@@ -68,7 +68,7 @@ if [ -f $STAGE/relayto.txt ]; then
     cdb $ROOT/relayto.cdb $ROOT/relayto.txt $STAGE/relayto_tmp.cdb
   fi
 else
-  echo "$STAGE/relayto.txt does not exist!"
+  echo "$STAGE/relayto.txt does not exist!" > /dev/stderr > /dev/stderr
 fi
 
 ##### blocked addresses
@@ -85,5 +85,5 @@ if [ -f $STAGE/blocked.txt ]; then
     cdb $ROOT/blocked.cdb $ROOT/blocked.txt $STAGE/blocked_tmp.cdb
   fi
 else
-  echo "$STAGE/blocked.txt does not exist!"
+  echo "$STAGE/blocked.txt does not exist!" > /dev/stderr
 fi
