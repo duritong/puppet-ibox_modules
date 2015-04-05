@@ -6,13 +6,13 @@ class ib_exim(
   $localonly              = false,
   $nagios_checks          = false,
   $daemon_ports           = [ '25' ],
-  $relay_from_hosts       = '127.0.0.1',
+  $relay_from_hosts       = [ '127.0.0.1' ],
   $local_interfaces       = '127.0.0.1',
   $host_lookup            = '*',
   $remote_smtps           = ["mail.${::domain}"],
   $remote_smtp_options    = 'randomize byname',
-  $whitelisted_hosts      = '127.0.0.2',
-  $ignore_bl_hosts        = '127.0.0.2',
+  $whitelisted_hosts      = [ '127.0.0.2' ],
+  $ignore_bl_hosts        = [ '127.0.0.2' ],
   $authenticators_content = '',
   $tls_certificate        = '/etc/pki/tls/certs/exim.pem',
   $tls_privatekey         = '/etc/pki/tls/private/exim.pem',
@@ -53,7 +53,10 @@ class ib_exim(
   certs::dhparams{$dhparams:
     before => Service['exim'],
   }
-  $remote_smtps_str = join($remote_smtps,':')
+  $remote_smtps_str      = join($remote_smtps,':')
+  $whitelisted_hosts_str = join($whitelisted_hosts,' ')
+  $ignore_bl_hosts_str   = join($ignore_bl_hosts,' ')
+  $relay_from_hosts_str  = join($relay_from_hosts,' ')
   exim::config_snippet{
     'host_fields':
       content => "HOST_NAME = ${::fqdn}
@@ -73,13 +76,13 @@ tls_dhparam = ${dhparams}\n";
 REMOTE_SMTP_HOST_OPTIONS = ${remote_smtp_options}
 ";
     'whitelisted_hosts':
-      content => "WHITELISTED_HOSTS = ${whitelisted_hosts}
-IGNORE_BL_HOSTS = ${ignore_bl_hosts}
+      content => "WHITELISTED_HOSTS = ${whitelisted_hosts_str}
+IGNORE_BL_HOSTS = ${ignore_bl_hosts_str}
 ";
     'daemon_ports':
       content => template('ib_exim/snippets/daemon_ports.erb');
     'relay_from_hosts':
-      content => "RELAY_FROM_HOSTS = ${relay_from_hosts}\n";
+      content => "RELAY_FROM_HOSTS = ${relay_from_hosts_str}\n";
     'ssl-ciphers':;
     'authenticators':
       content => $authenticators_content;
