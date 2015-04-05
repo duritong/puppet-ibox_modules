@@ -14,9 +14,18 @@ class ib_exim(
   $whitelisted_hosts      = [ '127.0.0.2' ],
   $ignore_bl_hosts        = [ '127.0.0.2' ],
   $authenticators_content = '',
-  $tls_certificate        = '/etc/pki/tls/certs/exim.pem',
-  $tls_privatekey         = '/etc/pki/tls/private/exim.pem',
-  $dhparams               = '/etc/pki/tls/certs/dhparams.pem',
+  $tls_certificate        = $::operatingsystem ? {
+    'Debian' => '/etc/ssl/public/exim.pem',
+    default  => '/etc/pki/tls/certs/exim.pem',
+  },
+  $tls_privatekey         = $::operatingsystem ? {
+    'Debian' => '/etc/ssl/private/exim.pem',
+    default  => '/etc/pki/tls/private/exim.pem',
+  },
+  $dhparams               = $::operatingsystem ? {
+    'Debian' => '/etc/pki/tls/dhparams.pem',
+    default  => '/etc/pki/tls/dhparams.pem',
+  },
 ){
   class{'::ibox::systems::mail':
     use_exim => hiera('ibox::systems::mail::use_exim',true),
