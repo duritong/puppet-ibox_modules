@@ -19,7 +19,7 @@ class ib_exim(
   $dhparams               = '/etc/pki/tls/certs/dhparams.pem',
 ){
   class{'::ibox::systems::mail':
-    use_exim => true,
+    use_exim => hiera('ibox::systems::mail::use_exim',true),
   }
   class{'::exim':
     pgsql            => $pgsql,
