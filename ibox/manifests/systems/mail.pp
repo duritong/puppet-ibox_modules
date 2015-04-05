@@ -9,9 +9,6 @@ class ibox::systems::mail(
     Package['exim'] -> Package['ssmtp'] -> Service['exim']
     Package['exim'] -> Package['postfix'] -> Service['exim']
     Package['exim'] -> Package['sendmail'] -> Service['exim']
-    if $use_exim != true {
-      include "::ib_exim::${use_exim}"
-    }
   } else {
     class{'::ssmtp':
       manage_shorewall => $ibox::use_shorewall,

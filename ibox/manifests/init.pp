@@ -11,12 +11,12 @@ class ibox(
   include ::ibox::systems::base
 
   case $::kernel {
-    linux: { include ::ibox::systems::linux }
+    'Linux': { include ::ibox::systems::linux }
     default: { fail('Not supported kernel') }
   }
   case $::osfamily {
-    redhat: { include ::ibox::systems::redhat }
-    debian,ubuntu: { include ::ibox::systems::debian }
+    'RedHat': { include ::ibox::systems::redhat }
+    'Debian','Ubuntu': { include ::ibox::systems::debian }
     default: { } # do nothing
   }
 
@@ -38,6 +38,10 @@ class ibox(
   }
 
   # this must be after the types
-  include ::ibox::systems::mail
-
+  $use_exim = hiera('ibox::systems::mail::use_exim',false)
+  if !$ibox::systems::mail::use_exim {
+    include ::ibox::systems::mail
+  } elsif $ibox::systems::mail::use_exim != true {
+    include "::ib_exim::${use_exim}"
+  }
 }
