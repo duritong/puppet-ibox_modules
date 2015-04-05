@@ -39,9 +39,9 @@ class ibox(
 
   # this must be after the types
   $use_exim = hiera('ibox::systems::mail::use_exim',false)
-  if !$ibox::systems::mail::use_exim {
+  if !$use_exim {
     include ::ibox::systems::mail
-  } elsif $ibox::systems::mail::use_exim != true {
+  } elsif $use_exim != true {
     include "::ib_exim::${use_exim}"
   }
 }
