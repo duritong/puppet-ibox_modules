@@ -9,7 +9,7 @@ class ib_exim(
   $relay_from_hosts       = [ '127.0.0.1' ],
   $local_interfaces       = '127.0.0.1',
   $host_lookup            = '*',
-  $remote_smtps           = ["mail.${::domain}"],
+  $remote_smtps           = hiera_array('ib_exim::remote_smtps_all',["mail.${::domain}"]),
   $remote_smtp_options    = 'randomize byname',
   $whitelisted_hosts      = [ '127.0.0.2' ],
   $ignore_bl_hosts        = [ '127.0.0.2' ],
