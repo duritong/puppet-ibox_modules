@@ -68,12 +68,16 @@ class ib_exim::relay(
       require => [ Package['amavisd-new'], Exec['init_domains_cdb'] ],
   }
 
-  if str2bool($::selinux) and ($::operatingsystemmajrelease == 6){
+  if str2bool($::selinux) and versioncmp($::operatingsystemmajrelease,'5') > 0 {
     selinux::policy{
       'ibox-exim-amavis':
         te_source => 'puppet:///modules/ib_exim/selinux/ibox-exim-amavis/ibox-exim-amavis.te',
         require => Package['amavisd-new','exim','munin-node'],
         before  => Service['exim','munin-node'];
+    }
+  }
+  if str2bool($::selinux) and versioncmp($::operatingsystemmajrelease,'6') == 0 {
+    selinux::policy{
       'ibox-munin-amavis':
         te_source => 'puppet:///modules/ib_exim/selinux/ibox-munin-amavis/ibox-munin-amavis.te',
         require => Package['amavisd-new','exim','munin-node'],
