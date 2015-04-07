@@ -11,7 +11,8 @@ require 'singleton'
 class GenerateLocalMailUsers
   include Singleton
   def run(verbose=false)
-    require File.join(File.dirname(__FILE__),File.basename(__FILE__,'.rb')+'.config.rb')
+    f = File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
+    require File.join(File.dirname(f),File.basename(f,'.rb')+'.config.rb')
     system "rkhunter --enable passwd_changes --skip-keypress --nocolors --report-warnings-only"
     if $?.to_i > 0
       puts "There was an unreported rkhunter warning, I don't continue creating local mail users! Further infos have been mailed to you!"
