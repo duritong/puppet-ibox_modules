@@ -53,7 +53,7 @@ class ib_exim::relay(
       'acl_set_greylisting', 'acl_do_greylisting',
       'external_methods',]:;
     'dkim_init':
-      content => template('ib_exim/snippets/relay/dkim_init.rb');
+      content => template('ib_exim/snippets/relay/dkim_init.erb');
   }
   include ::ib_exim::types::special_transports
 
