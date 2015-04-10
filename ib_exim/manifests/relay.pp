@@ -68,6 +68,7 @@ class ib_exim::relay(
     '/etc/exim/dkim':
       ensure  => directory,
       source  => $dkim_keys_source,
+      links   => follow,
       before  => Service['exim'],
       require => Package['exim'],
       recurse => true,
