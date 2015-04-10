@@ -1,4 +1,4 @@
 DKIM_DOMAIN      = ${lc:${domain:$h_from:}}
-DKIM_FILE        = /etc/exim/dkim/<%= @dkim_selector_prefix %>.${lc:${domain:$h_from:}}.key
 DKIM_SELECTOR    = <%= @real_dkim_selector %>
+DKIM_FILE        = /etc/exim/dkim/<%= @dkim_file_selector %>.${lc:${domain:$h_from:}}.key
 DKIM_PRIVATE_KEY = ${if exists{DKIM_FILE}{DKIM_FILE}{0}}

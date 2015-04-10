@@ -42,9 +42,11 @@ class ib_exim::relay(
     $dkim_selector_prefix = $dkim_selector_prefixes[$dkim_month]
   }
   if $dkim_selector {
+    $dkim_file_selector = $dkim_selector
     $real_dkim_selector = $dkim_selector
   } else {
-    $real_dkim_selector = "${dkim_selector_prefix}.${dkim_month}"
+    $dkim_file_selector = "${dkim_selector_prefix}.${dkim_month}"
+    $real_dkim_selector = "${dkim_file_selector}.${::hostname}"
   }
 
   exim::config_snippet{
