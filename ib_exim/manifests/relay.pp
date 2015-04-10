@@ -1,7 +1,10 @@
 # an smtp gateway to and from the public
 class ib_exim::relay(
-  $nagios_check_host = "smtp.${::domain}",
-  $auth_server       = "imap.${::domain}",
+  $nagios_check_host      = "smtp.${::domain}",
+  $auth_server            = "imap.${::domain}",
+  $dkim_keys_source       = "puppet:///modules/ib_exim/dkim_keys/${::fqdn}",
+  $dkim_selector_prefixes = {},
+  $dkim_selector          = undef,
 ) {
   include ::exim_imap_auth
 
@@ -31,19 +34,48 @@ class ib_exim::relay(
     authenticators_content => $authenticators_content,
   }
 
+  $dkim_month = strftime('%Y%m')
+  if empty($dkim_selector_prefixes) or
+    ($dkim_selector_prefixes[$dkim_month] == undef) {
+    $dkim_selector_prefix = 'i'
+  } else {
+    $dkim_selector_prefix = $dkim_selector_prefixes[$dkim_month]
+  }
+  if $dkim_selector {
+    $real_dkim_selector = $dkim_selector
+  } else {
+    $real_dkim_selector = "${dkim_selector_prefix}.${dkim_month}"
+  }
+
   exim::config_snippet{
     ['acl_blocked_address_rcpt', 'acl_blocked_address_sender',
       'acl_dns_black_and_whitelists', 'acl_csa_greylisting',
-      'acl_set_greylisting', 'acl_do_greylisting', 'external_methods' ]:;
+      'acl_set_greylisting', 'acl_do_greylisting',
+      'external_methods',]:;
+    'dkim_init':
+      content => template('ib_exim/snippets/relay/dkim_init.rb');
   }
+  include ::ib_exim::types::special_transports
 
-  file{'/var/spool/exim/once':
-    ensure  => directory,
-    before  => File['/etc/exim/exim.conf'],
-    require => Package['exim'],
-    owner   => exim,
-    group   => exim,
-    mode    => '0600';
+  file{
+    '/var/spool/exim/once':
+      ensure  => directory,
+      before  => File['/etc/exim/exim.conf'],
+      require => Package['exim'],
+      owner   => exim,
+      group   => exim,
+      mode    => '0600';
+    '/etc/exim/dkim':
+      ensure  => directory,
+      source  => $dkim_keys_source,
+      before  => Service['exim'],
+      require => Package['exim'],
+      recurse => true,
+      force   => true,
+      purge   => true,
+      owner   => root,
+      group   => exim,
+      mode    => '0640';
   }
 
   # antispam

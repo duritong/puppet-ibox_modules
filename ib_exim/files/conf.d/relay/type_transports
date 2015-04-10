@@ -1,0 +1,9 @@
+# for dkim transports
+remote_smtp_dkim:
+  driver = smtp
+  dkim_domain = DKIM_DOMAIN
+  dkim_selector = DKIM_SELECTOR
+  dkim_private_key = DKIM_PRIVATE_KEY
+  # to be changed as soon as ready
+  dkim_strict = 0
+
