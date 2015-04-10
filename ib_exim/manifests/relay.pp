@@ -69,6 +69,7 @@ class ib_exim::relay(
       ensure  => directory,
       source  => $dkim_keys_source,
       links   => follow,
+      ignore  => '*.pem',
       before  => Service['exim'],
       require => Package['exim'],
       recurse => true,
