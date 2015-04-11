@@ -62,7 +62,7 @@ class ib_exim(
   certs::dhparams{$dhparams:
     before => Service['exim'],
   }
-  $remote_smtps_str      = join($remote_smtps,':')
+  $remote_smtps_str      = join(reject($remote_smtps,$::fqdn),':')
   $whitelisted_hosts_str = join($whitelisted_hosts,' : ')
   $ignore_bl_hosts_str   = join($ignore_bl_hosts,' : ')
   $relay_from_hosts_str  = join($relay_from_hosts,' : ')
