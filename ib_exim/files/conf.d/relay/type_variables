@@ -1,0 +1,1 @@
+DRAIN_FILE = /etc/exim/drain_to_host

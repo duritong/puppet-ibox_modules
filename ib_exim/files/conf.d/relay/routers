@@ -4,7 +4,7 @@
 # In detail this means, we
 # 1st) validate the recipient by runninng verify only routers
 # 2nd) reject address via failed_address_router if address can't be verified
-# 3rd) check for spam and/or viri via amavis
+# 3rd) check for spam and/or virii via amavis
 # 4th) deliver the mail to the real routers.
 
 ## ATTENTION: if you change/add/remove a router, you should always also remove
@@ -15,6 +15,7 @@
 
 ## <validation>
 
+# a simply domain alias?
 check_virtual_domain_alias:
     driver = accept
     condition = ${if eq{${lookup{$domain} cdb {/etc/exim/sql/local.cdb} {${substr_1_1:$value}} {0}}}{1}{yes}{no}}
@@ -22,6 +23,7 @@ check_virtual_domain_alias:
     pass_router = amavis
     no_more
 
+# a domain we are only relay host?
 check_dnslookup_relay_to_domains:
   driver    = accept
   domains   = ! +local_domains : +relay_domains
@@ -29,6 +31,7 @@ check_dnslookup_relay_to_domains:
   pass_router = amavis
   no_more
 
+# an external email?
 check_dnslookup:
   driver    = dnslookup
   domains   = ! +local_domains
@@ -40,6 +43,7 @@ check_dnslookup:
   pass_router = amavis
   no_more
 
+# forward?
 check_virtual_user_forward:
   driver = accept
   local_part_suffix_optional
@@ -48,6 +52,7 @@ check_virtual_user_forward:
   verify_only
   pass_router = amavis
 
+# is it forward AND mailbox?
 check_virtual_user_forward_copy:
   driver = accept
   local_part_suffix_optional
@@ -56,6 +61,7 @@ check_virtual_user_forward_copy:
   verify_only
   pass_router = amavis
 
+# is it a mailman list?
 check_mailman_list:
     driver = accept
     local_part_suffix_optional
@@ -68,6 +74,7 @@ check_mailman_list:
     verify_only
     pass_router = amavis
 
+# is it a schleuder list?
 check_mlschleuder:
     driver = accept
     local_part_suffix_optional
@@ -76,6 +83,7 @@ check_mlschleuder:
     verify_only
     pass_router = amavis
 
+# is it a mailbox we host?
 check_localuser:
   driver = accept
   local_part_suffix_optional
@@ -84,6 +92,7 @@ check_localuser:
   verify_only
   pass_router = amavis
 
+# is it a catchall address?
 check_virtual_domain_catchall:
   driver = accept
   local_part_suffix_optional
@@ -93,6 +102,7 @@ check_virtual_domain_catchall:
   pass_router = amavis
   no_more
 
+# is it a postmaster@ ?
 check_virtual_postmaster:
   driver = accept
   local_parts = postmaster
@@ -100,6 +110,7 @@ check_virtual_postmaster:
   pass_router = amavis
   no_more
 
+# is it a abuse@ ?
 check_virtual_abuse:
   driver = accept
   local_parts = abuse
@@ -107,12 +118,9 @@ check_virtual_abuse:
   pass_router = amavis
   no_more
 
-#check_bad_user:
-#  driver = redirect
-#  domains = +local_domains
-#  allow_fail
-#  data = :fail: Unknown Virtualuser / Unbekannte User-Adresse
-
+# fail with anything that we don't host,
+# so that we fail before (!) sending it to
+# amavis.
 failed_address:
   driver = redirect
   data = :fail: Unknown Virtualuser / Unbekannte User-Adresse <$local_part@$domain>
@@ -161,6 +169,20 @@ dnslookup_relay_to_domains:
   # same_domain_copy_routing = yes
   no_more
 
+# This router enables you to evacuate all the mails stuck in the queue of
+# this host to another host.
+# Simply echo other-host.example.com > DRAIN_FILE (replace DRAIN_FILE with
+# real location) and restart exim / rerun the queue => Mails will be
+# forwarded to this host.
+# You can stop/disable it by simply removing the DRAIN_FILE
+drain_host:
+  driver        = manualroute
+  no_verify
+  require_files = DRAIN_FILE
+  route_data    = ${readfile{DRAIN_FILE}}
+  transport     = remote_smtp
+
+
 # This router routes addresses that are not in local domains by doing a DNS
 # lookup on the domain name. Any domain that resolves to 0.0.0.0 or to a
 # loopback interface address (127.0.0.0/8) is treated as if it had no DNS
@@ -168,7 +190,7 @@ dnslookup_relay_to_domains:
 # as the local host inside the network stack. It is not 0.0.0.0/0, the default
 # route. If the DNS lookup fails, no further routers are tried because of
 # the no_more setting, and consequently the address is unrouteable.
-
+#
 dnslookup:
   driver    = dnslookup
   domains   = ! +local_domains
@@ -179,7 +201,7 @@ dnslookup:
                           172.16.0.0/12 : 10.0.0.0/8 : 169.254.0.0/16
   no_more
 
-# Forwarding / Aliases!
+# forwarding / aliases
 virtual_user_forward:
   driver = redirect
   local_part_suffix_optional
@@ -187,6 +209,7 @@ virtual_user_forward:
   domains = ${lookup pgsql {DB_USR_FORWARD}{$value}}
   data = ${lookup pgsql {DB_FORWARDTO}{$value}fail}
 
+# is it a forward AND mailbox?
 virtual_user_forward_copy:
   driver = redirect
   local_part_suffix_optional
@@ -195,9 +218,8 @@ virtual_user_forward_copy:
   data = ${lookup pgsql {DB_FORWARDTO}{$value}fail}
   unseen = true
 
-# Mailman handling
+# forward mails to our mailmans
 mailman_list:
-    #debug_print = "mailman_list for $local_part@$domain"
     driver = manualroute
     local_part_suffix_optional
     local_part_suffix = -admin : -bounces : -bounces+* : \
@@ -209,8 +231,9 @@ mailman_list:
     route_data = ${lookup pgsql {DB_MM_LISTHOST}{$value}}
     transport = list_transport
 
+# forward schleuder mails to the specific schleuder
+# host
 mlschleuder:
-    #debug_print = "mlschleuder: for $local_part@$domain"
     driver = manualroute
     local_part_suffix_optional
     local_part_suffix = +* : -bounce : -sendkey : -request
@@ -218,8 +241,9 @@ mlschleuder:
     route_data = ${lookup pgsql {SCHL_DB_LISTHOST}{$value}}
     transport = list_transport
 
+# an actual mailbox that we host
+# forward it to the box that stores this host
 localuser:
-  #debug_print = "DynBackend for $local_part@$domain"
   driver = manualroute
   local_part_suffix_optional
   local_part_suffix = +*
@@ -228,9 +252,7 @@ localuser:
   transport = remote_smtp
   cannot_route_message = Unknown user
 
-######################
-# Catchall Domains
-#
+# do we do a catch all for a certain domain?
 virtual_domain_catchall:
   driver = redirect
   local_part_suffix_optional
@@ -239,18 +261,23 @@ virtual_domain_catchall:
   data = ${lookup pgsql {DB_DOM_CATCHALL}{$value}fail}
   no_more
 
+# forward postmaster to the central postmaster
+# this one *must* be catched by one of the
+# above routers!
 virtual_postmaster:
   driver = redirect
   local_parts = postmaster
   data = postmaster@MAIN_DOMAIN
   no_more
 
+# forward abuse to postmaster
 virtual_abuse:
   driver = redirect
   local_parts = abuse
   data = postmaster@MAIN_DOMAIN
   no_more
 
+# fail hard, this is not a use we are serving
 bad_user:
   driver = redirect
   domains = +local_domains
