@@ -10,7 +10,8 @@ class ibox::systems::linux(
   include ::cron_splay
 
   # random generation for debian or EL > 5
-  if !(($::operatingsystem in [ 'CentOS', 'RedHat' ]) and ($::operatingsystemmajrelease == '5')){
+  if !(($::operatingsystem in [ 'CentOS', 'RedHat' ])
+    and ($::operatingsystemmajrelease == '5')){
     include ::haveged
   }
 
@@ -30,7 +31,8 @@ class ibox::systems::linux(
   }
   include ::mlocate
 
-  if $::operatingsystem in ['CentOS', 'RedHat'] and $::operatingsystemmajrelease < 6 {
+  if $::operatingsystem in ['CentOS', 'RedHat'] and
+    versioncmp($::operatingsystemmajrelease,'6') < 0 {
     include ::syslog
   } else {
     include ::rsyslog
@@ -39,16 +41,17 @@ class ibox::systems::linux(
   if str2bool($::selinux) {
     class{'::selinux':
       manage_munin   => $ibox::use_munin,
-      setroubleshoot => 'absent'
+      setroubleshoot => 'absent',
     }
   }
   case $::operatingsystem {
-    debian,ubuntu: { include ::lsb }
-    centos: {
-      if $::operatingsystemmajrelease < 7 {
+    'Debina','Ubuntu': { include ::lsb }
+    'CentOS': {
+      if versioncmp($::operatingsystemmajrelease,'7') < 0 {
         include ::lsb
       }
     }
+    default: {}
   }
 
   # deploy unbound for local caching
@@ -59,7 +62,8 @@ class ibox::systems::linux(
   include ::ib_certs::custom_cas
 
   if $::ekeyd_key or hiera('ekeyd::egd::host',false) {
-    if $::operatingsystem == 'CentOS' and $::operatingsystemmajrelease >  6 {
+    if $::operatingsystem == 'CentOS' and
+      versioncmp($::operatingsystemmajrelease,'6') > 0 {
       $manage_monit = false
     } else {
       $manage_monit = true
@@ -71,14 +75,14 @@ class ibox::systems::linux(
         manage_munin     => true,
         manage_shorewall => true,
         manage_monit     => $manage_monit,
-        masterkey        => file("${ekeyd_key_path}/${::fqdn}.masterkey")
+        masterkey        => file("${ekeyd_key_path}/${::fqdn}.masterkey"),
       }
     } elsif hiera('ekeyd::egd::host',false) {
       $default_net = [ 'net' ]
       class{'::ekeyd::egd':
         manage_shorewall => true,
         manage_monit     => $manage_monit,
-        shorewall_zones  => hiera('ekeyd::shorewall_zones',$default_net)
+        shorewall_zones  => hiera('ekeyd::shorewall_zones',$default_net),
       }
     }
   }
