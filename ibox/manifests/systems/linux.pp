@@ -82,4 +82,5 @@ class ibox::systems::linux(
       }
     }
   }
+  include ::restartmonkey
 }
