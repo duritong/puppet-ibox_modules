@@ -90,7 +90,7 @@ class SpamMailScanner
   end
 
   def scan
-    Dir[File.join(config['maildir']},'*')].collect{ |mb| gen_mailbox(mb) }.compact
+    Dir[File.join(config['maildir'],'*')].collect{ |mb| gen_mailbox(mb) }.compact
   end
 
   def gen_mailbox(mailfolder)
