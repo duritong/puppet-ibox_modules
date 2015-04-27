@@ -105,6 +105,12 @@ class ib_exim::relay(
   }
 
   if str2bool($::selinux) and versioncmp($::operatingsystemmajrelease,'5') > 0 {
+    selboolean{'nis_enabled':
+      value      => on,
+      persistent => true,
+      before     => Service['exim'],
+    }
+
     selinux::policy{
       'ibox-exim-amavis':
         te_source => 'puppet:///modules/ib_exim/selinux/ibox-exim-amavis/ibox-exim-amavis.te',
