@@ -54,7 +54,7 @@ $enable_dkim_signing = 1;    # load DKIM signing code, keys defined by dkim_key
 @mynetworks = qw( 127.0.0.0/8 [::1] [FE80::]/10 [FEC0::]/10
                   10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 );
 
-$unix_socketname = "$MYHOME/amavisd.sock";  # amavisd-release or amavis-milter
+$unix_socketname = "/var/run/amavisd/amavisd.sock";  # amavisd-release or amavis-milter
                # option(s) -p overrides $inet_socket_port and $unix_socketname
 
 $inet_socket_port = 10024;   # listen on this local TCP port(s)
@@ -349,6 +349,7 @@ $banned_filename_re = new_RE(
   ['lrz',  \&do_uncompress,
            ['lrzip -q -k -d -o -', 'lrzcat -q -k'] ],
   ['lzo',  \&do_uncompress, 'lzop -d'],
+  ['lz4',  \&do_uncompress, ['lz4c -d'] ],
   ['rpm',  \&do_uncompress, ['rpm2cpio.pl', 'rpm2cpio'] ],
   [['cpio','tar'], \&do_pax_cpio, ['pax', 'gcpio', 'cpio'] ],
            # ['/usr/local/heirloom/usr/5bin/pax', 'pax', 'gcpio', 'cpio']
@@ -367,7 +368,7 @@ $banned_filename_re = new_RE(
   [['zip','kmz'], \&do_7zip,  ['7za', '7z'] ],
   [['zip','kmz'], \&do_unzip],
   ['7z',   \&do_7zip,  ['7zr', '7za', '7z'] ],
-  [[qw(7z zip gz bz2 Z tar)],
+  [[qw(gz bz2 Z tar)],
            \&do_7zip,  ['7za', '7z'] ],
   [[qw(xz lzma jar cpio arj rar swf lha iso cab deb rpm)],
            \&do_7zip,  '7z' ],
