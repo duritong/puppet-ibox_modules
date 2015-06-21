@@ -2,6 +2,7 @@
 require 'rubygems'
 require 'yaml'
 require 'maildir'
+require 'pathname'
 
 require 'maildir/serializer/mail'
 Maildir::Message.serializer = Maildir::Serializer::Mail.new
@@ -98,7 +99,7 @@ class SpamMailScanner
   end
 
   def config
-    @config ||= YAML.load_file(File.join(File.dirname(__FILE__),
+    @config ||= YAML.load_file(File.join(File.dirname(Pathname.new(__FILE__).realpath),
       "#{File.basename(__FILE__,'.rb')}.yaml"))
   end
 end
