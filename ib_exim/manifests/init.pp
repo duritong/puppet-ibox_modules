@@ -60,6 +60,9 @@ class ib_exim(
   }
 
   certs::dhparams{$dhparams:
+    # Some exims do not like the 4096 we have as default
+    # TODO: find out why?
+    size => 2048,
     before => Service['exim'],
   }
   $remote_smtps_str      = join(reject($remote_smtps,$::fqdn),':')
