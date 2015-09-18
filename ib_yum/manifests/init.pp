@@ -14,6 +14,4 @@ class ib_yum(
   class{'yum::centos::cr':
     stage => 'yum';
   }
-
-  include yum::updatesd::disable
 }
