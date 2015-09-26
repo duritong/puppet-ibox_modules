@@ -10,11 +10,7 @@ class ib_exim::types::database(
   }
 
   include ::cdb
-  if $::operatingsystem == 'CentOS' and $::lsbmajdistrelease == 5 {
-    include ::ruby::postgres
-  } else {
-    include ::rubygems::postgres
-  }
+  ensure_packages(['rubygem-pg'])
 
   file{
     '/etc/exim/sql':

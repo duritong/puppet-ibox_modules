@@ -4,12 +4,7 @@ require 'singleton'
 require 'benchmark'
 require 'fileutils'
 require 'rubygems'
-# try and catch around EL5
-begin
-  require 'pg'
-rescue LoadError
-  require 'postgres'
-end
+require 'pg'
 require File.join(File.dirname(__FILE__),File.basename(__FILE__,'.rb')+'.config.rb')
 
 class Db

@@ -11,7 +11,7 @@ class Options
   DB_MIGRATE_FIELD      = 'migrate_to'
   DB_MIGRATE_TIME_FIELD = 'migration_started_at'
 
-  HOST                  = '<%= scope['::ipaddress_eth0'] %>'
+  HOST                  = '<%= scope['::fqdn'] %>'
 
   DEFAULT_PATH          = '<%= @maildir %>'
 

@@ -1,43 +1,47 @@
 # manage dovecot
 class ib_dovecot(
   $type,
-  $nagios_checks  = false,
-  $sqlite         = false,
-  $sql_config     = {},
-  $ssl_cert       = '/etc/pki/dovecot/certs/dovecot.pem',
-  $ssl_key        = '/etc/pki/dovecot/private/dovecot.pem',
+  $nagios_checks      = false,
+  $sql_config_content = false,
+  $config_group       = 0,
+  $ssl_cert           = '/etc/pki/dovecot/certs/dovecot.pem',
+  $ssl_key            = '/etc/pki/dovecot/private/dovecot.pem',
 ) {
 
-  # only the proxy needs direct pgsql access
-  if $type == 'proxy' {
-    $require_sql        = true
-    $sql_config_content = template("ib_dovecot/sql/${type}/sql.conf.\
-${::operatingsystem}.${::operatingsystemmajrelease}.erb")
-  } else {
-    $require_sql        = false
-    $sql_config_content = false
+  selinux::policy{
+    'ibox-dovecot':
+      te_source => 'puppet:///modules/ib_dovecot/selinux/ibox-dovecot.te',
+      require   => Package['dovecot'],
+      before    => Service['dovecot'];
   }
-
-  if $type == 'storage' {
-    $config_group = mail
-  } else {
-    $config_group = 0
-  }
+  file{
+    '/etc/systemd/system/dovecot.service.d':
+      ensure  => directory,
+      require => Package['dovecot'],
+      owner   => root,
+      group   => 0,
+      mode    => '0644';
+    '/etc/systemd/system/dovecot.service.d/limits.conf':
+      content => "[Service]
+LimitNOFILE=3092",
+    owner   => root,
+    group   => 0,
+    mode    => '0644',
+    notify  => Service['dovecot'],
+}
 
   class{
     '::dovecot':
       type               => $type,
       config_group       => $config_group,
-      pgsql              => $require_sql,
+      pgsql              => true,
       sql_config_content => $sql_config_content,
       nagios_checks      => $nagios_checks,
-      sqlite             => $sqlite,
       site_source        => 'ib_dovecot',
       munin_checks       => $ibox::use_munin,
       manage_shorewall   => $ibox::use_shorewall;
     '::dovecot::managesieve':
       type               => $type,
-      legacy_port        => true, # until we migrated
       nagios_checks      => $nagios_checks;
   }
 

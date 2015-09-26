@@ -1,11 +1,6 @@
 #!/bin/env ruby
 require 'rubygems'
-# try and catch around EL5
-begin
-  require 'pg'
-rescue LoadError
-  require 'postgres'
-end
+require 'pg'
 
 class FindDeletedMailboxes
   def self.find_deleted

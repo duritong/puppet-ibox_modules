@@ -1,0 +1,12 @@
+connect = host=<%= @sql_config['dbhost'] %> dbname=<%= @sql_config['dbname'] %> user=<%= @sql_config['dbexpireuser'] %> password=<%= @sql_config['dbexpirepwd'] %>
+
+map {
+  pattern = shared/expire/$user/$mailbox
+  table = mailbox_expires
+  value_field = expire_stamp
+
+  fields {
+    username = $user
+    mailbox = $mailbox
+  }
+}

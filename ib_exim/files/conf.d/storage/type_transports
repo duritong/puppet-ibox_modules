@@ -1,6 +1,6 @@
 dovecot_delivery_local:
   driver = pipe
-  command = /usr/libexec/dovecot/deliver -e -k -s \
+  command = /usr/libexec/dovecot/deliver -e -k \
       -f "$sender_address" -a "$original_local_part@$original_domain" -d "$local_part@$domain"
   environment = USER=$local_part@$domain
   umask = 002

@@ -114,8 +114,8 @@ class ib_exim::relay(
     selinux::policy{
       'ibox-exim-amavis':
         te_source => 'puppet:///modules/ib_exim/selinux/ibox-exim-amavis/ibox-exim-amavis.te',
-        require => Package['amavisd-new','exim','munin-node'],
-        before  => Service['exim','munin-node'];
+        require => Package['amavisd-new','exim'],
+        before  => Service['exim','amavisd'];
     }
   }
   if str2bool($::selinux) and versioncmp($::operatingsystemmajrelease,'6') == 0 {

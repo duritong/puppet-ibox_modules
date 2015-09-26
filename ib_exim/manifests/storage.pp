@@ -60,8 +60,7 @@ class ib_exim::storage(
       mode    => '0755';
   }
 
-  require rubygems::mail
-  require rubygems::maildir
+  ensure_packages(['rubygem-mail','rubygem-maildir'])
   file{
     '/usr/local/mail/bin/spam_inform.rb':
       source  => 'puppet:///modules/ib_exim/tools/spam_inform.rb',

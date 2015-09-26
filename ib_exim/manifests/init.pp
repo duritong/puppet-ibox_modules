@@ -72,7 +72,6 @@ class ib_exim(
   exim::config_snippet{
     'host_fields':
       content => "HOST_NAME = ${::fqdn}
-HOST_IP = ${::ipaddress}
 LOCAL_INTERFACES = ${local_interfaces}
 HOST_LOOKUP = ${host_lookup}
 MAIN_DOMAIN = ${::domain}
