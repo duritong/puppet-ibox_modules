@@ -15,8 +15,6 @@ class ib_dovecot::proxy(
   class{'ib_dovecot':
     type               => 'proxy',
     nagios_checks      => $nc,
-    sql_config_content => template("ib_dovecot/sql/${type}/sql.conf.\
-                            ${::operatingsystem}.${::operatingsystemmajrelease}\
-                            .erb")
+    sql_config_content => template("ib_dovecot/sql/proxy/sql.conf.${::operatingsystem}.${::operatingsystemmajrelease}.erb")
   }
 }
