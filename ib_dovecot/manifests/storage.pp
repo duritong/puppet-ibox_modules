@@ -26,18 +26,28 @@ class ib_dovecot::storage(
   file{
     '/etc/dovecot/dovecot-expire.conf.ext':
       content => template('ib_dovecot/sql/storage/dovecot-expire.conf.ext.erb'),
-      owner   => root,
+      owner   => 'root',
       group   => 'dovecot',
       mode    => '0640',
       require => Package['dovecot'],
       notify  => Service['dovecot'];
+    '/usr/local/mail/bin/dovecot_expire_expunge.rb':
+      source => 'puppet:///modules/ib_dovecot/tools/expire_expunge.rb',
+      owner   => 'root',
+      group   => 0,
+      mode    => '0700';
+    '/usr/local/mail/bin/dovecot_expire_expunge.config.yaml':
+      content => template('ib_dovecot/tools/expire_expunge.config.yaml.erb'),
+      owner   => 'root',
+      group   => 0,
+      mode    => '0400';
     '/etc/cron.d/dovecot-expire':
-      content => "${minute} ${hour} * * * root bash -c \
-'for i in Trash Papierkorb spam Spam Junk; \
-do doveadm expunge -A mailbox \$i savedbefore 14d; done'\n",
-      owner => root,
-      group => 0,
-      mode  => '0640';
+      content => "${minute} ${hour} * * * root /usr/local/mail/bin/dovecot_expire_expunge.rb",
+      owner   => 'root',
+      group   => 0,
+      mode    => '0640',
+      require => File['/usr/local/mail/bin/dovecot_expire_expunge.yaml',
+                  '/usr/local/mail/bin/dovecot_expire_expunge.rb'];
   }
 
   include ::dovecot_iauth
