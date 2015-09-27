@@ -16,6 +16,7 @@ class GenerateLocalMailUsers
       exit 1
     end
     tempfile.write(gen_str)
+    tempfile.close
     system "puppet apply --no-report --color false --detailed-exitcodes #{'--logdest /dev/null' unless verbose} #{tempfile.path}"
     if $?.to_i > 0
       puts "Something changed... Running rkhunter..." if verbose
