@@ -48,7 +48,7 @@ define mail_user(){
     gid        => 12,
     home       => '/dev/null',
     allowdupe  => false,
-    comment    => "Local Mailuser for mailbox with uid ${name}",
+    comment    => "Mailbox user u${name}",
     managehome => false,
     shell      => '/sbin/nologin',
   }
