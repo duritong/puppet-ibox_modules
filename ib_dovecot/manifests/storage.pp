@@ -42,7 +42,7 @@ class ib_dovecot::storage(
       group   => 0,
       mode    => '0400';
     '/etc/cron.d/dovecot-expire':
-      content => "${minute} ${hour} * * * root /usr/local/mail/bin/dovecot_expire_expunge.rb",
+      content => "${minute} ${hour} * * * root /usr/local/mail/bin/dovecot_expire_expunge.rb\n",
       owner   => 'root',
       group   => 0,
       mode    => '0640',
