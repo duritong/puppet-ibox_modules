@@ -1,7 +1,13 @@
 #!/usr/bin/ruby
 
 require 'rubygems'
-require 'pg'
+# try and catch around EL5
+begin
+  require 'pg'
+rescue LoadError
+  require 'postgres'
+end
+
 
 load '/etc/exim/sql/getFromDB.config.rb'
 

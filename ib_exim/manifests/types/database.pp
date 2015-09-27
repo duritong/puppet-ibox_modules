@@ -10,7 +10,11 @@ class ib_exim::types::database(
   }
 
   include ::cdb
-  ensure_packages(['rubygem-pg'])
+  if versioncmp($::operatingsystemmajrelease,'5') > 0 {
+    ensure_packages(['rubygem-pg'])
+  } else {
+    ensure_packages(['ruby-postgres'])
+  }
 
   file{
     '/etc/exim/sql':
