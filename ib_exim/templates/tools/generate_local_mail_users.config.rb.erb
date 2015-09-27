@@ -9,5 +9,5 @@ class Options
 
   MAIL_STORAGE = '<%= @maildir %>'
 
-  HOST         = '<%= scope['::ipaddress_eth0'] %>'
+  HOST         = '<%= scope['::fqdn'] %>'
 end

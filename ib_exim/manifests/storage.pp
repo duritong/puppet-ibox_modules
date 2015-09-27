@@ -1,6 +1,6 @@
 # all we need to store mails
 class ib_exim::storage(
-  $maildir             = '/var/mail/dovecot',
+  $maildir             = '/var/mail/mails',
   $spam_scanner_config = {},
 ) {
   class{'ib_exim::backend':
@@ -18,17 +18,17 @@ class ib_exim::storage(
     ['/usr/local/mail','/usr/local/mail/bin' ]:
       ensure  => directory,
       owner   => root,
-      group   => mail,
+      group   => exim,
       mode    => '0750';
     '/usr/local/mail/bin/find_deleted_mailboxes.rb':
       source  => 'puppet:///modules/ib_exim/tools/find_deleted_mailboxes.rb',
       owner   => root,
-      group   => mail,
+      group   => exim,
       mode    => '0750';
     '/usr/local/mail/bin/find_deleted_mailboxes.config.rb':
       content => template('ib_exim/tools/find_deleted_mailboxes.config.rb.erb'),
       owner   => root,
-      group   => mail,
+      group   => exim,
       mode    => '0640';
     '/usr/local/mail/bin/generate_local_mail_users.rb':
       source  => 'puppet:///modules/ib_exim/tools/generate_local_mail_users.rb',
@@ -54,7 +54,7 @@ class ib_exim::storage(
       group   => 0,
       mode    => '0600';
     '/etc/cron.weekly/find_deleted_mailboxes.rb':
-      content => 'su - mail -s /bin/bash -c /usr/local/mail/bin/find_deleted_mailboxes.rb',
+      content => 'su - exim -s /bin/bash -c /usr/local/mail/bin/find_deleted_mailboxes.rb',
       owner   => root,
       group   => 0,
       mode    => '0755';
@@ -77,7 +77,7 @@ class ib_exim::storage(
       target  => '/usr/local/mail/bin/spam_inform.rb';
     '/var/mail/transport_home':
       ensure  => directory,
-      require => Package['exim'],
+      require => [ Mount['/var/mail'], Package['exim'] ],
       before  => Service['exim'],
       owner   => exim,
       group   => 12,
