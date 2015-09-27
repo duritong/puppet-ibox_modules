@@ -9,8 +9,6 @@ class ibox::types::hafw(
   $conntrackd_destips,
   $net_in_rules         = {},
 ) {
-  include ibox
-
   if has_ip_address($conntrackd_destips[0]) {
     $conntrackd_destip = $conntrackd_destips[1]
     $is_master = true
@@ -26,12 +24,12 @@ class ibox::types::hafw(
     $auth_pass = $auth_password
   }
 
-  include ib_conntrackd::hafw
-  include ib_keepalived::hafw
-  include ib_shorewall::hafw
-  include ibox::lib::firewall
+  include ::ib_conntrackd::hafw
+  include ::ib_keepalived::hafw
+  include ::ib_shorewall::hafw
+  include ::ibox::lib::firewall
 
   if $ibox::use_munin {
-    include ib_munin::plugins::firewall::with_conntrack
+    include ::ib_munin::plugins::firewall::with_conntrack
   }
 }
