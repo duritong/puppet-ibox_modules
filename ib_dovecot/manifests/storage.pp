@@ -46,7 +46,7 @@ class ib_dovecot::storage(
       owner   => 'root',
       group   => 0,
       mode    => '0640',
-      require => File['/usr/local/mail/bin/dovecot_expire_expunge.yaml',
+      require => File['/usr/local/mail/bin/dovecot_expire_expunge.config.yaml',
                   '/usr/local/mail/bin/dovecot_expire_expunge.rb'];
   }
 
