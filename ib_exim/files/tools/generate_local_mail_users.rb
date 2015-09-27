@@ -2,10 +2,12 @@
 require 'rubygems'
 require 'pg'
 require 'singleton'
+require 'tempfile'
 
 class GenerateLocalMailUsers
   include Singleton
   def run(verbose=false)
+    tempfile = Tempfile.new('generate_local_mail_users')
     f = File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
     require File.join(File.dirname(f),File.basename(f,'.rb')+'.config.rb')
     system "rkhunter --enable passwd_changes --skip-keypress --nocolors --report-warnings-only"
@@ -13,11 +15,14 @@ class GenerateLocalMailUsers
       puts "There was an unreported rkhunter warning, I don't continue creating local mail users! Further infos have been mailed to you!"
       exit 1
     end
-    system "echo '#{gen_str}' | puppet apply --no-report --color false --detailed-exitcodes #{'--logdest /dev/null' unless verbose}"
+    tempfile.write(gen_str)
+    system "puppet apply --no-report --color false --detailed-exitcodes #{'--logdest /dev/null' unless verbose} #{tempfile.path}"
     if $?.to_i > 0
       puts "Something changed... Running rkhunter..." if verbose
       system "rkhunter --enable passwd_changes --skip-keypress --nocolors --no-mail-on-warning #{verbose ? '--report-warnings-only' : '--quiet'}"
     end
+  ensure
+    tempfile.close!
   end
 
   private
