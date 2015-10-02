@@ -27,7 +27,7 @@ class DovecotExpire
 
   def mailboxes
     @mailboxes ||= begin
-      res = conn.exec("SELECT alias||domain as email FROM email_users WHERE ismailbox = 1 AND deleted_at IS NULL AND storagehost = '#{Options::HOST}'")
+      res = conn.exec("SELECT alias||domain as email FROM email_users WHERE ismailbox = 1 AND deleted_at IS NULL AND storagehost = '#{config['fqdn']}'")
       (res.respond_to?(:values) ? res.values : res.result).flatten
     end
   end
