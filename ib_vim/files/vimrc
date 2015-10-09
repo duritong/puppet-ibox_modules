@@ -17,7 +17,6 @@ set undolevels=200      " Number of undo levels.
 set showmatch           " Show matching brackets.
 set ignorecase          " Case insensitive matching.
 set ttyfast             " We have a fast terminal connection.
-set bg=dark
 
 if has("syntax")
   syntax on
@@ -37,8 +36,6 @@ autocmd BufReadPost *
   \ endif
 
 
-filetype plugin indent on
-
 highlight   clear
 highlight   Pmenu         ctermfg=0 ctermbg=2
 highlight   PmenuSel      ctermfg=0 ctermbg=7
@@ -51,10 +48,9 @@ set tabstop=2
 set backspace=indent,eol,start
 set hlsearch
 
-setlocal spell spelllang=en
+colorscheme slate
 
 set whichwrap=<,>,h,l,[,]
-
 set linebreak
 
 " arrow mapping ===============================================================
