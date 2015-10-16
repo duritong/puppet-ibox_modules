@@ -7,10 +7,8 @@ class DovecotExpire
   include Singleton
   def run
     mailboxes.each do |mb|
-      system("bash -c 'for i in Trash Papierkorb spam Spam Junk; do doveadm expunge -u #{mb} $i savedbefore 14d ; done'")
-      if $?.to_i > 0
-        STDERR.puts "There was an error while expunging #{mb}"
-        exit 1
+      %w{Trash Papierkorb spam Spam Junk}.each do |f|
+        system("doveadm expunge -u #{mb} mailbox #{f} savedbefore 14d")
       end
     end
   end
@@ -22,7 +20,7 @@ class DovecotExpire
 
   def mailboxes
     @mailboxes ||= begin
-      res = conn.exec("SELECT alias||domain as email FROM email_users WHERE ismailbox = 1 AND deleted_at IS NULL AND storagehost = '#{config['fqdn']}'")
+      res = conn.exec("SELECT alias||'@'||domain as email FROM email_users WHERE ismailbox = 1 AND deleted_at IS NULL AND storagehost = '#{config['fqdn']}'")
       (res.respond_to?(:values) ? res.values : res.result).flatten
     end
   end
