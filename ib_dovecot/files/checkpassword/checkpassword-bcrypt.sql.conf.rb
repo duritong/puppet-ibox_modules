@@ -16,7 +16,7 @@ SELECT
   #{DB::Field::Lastlogin} AS lastlogin,
   #{DB::Field::AuthFailures} AS auth_failures,
   #{DB::Field::LockedUntil} AS locked,
-  #{DB::Field::InboxNamespacePrefix} AS "namespace/inbox/prefix"
+  #{DB::Field::InboxNamespacePrefix}
 FROM
   #{DB::Table}
 WHERE
