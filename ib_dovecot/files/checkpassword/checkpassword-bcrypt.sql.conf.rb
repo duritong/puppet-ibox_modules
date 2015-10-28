@@ -15,7 +15,8 @@ SELECT
   #{DB::Field::Quota} AS quota,
   #{DB::Field::Lastlogin} AS lastlogin,
   #{DB::Field::AuthFailures} AS auth_failures,
-  #{DB::Field::LockedUntil} AS locked
+  #{DB::Field::LockedUntil} AS locked,
+  #{DB::Field::InboxNamespacePrefix} AS "namespace/inbox/prefix"
 FROM
   #{DB::Table}
 WHERE
