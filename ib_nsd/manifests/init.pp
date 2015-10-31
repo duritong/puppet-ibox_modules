@@ -45,4 +45,5 @@ class ib_nsd(
         ignore  => '*.yaml';
     }
   }
+  include ::ibox::lib::dns_utils
 }
