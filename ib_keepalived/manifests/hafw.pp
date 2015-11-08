@@ -16,12 +16,12 @@ class ib_keepalived::hafw(
     value      => 'on',
     before     => Service['keepalived'],
   }
-  include keepalived
+  include ::keepalived
   selinux::policy{'ib_keepalived':
     te_source => 'puppet:///modules/ib_keepalived/selinux/ib_keepalived.te',
     before    => Service['keepalived'],
   }
-  class{'keepalived::global_defs':
+  class{'::keepalived::global_defs':
     notification_email => "root@${::fqdn}",
   }
 
