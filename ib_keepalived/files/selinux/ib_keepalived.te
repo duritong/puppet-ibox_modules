@@ -1,4 +1,4 @@
-module keepalived_t 1.0;
+module keepalived_t 1.1;
 
 require {
   type var_run_t;
