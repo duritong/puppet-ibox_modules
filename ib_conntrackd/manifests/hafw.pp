@@ -13,7 +13,7 @@ class ib_conntrackd::hafw(
     udp_ipv4_dest => $conntrackd_destip,
     before        => Service['keepalived'],
   }
-  file{'/usr/libexec/keepalived/primary-backup.sh':
+  file{'/usr/local/sbin/conntrackd-primary-backup.sh':
     source  => '/usr/share/doc/conntrack-tools-1.4.2/doc/sync/primary-backup.sh',
     require => Package['conntrack-tools'],
     owner   => root,

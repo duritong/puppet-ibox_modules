@@ -72,9 +72,9 @@ cat /run/keepalive.*.*.state
         dev => $in_interface,
       },
     ],
-    notify_script_master => '"/usr/libexec/keepalived/primary-backup.sh primary"',
-    notify_script_backup => '"/usr/libexec/keepalived/primary-backup.sh backup"',
-    notify_script_fault  => '"/usr/libexec/keepalived/primary-backup.sh fault"',
+    notify_script_master => '"/usr/local/sbin/conntrackd-primary-backup.sh primary"',
+    notify_script_backup => '"/usr/local/sbin/conntrackd-primary-backup.sh backup"',
+    notify_script_fault  => '"/usr/local/sbin/conntrackd-primary-backup.sh fault"',
     notify_script        => '"/usr/local/sbin/set_vrrp_state"',
     smtp_alert           => true,
   }
