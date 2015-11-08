@@ -5,7 +5,7 @@ class ib_conntrackd::hafw(
   $conntrackd_interface = $ibox::types::hafw::conntrackd_interface,
   $conntrackd_destip    = $ibox::types::hafw::conntrackd_destip,
 ){
-  class{'conntrackd::config':
+  class{'::conntrackd::config':
     protocol      => 'UDP',
     sync_mode     => 'ALARM',
     interface     => $conntrackd_interface,
