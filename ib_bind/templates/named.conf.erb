@@ -50,13 +50,6 @@ logging {
                 file "data/named.run";
                 severity dynamic;
         };
-        channel query {
-                file "data/query.log" versions 2 size 1m;
-                print-time yes;
-                severity info;
-        };
-
-        category queries { query; };
 };
 
 zone "." IN {

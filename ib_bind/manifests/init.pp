@@ -69,8 +69,10 @@ class ib_bind(
   }
   if $ibox::use_munin {
     munin::plugin{
-      'bind9':;
-      'bind9_rndc':;
+      'bind9_rndc':
+        config => '  group named
+  env.querystats      /var/named/data/named_stats.txt
+',
     }
   }
 
