@@ -20,11 +20,18 @@ class ib_bind(
     before  => Package['bind9'],
     notify  => Exec['bind_cp_initial_src'];
   }
-  exec{'bind_cp_initial_src':
-    command     => 'cp /etc/named.conf.src /etc/named.conf',
-    refreshonly => true,
-    before      => Package['bind9'],
-    notify      => Exec['reload bind9'],
+  exec{
+    'bind_cp_initial_src':
+      command     => 'cp /etc/named.conf.src /etc/named.conf',
+      refreshonly => true,
+      before      => Package['bind9'],
+      notify      => Exec['reload bind9'];
+    'cleanup_rpmnew':
+      command     => 'rm /etc/named.conf.rpmnew',
+      onlyif      => 'test -f /etc/named.conf.rpmnew',
+      refreshonly => true,
+      subscribe   => Package['bind9'],
+      require     => Service['bind9'];
   }
 
   if $zone_src_dir {
