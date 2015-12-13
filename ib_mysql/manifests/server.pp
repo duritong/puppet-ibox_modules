@@ -10,7 +10,7 @@ class ib_mysql::server(
   $manage_disks              = true,
   $default_databases         = {},
   $default_database_defaults = {
-    password => 'trocla'
+    password => 'trocla',
   },
 ) {
   include ::ibox
@@ -26,7 +26,7 @@ class ib_mysql::server(
     $mysql_munin_pwd = $munin_password
   }
 
-  class{'mysql::server':
+  class{'::mysql::server':
     root_password     => $mysql_root_pwd,
     manage_shorewall  => $ibox::use_shorewall,
     manage_munin      => $ibox::use_munin,
@@ -38,7 +38,7 @@ class ib_mysql::server(
     backup_dir        => '/var/lib/mysql/backups',
   }
 
-  include mysql::server::tuner
+  include ::mysql::server::tuner
 
   # as we go with one file per innodb table
   # we need to raise the overall limit
@@ -55,7 +55,7 @@ class ib_mysql::server(
   create_resources('mysql::admin_user',$admin_users,$admin_user_defaults)
 
   if $manage_disks {
-    include ib_disks::datavgs::mysql
+    include ::ib_disks::datavgs::mysql
   }
 
   file{'/usr/local/sbin/migrate_mysql_db.sh':
