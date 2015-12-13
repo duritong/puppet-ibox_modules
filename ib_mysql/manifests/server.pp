@@ -13,6 +13,7 @@ class ib_mysql::server(
     password => 'trocla'
   },
 ) {
+  include ::ibox
 
   if $root_password == 'trocla' {
     $mysql_root_pwd = trocla("mysql_root_${::fqdn}",'plain', 'length: 32')

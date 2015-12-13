@@ -10,6 +10,7 @@ class ib_postgres::server(
     password => trocla,
   },
 ) {
+  include ::ibox
   class { 'postgres':
     manage_munin     => $ibox::use_munin,
     manage_shorewall => $ibox::use_shorewall,
