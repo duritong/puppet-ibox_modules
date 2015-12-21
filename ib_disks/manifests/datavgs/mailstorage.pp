@@ -5,7 +5,7 @@ class ib_disks::datavgs::mailstorage(
 
   disks::lv_mount{
     'mail_datalv':
-      folder        => '/var/mail',
+      folder        => '/var/spool/mail',
       size          => $size_data,
       owner         => root,
       group         => mail,
@@ -13,7 +13,7 @@ class ib_disks::datavgs::mailstorage(
       fs_type       => 'xfs',
       mount_options => 'noatime,nodiratime,logbufs=8',
       before        => Package['dovecot'];
-  } -> file{'/var/mail/mails':
+  } -> file{'/var/spool/mail/mails':
     ensure => directory,
     owner  => root,
     group  => mail,

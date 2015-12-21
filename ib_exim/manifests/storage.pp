@@ -77,7 +77,7 @@ class ib_exim::storage(
       target  => '/usr/local/mail/bin/spam_inform.rb';
     '/var/mail/transport_home':
       ensure  => directory,
-      require => [ Mount['/var/mail'], Package['exim'] ],
+      require => [ Mount['/var/spool/mail'], Package['exim'] ],
       before  => Service['exim'],
       owner   => exim,
       group   => 12,
