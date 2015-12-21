@@ -3,7 +3,7 @@ class ib_exim::storage(
   $maildir             = '/var/mail/mails',
   $spam_scanner_config = {},
 ) {
-  class{'ib_exim::backend':
+  class{'::ib_exim::backend':
     component_type   => 'storage',
     local_interfaces => '0.0.0.0',
   }
