@@ -1,6 +1,8 @@
 # things for physical setups
 class ibox::systems::physical {
-  include smartd
+  if $::lsbdistid != 'Raspbian' {
+    include smartd
+  }
 
   case $::kernel {
     linux: {
