@@ -46,3 +46,6 @@ ssl_protocols = <%= @ssl_protocols %>
 # SSL ciphers to use
 #ssl_cipher_list = ALL:!LOW:!SSLv2:!EXP:!aNULL
 ssl_cipher_list = <%= @ssl_cipher_list %>
+
+# Prefer the server's order of ciphers over client's.
+ssl_prefer_server_ciphers = yes
