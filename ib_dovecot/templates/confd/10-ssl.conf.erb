@@ -49,3 +49,6 @@ ssl_cipher_list = <%= @ssl_cipher_list %>
 
 # Prefer the server's order of ciphers over client's.
 ssl_prefer_server_ciphers = yes
+
+# enforce sane dh params
+ssl_dh_parameters_length = 4096
