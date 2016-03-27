@@ -169,7 +169,7 @@ class ib_shorewall(
       action          =>      'ACCEPT';
   }
 
-  if ($::operatingsystem in ['RedHat','CentOS']) and ($::operatingsystemmajrelease > 6){
+  if ($::operatingsystem in ['RedHat','CentOS']) and versioncmp($::operatingsystemmajrelease,'6') > 0{
     service{'firewalld':
       ensure => stopped,
       enable => false,

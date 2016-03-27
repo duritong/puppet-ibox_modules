@@ -5,6 +5,7 @@ class ibox(
   $use_shorewall  = false,
   $is_kvm         = false,
   $types          = [],
+  $root_password  = false,
 ) {
 
   $root_keys = hiera_hash('ibox::root_keys',{})

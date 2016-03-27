@@ -59,7 +59,7 @@ class ibox::systems::linux(
     include ::ib_unbound::local_only
   }
 
-  include ::ib_certs::custom_cas
+  include ::ib_certs
 
   if $::ekeyd_key or hiera('ekeyd::egd::host',false) {
     if $::operatingsystem == 'CentOS' and
