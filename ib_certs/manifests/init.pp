@@ -20,12 +20,26 @@ class ib_certs {
       content => $cert_content,
       owner   => root,
       group   => 0,
-      mode    => '0600';
+      mode    => '0644';
     '/etc/pki/tls/private/localhost.key':
       content => $key_content,
       owner   => root,
       group   => 0,
       mode    => '0600';
+  }
+  if $::osfamily == 'Debian' {
+    file{'/etc/ssl/localcerts':
+      ensure => directory,
+      owner   => root,
+      group   => 0,
+      mode    => '0644';
+    }
+    File['/etc/pki/tls/certs/localhost.crt']{
+      path => '/etc/ssl/localcerts/localhost.crt'
+    }
+    File['/etc/pki/tls/private/localhost.key']{
+      path => '/etc/ssl/localcerts/localhost.key'
+    }
   }
 
   include ::ib_certs::custom_cas
