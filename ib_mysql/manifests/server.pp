@@ -12,6 +12,8 @@ class ib_mysql::server(
   $default_database_defaults = {
     password => 'trocla',
   },
+  # only relevant for el7
+  $nofile_limit              = '8192',
 ) {
   include ::ibox
 
@@ -42,14 +44,34 @@ class ib_mysql::server(
 
   # as we go with one file per innodb table
   # we need to raise the overall limit
-  limits::entry{
-    'mysql_server':
-      user        => 'mysql',
-      limit_type  => 'nofile',
-      hard        => '8192',
-      soft        => '1200',
-      require     => Package['mysql-server'],
-      notify      => Service['mysql'];
+  # https://ma.ttias.be/increase-open-files-limit-in-mariadb-on-centos-7-with-systemd/
+  if versioncmp($::operatingsystemmajrelease,'6') > 0 {
+    include ::systemd
+    file{
+      '/etc/systemd/system/mariadb.service.d':
+        ensure  => directory,
+        owner   => root,
+        group   => 0,
+        mode    => '0644';
+      '/etc/systemd/system/mariadb.service.d/limits.conf':
+        content => "[Service]\nLimitNOFILE=${nofile_limit}\n",
+        owner   => root,
+        group   => 0,
+        mode    => '0644',
+        require => Package['mysql-server'],
+        notify  => [ Exec['systemctl-daemon-reload'], Service['mysql'] ];
+    }
+    Exec['systemctl-daemon-reload'] -> Service['mysql']
+  } else {
+    limits::entry{
+      'mysql_server':
+        user        => 'mysql',
+        limit_type  => 'nofile',
+        hard        => $nofile_limit,
+        soft        => '1200',
+        require     => Package['mysql-server'],
+        notify      => Service['mysql'];
+    }
   }
 
   create_resources('mysql::admin_user',$admin_users,$admin_user_defaults)
