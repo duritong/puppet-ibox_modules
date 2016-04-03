@@ -1,6 +1,7 @@
 # setup exim our way
 class ib_exim(
   $component_type,
+  $site_source            = hiera('exim::site_source','ib_exim'),
   $pgsql                  = false,
   $greylist               = false,
   $localonly              = false,
@@ -40,7 +41,7 @@ class ib_exim(
     manage_munin     => $ibox::use_munin,
     manage_shorewall => $ibox::use_shorewall,
     default_mta      => true,
-    site_source      => 'ib_exim',
+    site_source      => $site_source,
   }
 
   if $::operatingsystem == 'Debian' {
