@@ -7,3 +7,14 @@ remote_smtp_dkim:
   # to be changed as soon as ready
   dkim_strict = 0
 
+# for dkim transports, like above but only delivering a single
+#  recipient domain in one connection
+remote_smtp_dkim_single_domain:
+  driver = smtp
+  multi_domain = false
+  dkim_domain = DKIM_DOMAIN
+  dkim_selector = DKIM_SELECTOR
+  dkim_private_key = DKIM_PRIVATE_KEY
+  # to be changed as soon as ready
+  dkim_strict = 0
+

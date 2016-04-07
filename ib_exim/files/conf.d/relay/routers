@@ -191,6 +191,20 @@ drain_host:
 # route. If the DNS lookup fails, no further routers are tried because of
 # the no_more setting, and consequently the address is unrouteable.
 #
+# This router is a copy of dnslookup which is used for smtps which do not like
+# multiple domains per connection. For context check out:
+# https://www.debian-administration.org/users/lee/weblog/47
+dnslookup_single_domain:
+  driver    = dnslookup
+  domains   = ! +local_domains
+  condition = ${if forany{${lookup dnsdb{>: mxh=$domain}}}{match_domain{$item}{+single_domain_mx}}}
+  transport = remote_smtp_dkim_single_domain
+  # same_domain_copy_routing = yes
+  # ignore private rfc1918 and APIPA addresses
+  ignore_target_hosts = 0.0.0.0 : 127.0.0.0/8 : 192.168.0.0/16 :\
+                          172.16.0.0/12 : 10.0.0.0/8 : 169.254.0.0/16
+  no_more
+
 dnslookup:
   driver    = dnslookup
   domains   = ! +local_domains

@@ -46,3 +46,6 @@ hostlist   relay_from_hosts = RELAY_FROM_HOSTS
 # have to include 127.0.0.1 if you want to allow processes on your host to send
 # SMTP mail by using the loopback address. A number of MUAs use this method of
 # sending mail.
+
+# List of google smtps which want one domain per connection
+domainlist single_domain_mx = aspmx.l.google.com : alt1.aspmx.l.google.com : alt2.aspmx.l.google.com : alt3.aspmx.l.google.com : alt4.aspmx.l.google.com : aspmx2.googlemail.com : aspmx3.googlemail.com : aspmx4.googlemail.com : aspmx5.googlemail.com : gmail-smtp-in.l.google.com : alt3.gmail-smtp-in.l.google.com : alt2.gmail-smtp-in.l.google.com : alt4.gmail-smtp-in.l.google.com : alt1.gmail-smtp-in.l.google.com
