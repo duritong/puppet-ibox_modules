@@ -2,11 +2,12 @@
 class ibox::types::hafw(
   $out_interface,
   $out_ipaddress,
-  $auth_password        = false,
   $in_interface,
   $in_ipaddress,
   $conntrackd_interface,
   $conntrackd_destips,
+  $auth_password        = false,
+  $in_ip6address        = 'fe80::1/64',
   $net_in_rules         = {},
 ) {
   if has_ip_address($conntrackd_destips[0]) {

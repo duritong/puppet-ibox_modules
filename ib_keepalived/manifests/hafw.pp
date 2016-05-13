@@ -8,6 +8,7 @@ class ib_keepalived::hafw(
   $out_ipaddress        = $ibox::types::hafw::out_ipaddress,
   $out_interface        = $ibox::types::hafw::out_interface,
   $in_ipaddress         = $ibox::types::hafw::in_ipaddress,
+  $in_ip6address        = $ibox::types::hafw::in_ip6address,
   $in_interface         = $ibox::types::hafw::in_interface,
 ){
   #https://bugs.launchpad.net/tripleo/+bug/1342872
@@ -69,6 +70,10 @@ cat /run/keepalive.*.*.state
       # in
       {
         ip  => $in_ipaddress,
+        dev => $in_interface,
+      },
+      {
+        ip  => $in_ip6address,
         dev => $in_interface,
       },
     ],
