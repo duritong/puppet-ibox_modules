@@ -1,0 +1,38 @@
+module ibox-httpd 1.0;
+
+require {
+        type syslogd_t;
+        type httpd_sys_script_t;
+        type httpd_t;
+        type httpd_log_t;
+        type devlog_t;
+        type system_mail_t;
+        type httpd_sys_rw_content_t;
+        type httpd_sys_content_t;
+        type logrotate_t;
+        type httpd_suexec_t;
+        class sock_file write;
+        class unix_dgram_socket sendto;
+        class unix_stream_socket { read write };
+        class dir { read write add_name remove_name create };
+        class file { read write append rename setattr create getattr unlink open };
+        class process { siginh rlimitinh noatsecure };
+}
+
+#============= httpd_sys_script_t ==============
+allow httpd_sys_script_t devlog_t:sock_file write;
+allow httpd_sys_script_t syslogd_t:unix_dgram_socket sendto;
+allow system_mail_t httpd_sys_rw_content_t:file { read write append };
+
+allow logrotate_t httpd_sys_content_t:dir { read write add_name remove_name };
+allow logrotate_t httpd_sys_content_t:file { rename write setattr read create unlink open };
+allow logrotate_t httpd_sys_rw_content_t:file { rename setattr read create write getattr unlink open };
+allow httpd_t httpd_log_t:dir create;
+allow httpd_t httpd_log_t:file write;
+allow httpd_sys_script_t httpd_log_t:dir { write add_name };
+allow httpd_sys_script_t httpd_log_t:file create;
+
+allow httpd_suexec_t httpd_sys_script_t:process { siginh rlimitinh noatsecure };
+allow httpd_suexec_t httpd_t:unix_stream_socket { read write };
+allow httpd_t httpd_suexec_t:process { siginh rlimitinh noatsecure };
+

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+hosting=$1
+host=$2
+
+backup_host='<%= @backup_host %>'
+backup_base_dir='<%= @backup_base_dir %>'
+
+if [ -z $hosting ]; then
+  echo "USAGE: $0 hosting [host]"
+  exit 1
+fi
+
+if [ -z $host ]; then
+  host=`hostname -f`
+fi
+
+rsync --size-only --no-owner --no-group -u -a -e 'ssh' root@${backup_host}:${backup_base_dir}/${host}/${hosting}* /var/www/vhosts/
+
+setfacl -R --restore=/var/www/vhosts/${hosting}_file_perms /var/www/vhosts/${hosting}
+
