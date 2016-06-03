@@ -15,6 +15,7 @@ class ib_apache(
     $ssl_cipher_suite = $certs::ssl_config::ciphers
   }
   class{'::apache':
+    ssl                              => true,
     manage_shorewall                 => $ibox::use_shorewall,
     manage_munin                     => $ibox::use_munin,
     default_ssl_certificate_file     => $default_ssl_certificate_file,
@@ -29,7 +30,6 @@ class ib_apache(
       content => template('ib_apache/conf.d/default_ssl_cert.conf.erb');
   }
 
-  include ::apache::ssl
   include ::apache::noiplog
   include ::mod_removeip
 

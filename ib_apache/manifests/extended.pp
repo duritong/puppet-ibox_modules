@@ -2,6 +2,7 @@
 # mainly this enables a few selinux booleans, as well
 # as deploy our standard policy
 class ib_apache::extended {
+  include ::ib_apache
   if str2bool($::selinux) {
     selboolean{
       # in general we want that

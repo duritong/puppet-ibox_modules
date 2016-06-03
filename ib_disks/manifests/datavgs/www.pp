@@ -12,7 +12,8 @@ class ib_disks::datavgs::www(
       mode    => '0755',
       size    => $size_data,
   }
-  Disks::Lv_mount['www_datalv'] -> Package<| title == 'httpd' or title == 'php' |>
+  # make this as early as possible
+  Disks::Lv_mount['www_datalv'] -> Package<| title == 'apache' |>
   if $size_log {
     disks::lv_mount{
       'www_loglv':
@@ -22,7 +23,7 @@ class ib_disks::datavgs::www(
         mode    => '0700',
         size    => $size_log,
     }
-    Disks::Lv_mount['www_loglv'] -> Package<| title == 'httpd' or title == 'php' |>
+    Disks::Lv_mount['www_loglv'] -> Package<| title == 'apache' |>
   }
 }
 
