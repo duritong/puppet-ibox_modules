@@ -51,6 +51,7 @@ class ib_mysql::server(
       '/etc/systemd/system/mariadb.service.d':
         ensure  => directory,
         owner   => root,
+        seltype => 'systemd_unit_file_t',
         group   => 0,
         mode    => '0644';
       '/etc/systemd/system/mariadb.service.d/limits.conf':
