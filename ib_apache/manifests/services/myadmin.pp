@@ -8,6 +8,7 @@ class ib_apache::services::myadmin(
   $pgadmin_monitor = 'absent',
 ) {
   if $myadmin_host {
+    include ::ib_apache::webhosting_php
     phpmyadmin::vhost{$myadmin_host:
       domainalias   => $myadmin_alias,
       run_mode      => 'fcgid',
@@ -18,6 +19,7 @@ class ib_apache::services::myadmin(
     }
   }
   if $pgadmin_host {
+    include ::ib_apache::webhosting_php
     phppgadmin::vhost{$pgadmin_host:
       domainalias   => $pgadmin_alias,
       run_mode      => 'fcgid',

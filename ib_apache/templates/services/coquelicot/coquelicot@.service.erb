@@ -1,0 +1,13 @@
+[Unit]
+Description=Coquelicot %i
+
+[Service]
+Type=simple
+WorkingDirectory=<%= @base_path %>/%i/app
+ExecStart=/usr/bin/bundle exec coquelicot start
+ExecStop=/usr/bin/bundle exec coquelicot stop
+PIDFile=<%= @base_path %>/%i/data/tmp/coquelicot.pid
+User=%i
+
+[Install]
+WantedBy=multi-user.target

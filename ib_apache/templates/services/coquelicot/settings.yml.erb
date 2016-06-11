@@ -1,0 +1,27 @@
+---
+cache_path: "<%= @base_path %>/data/tmp/cache"
+depot_path: "<%= @base_path %>/data/files"
+pid: "<%= @base_path %>/data/tmp/coquelicot.pid"
+<% unless @disable_log -%>
+log: "<%= @base_path %>/log/coquelicot.log"
+<% else -%>
+log: ""
+<% end -%>
+listen:
+  - "127.0.0.1:<%= @port %>"
+  - "[::1]:<%= @port %>"
+<% if @config['about_text'] -%>
+about_text:
+<% @config['about_text'].keys.sort.each do |k| -%>
+  <%= k %>: "<%= @config['about_text'] %>"
+<% end
+end -%>
+<% if @config['about_text'] -%>
+authentication_method:
+<% @config['authentication_method'].keys.sort.each do |k| -%>
+  <%= k %>: "<%= @config['authentication_method'] %>"
+<% end
+end -%>
+<% (@config.keys - ['cache_path','depot_path','pid','log','listen','about_text','authentication_method']).sort.each do |k| -%>
+<%= k %>: <%= @config[k] %>
+<% end -%>
