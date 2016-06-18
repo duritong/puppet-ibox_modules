@@ -13,10 +13,10 @@ listen:
 <% if @config['about_text'] -%>
 about_text:
 <% @config['about_text'].keys.sort.each do |k| -%>
-  <%= k %>: "<%= @config['about_text'] %>"
+  <%= k %>: "<%= @config['about_text'][k] %>"
 <% end
 end -%>
-<% if @config['about_text'] -%>
+<% if @config['authentication_method'] -%>
 authentication_method:
 <% @config['authentication_method'].keys.sort.each do |k| -%>
   <%= k %>: "<%= @config['authentication_method'] %>"
