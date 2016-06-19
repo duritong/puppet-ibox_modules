@@ -5,14 +5,11 @@
 #   * mod_cfgid - which runs our php apps through suexec
 #   * php       - standard and any kind of scls
 #   * 
-class ib_apache::with_php(
-  $suhosin_cryptkey_id = 'main',
-) {
+class ib_apache::with_php {
+
   include ::ib_apache::extended
 
-  class{'::php':
-    suhosin_cryptkey => trocla("php_suhosin_cryptkey_${suhosin_cryptkey_id}",'plain',{ length => 32 })
-  }
+  include ::php
   include ::php::mod_fcgid
 
   include ::mod_fcgid
