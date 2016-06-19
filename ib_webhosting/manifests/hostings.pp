@@ -1,3 +1,4 @@
+# create hostings from hiera
 class ib_webhosting::hostings(
   $static        = {},
   $php           = {},
@@ -19,7 +20,7 @@ class ib_webhosting::hostings(
     ssl_mode   => true,
     nagios_use => 'http-service',
     uid        => 'iuid',
-    password   => 'trocla'
+    password   => 'trocla',
   }
   create_resources('webhosting::static', $static, $default_options)
 
