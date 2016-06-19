@@ -45,9 +45,15 @@ class ib_webhosting::hostings(
   }),['watch_adjust_webfiles','user_scripts'])
   create_resources('webhosting::php::mediawiki', $mediawiki, $mediawiki_options)
 
+  if versioncmp($::operatingsystemmajrelease,'7') < 0 {
+    $php_installation = 'scl54'
+  } else {
+    $php_installation = 'system'
+  }
   $joomla_options = merge($php_options, {
-    manage_config => false,
-    git_repo      => 'https//git.immerda.ch/ijoomla.git',
+    manage_config    => false,
+    git_repo         => 'https//git.immerda.ch/ijoomla.git',
+    php_installation => $php_installation,
   })
   create_resources('webhosting::php::joomla', $joomla, $joomla_options)
 
