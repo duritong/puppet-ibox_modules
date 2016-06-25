@@ -6,7 +6,7 @@
 # too. Once a user is authenticated, the acl_check_rcpt ACL then
 # allows them to relay through the system. 
 #
-# auth_advertise_hosts = ${if eq {$tls_cipher}{}{}{*}}
+# auth_advertise_hosts = ${if eq {$tls_in_cipher}{}{}{*}}
 #
 # By default, we set this option to allow SMTP AUTH from nowhere
 # (Exim's default would be to allow it from anywhere, even on an

@@ -28,7 +28,6 @@ class ib_apache::with_php_normal {
       'set apc.ttl 0',
       # partially because of http://lists.horde.org/archives/horde/Week-of-Mon-20140414/051263.html
       'set apc.enable_cli 1',
-    ],  
-    require => File['/srv/apc_tmp'];
+    ],
   }
 }

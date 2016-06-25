@@ -1,3 +1,4 @@
+# create hostings from hiera
 class ib_webhosting::hostings(
   $static        = {},
   $php           = {},
@@ -19,7 +20,7 @@ class ib_webhosting::hostings(
     ssl_mode   => true,
     nagios_use => 'http-service',
     uid        => 'iuid',
-    password   => 'trocla'
+    password   => 'trocla',
   }
   create_resources('webhosting::static', $static, $default_options)
 
@@ -44,17 +45,17 @@ class ib_webhosting::hostings(
     spam_protection => true,
   }),['watch_adjust_webfiles','user_scripts'])
   create_resources('webhosting::php::mediawiki', $mediawiki, $mediawiki_options)
+
   if versioncmp($::operatingsystemmajrelease,'7') < 0 {
-    $joomla_defaults = {
-      php_installation => 'scl54',
-    }
+    $php_installation = 'scl54'
   } else {
-    $joomla_defaults = { }
+    $php_installation = 'system'
   }
-  $joomla_options = merge($php_options, merge({
-    manage_config => false,
-    git_repo      => 'https//git.immerda.ch/ijoomla.git',
-  },$joomla_defaults))
+  $joomla_options = merge($php_options, {
+    manage_config    => false,
+    git_repo         => 'https//git.immerda.ch/ijoomla.git',
+    php_installation => $php_installation,
+  })
   create_resources('webhosting::php::joomla', $joomla, $joomla_options)
 
   $drupal_options = merge($php_options, {
