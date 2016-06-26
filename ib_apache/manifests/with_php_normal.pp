@@ -19,15 +19,4 @@ class ib_apache::with_php_normal {
 
   include ::shorewall::rules::out::postgres
   include ::shorewall::rules::out::mysql
-
-  augeas { 'apc_settings':
-    # http://chrisgilligan.com/wordpress/how-to-configure-apc-cache-on-virtual-servers-with-php-running-under-fcgid/
-    context => '/files/etc/php.d/apc.ini/.anon',
-    changes => [
-      'set apc.shm_size 64M',
-      'set apc.ttl 0',
-      # partially because of http://lists.horde.org/archives/horde/Week-of-Mon-20140414/051263.html
-      'set apc.enable_cli 1',
-    ],
-  }
 }
