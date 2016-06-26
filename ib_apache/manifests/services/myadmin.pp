@@ -27,7 +27,7 @@ class ib_apache::services::myadmin(
       run_gid       => iuid("${pgadmin_host}_${::fqdn}",'webhosting'),
       monitor_url   => $pgadmin_monitor,
       manage_nagios => $pgadmin_monitor != 'absent',
-      config        => {
+      configuration => {
         ssl_certificate_file =>
             hiera('ib_apache::phppgadmin::ssl_certificate_file',
                   '/etc/pki/tls/certs/localhost.crt'),
