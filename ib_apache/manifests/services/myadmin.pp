@@ -6,9 +6,12 @@ class ib_apache::services::myadmin(
   $pgadmin_host               = undef,
   $pgadmin_alias              = 'absent',
   $pgadmin_monitor            = 'absent',
-  $ssl_certificate_file       = '/etc/pki/tls/certs/localhost.crt',
-  $ssl_certificate_key_file   = '/etc/pki/tls/private/localhost.key',
-  $ssl_certificate_chain_file = false,
+  $my_ssl_certificate_file       = '/etc/pki/tls/certs/localhost.crt',
+  $my_ssl_certificate_key_file   = '/etc/pki/tls/private/localhost.key',
+  $my_ssl_certificate_chain_file = false,
+  $pg_ssl_certificate_file       = '/etc/pki/tls/certs/localhost.crt',
+  $pg_ssl_certificate_key_file   = '/etc/pki/tls/private/localhost.key',
+  $pg_ssl_certificate_chain_file = false,
 ) {
   if $myadmin_host {
     include ::ib_apache::webhosting_php
@@ -20,9 +23,9 @@ class ib_apache::services::myadmin(
       monitor_url   => $myadmin_monitor,
       manage_nagios => $myadmin_monitor != 'absent',
       configuration => {
-        ssl_certificate_file       => $ssl_certificate_file,
-        ssl_certificate_key_file   => $ssl_certificate_key_file,
-        ssl_certificate_chain_file => $ssl_certificate_chain_file,
+        ssl_certificate_file       => $my_ssl_certificate_file,
+        ssl_certificate_key_file   => $my_ssl_certificate_key_file,
+        ssl_certificate_chain_file => $my_ssl_certificate_chain_file,
       },
     }
   }
@@ -36,9 +39,9 @@ class ib_apache::services::myadmin(
       monitor_url   => $pgadmin_monitor,
       manage_nagios => $pgadmin_monitor != 'absent',
       configuration => {
-        ssl_certificate_file       => $ssl_certificate_file,
-        ssl_certificate_key_file   => $ssl_certificate_key_file,
-        ssl_certificate_chain_file => $ssl_certificate_chain_file,
+        ssl_certificate_file       => $pg_ssl_certificate_file,
+        ssl_certificate_key_file   => $pg_ssl_certificate_key_file,
+        ssl_certificate_chain_file => $pg_ssl_certificate_chain_file,
       },
     }
   }
