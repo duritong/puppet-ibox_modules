@@ -16,6 +16,15 @@ class ib_apache::services::myadmin(
       run_gid       => iuid("${myadmin_host}_${::fqdn}",'webhosting'),
       monitor_url   => $myadmin_monitor,
       manage_nagios => $myadmin_monitor != 'absent',
+      configuration => {
+        ssl_certificate_file =>
+            hiera('ib_apache::phpmyadmin::ssl_certificate_file',
+                  '/etc/pki/tls/certs/localhost.crt'),
+        ssl_certificate_key_file =>
+            hiera('ib_apache::phpmyadmin::ssl_certificate_key_file',
+                  '/etc/pki/tls/private/localhost.key'),
+        ssl_certificate_chain_file =>
+            hiera('ib_apache::ssl_certificate_chain_file', false)},
     }
   }
   if $pgadmin_host {
