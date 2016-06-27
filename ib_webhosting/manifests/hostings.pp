@@ -16,7 +16,7 @@ class ib_webhosting::hostings(
   $modperl       = {},
 ){
 
-  include ::ib_webhostings
+  include ::ib_webhosting
 
   $default_options = {
     ssl_mode   => true,
