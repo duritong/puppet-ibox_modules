@@ -7,7 +7,7 @@ class ib_webhosting(
   include ::git
 
   if $manage_disks {
-    include ib_disks::datavgs::www
+    include ::ib_disks::datavgs::www
   }
   file{
     '/usr/local/sbin/migrate_hosting.sh':
