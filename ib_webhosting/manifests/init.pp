@@ -1,14 +1,10 @@
 # webhosting stuff
 class ib_webhosting(
-  $manage_disks = true,
-  $backup_host  = "backup1.${::domain}",
+  $backup_host     = "backup1.${::domain}",
   $backup_base_dir = '/data/backup_www',
 ) {
   include ::git
 
-  if $manage_disks {
-    include ::ib_disks::datavgs::www
-  }
   file{
     '/usr/local/sbin/migrate_hosting.sh':
       source  => 'puppet:///modules/ib_webhosting/scripts/migrate_hosting.sh',
