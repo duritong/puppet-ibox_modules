@@ -16,6 +16,8 @@ class ib_webhosting::hostings(
   $modperl       = {},
 ){
 
+  include ::ib_webhostings
+
   $default_options = {
     ssl_mode   => true,
     nagios_use => 'http-service',

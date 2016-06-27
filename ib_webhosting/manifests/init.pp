@@ -24,7 +24,7 @@ class ib_webhosting(
 
   if str2bool($::selinux) {
     # otherwise some operations via ssh are not allowed
-    if versioncmp($::operatingsystemmajrelease,'5') > 0 { 
+    if $::operatingsystemmajrelease == '6' {
       selboolean{
         'ssh_chroot_manage_apache_content':
           value      => 'on',
