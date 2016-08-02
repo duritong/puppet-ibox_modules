@@ -12,27 +12,17 @@ if (req.http.Upgrade ~ "(?i)websocket") {
 }
 
 /*
-* Serve stale content if the backend is unhealthy.
-* Cooperates with beresp.grace in vcl_fetch.
-*/
-if (req.backend.healthy) {
-  set req.grace = 10s;
-} else {
-  set req.grace = 24h;
-}
-
-/*
 * Pipe alien requests straight to the backend, and keep
 * doing so until the connection closes.
 */
-if (req.request !~ "^(GET|HEAD|PUT|POST|TRACE|OPTIONS|DELETE)$") {
+if (req.method !~ "^(GET|HEAD|PUT|POST|TRACE|OPTIONS|DELETE)$") {
   return (pipe);
 }
 
 /*
 * Make sure to only cache GET and HEAD requests.
 */
-if (req.request !~ "^(GET|HEAD)$") {
+if (req.method !~ "^(GET|HEAD)$") {
   return (pass);
 }
 
@@ -51,5 +41,5 @@ if (req.http.Cookie) {
   return (pass);
 }
 
-return (hash);
+return (lookup);
 
