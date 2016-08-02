@@ -12,6 +12,16 @@ if (req.http.Upgrade ~ "(?i)websocket") {
 }
 
 /*
+* Serve stale content if the backend is unhealthy.
+* Cooperates with beresp.grace in vcl_fetch.
+*/
+if (req.backend.healthy) {
+  set req.grace = 10s;
+} else {
+  set req.grace = 24h;
+}
+
+/*
 * Pipe alien requests straight to the backend, and keep
 * doing so until the connection closes.
 */
