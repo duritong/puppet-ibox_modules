@@ -15,14 +15,14 @@ if (req.http.Upgrade ~ "(?i)websocket") {
 * Pipe alien requests straight to the backend, and keep
 * doing so until the connection closes.
 */
-if (req.method !~ "^(GET|HEAD|PUT|POST|TRACE|OPTIONS|DELETE)$") {
+if (req.request !~ "^(GET|HEAD|PUT|POST|TRACE|OPTIONS|DELETE)$") {
   return (pipe);
 }
 
 /*
 * Make sure to only cache GET and HEAD requests.
 */
-if (req.method !~ "^(GET|HEAD)$") {
+if (req.request !~ "^(GET|HEAD)$") {
   return (pass);
 }
 
