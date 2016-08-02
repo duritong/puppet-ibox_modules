@@ -8,8 +8,11 @@ define ib_varnish::config_file(
   } else {
     # a default set of sources that allow some tweaking
     $real_source = [
+      "puppet:///modules/auto_varnish/config/${::operatingsystem}.${::operatingsystemmajrelease}/${name}.vcl",
       "puppet:///modules/auto_varnish/config/${name}.vcl",
+      "puppet:///modules/site_varnish/config/${::operatingsystem}.${::operatingsystemmajrelease}/${name}.vcl",
       "puppet:///modules/site_varnish/config/${name}.vcl",
+      "puppet:///modules/ib_varnish/config/${::operatingsystem}.${::operatingsystemmajrelease}/${name}.vcl",
       "puppet:///modules/ib_varnish/config/${name}.vcl",
     ]
   }
