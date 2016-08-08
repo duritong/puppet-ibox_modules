@@ -105,7 +105,8 @@ define ib_apache::services::coquelicot::instance(
     } ~> exec{"fix_appdir_perms_${name}":
       command     => "chown -R root:${name} ${base_path}/app && chmod -R o-rwx,g-w,g+rX ${base_path}/app",
       refreshonly => true,
-    } -> Service["coquelicot@${name}"]{
+    }
+    Service["coquelicot@${name}"]{
       ensure  => running,
       enable  => true,
       require => Exec["fix_appdir_perms_${name}"],
