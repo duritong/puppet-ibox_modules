@@ -51,5 +51,5 @@ if (req.http.Cookie) {
   return (pass);
 }
 
-return (hash);
+return (lookup);
 
