@@ -44,7 +44,7 @@ define ib_apache::services::coquelicot::instance(
   if $ensure == 'present' {
     require ::ruby::bundler
     require ::ruby::devel
-    ensure_packages(['libxml2-devel'])
+    ensure_packages(['libxml2-devel','patch'])
     $real_uid = $uid ? {
       'iuid'  => iuid($name,'webhosting'),
       default => $uid,

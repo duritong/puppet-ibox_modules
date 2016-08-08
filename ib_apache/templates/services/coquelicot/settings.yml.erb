@@ -9,7 +9,9 @@ log: ""
 <% end -%>
 listen:
   - "127.0.0.1:<%= @port %>"
+<% if scope['::ipaddress6'] -%>
   - "[::1]:<%= @port %>"
+<% end -%>
 <% if @config['about_text'] -%>
 about_text:
 <% @config['about_text'].keys.sort.each do |k| -%>
