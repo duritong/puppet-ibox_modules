@@ -8,13 +8,13 @@ define ib_apache::services::coquelicot::instance(
     max_file_size         => 209715200,
     about_text            => {
       en           => 'Read more about dl.immerda.ch in our <a href=\"https://www.immerda.ch/info/2011/08/12/neuer-service-dateien-austauschen.html\">initial blog post</a>. This service is exclusively for immerda users and you need to provide your immerda login credentials.<br/><br/><b>Limited to 200MB!</b>',
-      de           => 'Erfahre mehr zu dl.immerda.ch in unserem <a href=\"https://www.immerda.ch/info/2011/08/12/neuer-service-dateien-austauschen.html\">Blogartikel</a> dazu. Du musst dich mit deinem immerda-Konto anmelden um diesen Service zu nutzen.<br/><br/><b>Limitiert auf 200MB!</b>'
+      de           => 'Erfahre mehr zu dl.immerda.ch in unserem <a href=\"https://www.immerda.ch/info/2011/08/12/neuer-service-dateien-austauschen.html\">Blogartikel</a> dazu. Du musst dich mit deinem immerda-Konto anmelden um diesen Service zu nutzen.<br/><br/><b>Limitiert auf 200MB!</b>',
     },
     authentication_method => {
       imap_port   => 993,
       imap_server => 'imap.immerda.ch',
       name        => 'imap',
-    }
+    },
   },
   $git_repo      = 'https://git.immerda.ch/coquelicot.git',
   $branch        = 'master',
