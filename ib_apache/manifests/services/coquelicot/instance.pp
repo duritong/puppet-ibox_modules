@@ -106,18 +106,23 @@ define ib_apache::services::coquelicot::instance(
       command     => "chown -R root:${name} ${base_path}/app && chmod -R o-rwx,g-w,g+rX ${base_path}/app",
       refreshonly => true,
     } -> Service["coquelicot@${name}"]{
-      ensure => running,
-      enable => true,
-    } -> Apache::Vhost::Proxy[$name]{
+      ensure  => running,
+      enable  => true,
+      require => Exec["fix_appdir_perms_${name}"],
+      before  => Apache::Vhost::Proxy[$name],
+    }
+    Apache::Vhost::Proxy[$name]{
       ssl_mode           => 'force',
       logmode            => 'noip',
       additional_options => 'SetEnv proxy-sendchunks 1
   RequestHeader set X-Forwarded-SSL "on"',
-    } -> File["/etc/cron.d/coquelicot_gc_${name}.sh"]{
+      before             => File["/etc/cron.d/coquelicot_gc_${name}.sh"],
+    }
+    File["/etc/cron.d/coquelicot_gc_${name}.sh"]{
       content => "*/5 * * * * ${name} cd ${base_path}/app && bundle exec coquelicot gc\n",
       owner   => root,
       group   => 0,
-      mode    => 0644,
+      mode    => '0644',
     }
     file{"${base_path}/app/.git/hooks/post-update":
       content => '#!/bin/sh
