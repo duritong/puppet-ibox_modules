@@ -14,7 +14,7 @@ class ib_nginx::local_only {
     file_line{'nginx_listen_http_local_only_ipv6':
       path    => '/etc/nginx/nginx.conf',
       line    => '        listen       [::1]:80 default_server;',
-      match   => '^\s+listen\s+\[::\]:80 default_server;$',
+      match   => '^\s+listen\s+\[.*\]:80 default_server;$',
       require => Package['nginx'],
       notify  => Service['nginx'],
     }
