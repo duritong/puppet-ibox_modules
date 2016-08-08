@@ -18,6 +18,11 @@ class ib_nginx::local_only {
       require => Package['nginx'],
       notify  => Service['nginx'],
     }
+    if !$::ipaddress6 {
+      File_line['nginx_listen_http_local_only_ipv6']{
+        ensure => 'absent',
+      }
+    }
   } else {
     File_line['nginx_listen_http_local_only']{
       line    => '        listen       127.0.0.1:80;',
