@@ -24,6 +24,12 @@ authentication_method:
   <%= k %>: "<%= @config['authentication_method'][k] %>"
 <% end
 end -%>
-<% (@config.keys - ['cache_path','depot_path','pid','log','listen','about_text','authentication_method']).sort.each do |k| -%>
+<% if @config['additional_css'] -%>
+additional_css:
+<% Array(@config['additional_css']).sort.each do |e| -%>
+  - "<%= e %>"
+<% end
+end -%>
+<% (@config.keys - ['cache_path','depot_path','pid','log','listen','about_text','authentication_method','additional_css']).sort.each do |k| -%>
 <%= k %>: <%= @config[k] %>
 <% end -%>
