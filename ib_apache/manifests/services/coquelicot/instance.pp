@@ -113,6 +113,7 @@ define ib_apache::services::coquelicot::instance(
       before  => Apache::Vhost::Proxy[$name],
     }
     Apache::Vhost::Proxy[$name]{
+      domainalias        => $domainalias,
       ssl_mode           => 'force',
       logmode            => 'noip',
       additional_options => 'SetEnv proxy-sendchunks 1
