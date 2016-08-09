@@ -26,7 +26,7 @@ authentication_method:
 end -%>
 <% if @config['additional_css'] -%>
 additional_css:
-<% Array(@config['additional_css']).sort.each do |e| -%>
+<% Array(@config['additional_css']).each do |e| -%>
   - "<%= e %>"
 <% end
 end -%>
