@@ -12,13 +12,6 @@ class ib_nginx::proxy(
     'ssl-ciphers':
       content => "ssl_ciphers ${certs::ssl_config::ciphers_http};
 ssl_ecdh_curve ${certs::ssl_config::ecdh_curve};";
-    'default_host_sni':
-      content => "server {
-  include /etc/nginx/include.d/listen_all_443.conf;
-  access_log off;
-  ssl_certificate     /etc/pki/tls/certs/localhost.crt;
-  ssl_certificate_key /etc/pki/tls/private/localhost.key;
-}";
   }
 
   file{
