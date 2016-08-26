@@ -1,6 +1,8 @@
 # use nginx as a proxy
 class ib_nginx::proxy(
   $acme_token_source = undef,
+  $default_cert      = '/etc/pki/tls/certs/localhost.crt',
+  $default_key       = '/etc/pki/tls/private/localhost.key',
 ) {
   include ::ib_nginx
   include ::ib_disks::datavgs::nginx_proxy
@@ -12,6 +14,13 @@ class ib_nginx::proxy(
     'ssl-ciphers':
       content => "ssl_ciphers ${certs::ssl_config::ciphers_http};
 ssl_ecdh_curve ${certs::ssl_config::ecdh_curve};";
+    'default_host_sni':
+      content => "server {
+  include /etc/nginx/include.d/listen_all_443.conf;
+  access_log off;
+  ssl_certificate     ${default_cert};
+  ssl_certificate_key ${default_key};
+}";
   }
 
   file{
