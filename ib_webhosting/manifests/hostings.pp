@@ -55,7 +55,7 @@ class ib_webhosting::hostings(
   }
   $joomla_options = merge($php_options, {
     manage_config    => false,
-    git_repo         => 'https//git.immerda.ch/ijoomla.git',
+    git_repo         => 'https://git.immerda.ch/ijoomla.git',
     php_installation => $php_installation,
   })
   create_resources('webhosting::php::joomla', $joomla, $joomla_options)
@@ -71,7 +71,7 @@ class ib_webhosting::hostings(
   $smf_options = merge($php_options, {
     ssl_mode      => 'force',
     manage_config => false,
-    git_repo      => 'https//git.immerda.ch/ismf.git',
+    git_repo      => 'https://git.immerda.ch/ismf.git',
   })
   create_resources('webhosting::php::simplemachine', $simplemachine, $smf_options)
 
@@ -81,13 +81,13 @@ class ib_webhosting::hostings(
   create_resources('webhosting::php::typo3', $typo3, $typo3_options)
 
   $gallery2_options = merge($php_options, {
-    git_repo => 'https//git.immerda.ch/igallery2.git',
+    git_repo => 'https://git.immerda.ch/igallery2.git',
   })
   create_resources('webhosting::php::gallery2', $gallery2, $gallery2_options)
 
   $silverstripe_options = merge($php_options, {
     manage_config => false,
-    git_repo      => 'https//git.immerda.ch/silverstripe.git',
+    git_repo      => 'https://git.immerda.ch/silverstripe.git',
   })
   create_resources('webhosting::php::silverstripe', $silverstripe, $silverstripe_options)
 
