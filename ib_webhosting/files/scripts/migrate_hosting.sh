@@ -14,8 +14,15 @@ if [ ! -d $HOSTING_BASE/$HOSTING ]; then
   exit 1
 fi
 
+iptables-save | grep -q fw2net
+if [ $? -gt 0 ]; then
+  chain='fw-net'
+else
+  chain='fw2net'
+fi
+
 REMOTE_IP=`python -c "import socket; print socket.gethostbyname('$REMOTE')"`
-iptables -I fw2net 1 -d $REMOTE_IP -p tcp -m tcp --dport 22 -j ACCEPT
+iptables -I $chain 1 -d $REMOTE_IP -p tcp -m tcp --dport 22 -j ACCEPT
 ssh root@$REMOTE 'test -d $HOSTING_BASE/$HOSTING'
 if [ $? -gt 0 ]; then
   echo "Remote hosting does not exist! Aborting..."
@@ -32,6 +39,6 @@ else
   done
   echo "Finished..."
 fi
-iptables -D fw2net -d $REMOTE_IP -p tcp -m tcp --dport 22 -j ACCEPT
+iptables -D $chain -d $REMOTE_IP -p tcp -m tcp --dport 22 -j ACCEPT
 exit $RET
 
