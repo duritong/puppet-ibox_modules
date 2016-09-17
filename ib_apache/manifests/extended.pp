@@ -24,12 +24,11 @@ class ib_apache::extended {
           require     => Package['apache'],
           before      => Service['apache'];
       }
-      if versioncmp($::operatingsystemmajrelease,'6') == 0 {
-        # so far only on el6
-        # we might need to add a new one for el7
+      if versioncmp($::operatingsystemmajrelease,'5') > 0 {
         selinux::policy{
           'ibox-httpd':
-            te_source => 'puppet:///modules/ib_selinux/policies/ibox-httpd/ibox-httpd.te',
+            te_source => [ "puppet:///modules/ib_selinux/policies/ibox-httpd/${::operatingsystem}.${::operatingsystemmajrelease}/ibox-httpd.te",
+                            'puppet:///modules/ib_selinux/policies/ibox-httpd/ibox-httpd.te', ],
             require   => Package['apache'],
             before    => Service['apache'];
         }
