@@ -8,7 +8,7 @@ Generates a hash that will configure all necessary resources for a particular se
       'smtp' => {
         frontend_ip      => '5.5.5.5',
         port             => 25,
-        frontend_options => ["smtpchk HELO haproxy.glei.ch",],
+        backend_options => ["smtpchk HELO haproxy.glei.ch",],
         backends => [
           [smtp-4, '1.1.1.4'],
           [smtp-3, '1.1.1.3'],
@@ -128,11 +128,15 @@ Will return:
         result['haproxy::frontend'][service]['options']['option'] = Array(values['frontend_options'])
       end
       result['haproxy::backend'][service] = default_backend.merge({})
+      if values['backend_options']
+        result['haproxy::backend'][service]['options']['option'] = Array(values['backend_options'])
+      end
       result['haproxy::balancermember'][service] = default_balancermember.merge({
         'listening_service' => service,
         'ports'             => Array(values['port']).collect(&:to_s),
         'server_names'      => values['backends'].collect{|b| b.first },
         'ipaddresses'       => values['backends'].collect{|b| b.last },
+        'option'            => ['check','inter 5s'] | Array(values['server_options']),
       })
       si = dsi['source']
       result['shorewall::rule']["#{si}-me-haproxy-#{service}-tcp"] = dsi.merge({

@@ -39,6 +39,7 @@ describe 'gen_haproxy_backend' do
             'ports'             => ['25'],
             'server_names'      => ['smtp-4','smtp-3'],
             'ipaddresses'       => ['1.1.1.4','1.1.1.3'],
+            'option'            => ['check','inter 5s']
           },
         },
         'shorewall::rule' => {
@@ -114,12 +115,14 @@ describe 'gen_haproxy_backend' do
             'ports'             => ['25'],
             'server_names'      => ['smtp-4','smtp-3'],
             'ipaddresses'       => ['1.1.1.4','1.1.1.3'],
+            'option'            => ['check','inter 5s']
           },
           'smtp_submit' => {
             'listening_service' => 'smtp_submit',
             'ports'             => ['587'],
             'server_names'      => ['smtp-4','smtp-3'],
             'ipaddresses'       => ['1.1.1.4','1.1.1.3'],
+            'option'            => ['check','inter 5s']
           },
         },
         'shorewall::rule' => {
@@ -181,7 +184,7 @@ describe 'gen_haproxy_backend' do
         'frontend_ip'      => ['5.5.5.5','5.5.5.6'],
         'port'             => 25,
         'backends'         => [['smtp-4','1.1.1.4'],['smtp-3','1.1.1.3']],
-        'frontend_options' => 'smtpchk HELO foo.glei.ch',
+        'backend_options'  => 'smtpchk HELO foo.glei.ch',
         'hidden_service'   => 'some_service',
         'shorewall_in'     => 'ext',
         'shorewall_out'    => 'loc',
@@ -195,7 +198,6 @@ describe 'gen_haproxy_backend' do
             'mode'        => 'tcp',
             'options'     => {
               'default_backend' => 'smtp',
-              'option'          => ['smtpchk HELO foo.glei.ch']
             }
           }
         },
@@ -204,6 +206,7 @@ describe 'gen_haproxy_backend' do
             'collect_exported' => false,
             'options'          => {
               'balance' => 'first',
+              'option'  => ['smtpchk HELO foo.glei.ch']
             }
           }
         },
@@ -213,6 +216,7 @@ describe 'gen_haproxy_backend' do
             'ports'             => ['25'],
             'server_names'      => ['smtp-4','smtp-3'],
             'ipaddresses'       => ['1.1.1.4','1.1.1.3'],
+            'option'            => ['check','inter 5s']
           },
         },
         'shorewall::rule' => {
@@ -250,7 +254,8 @@ describe 'gen_haproxy_backend' do
         'frontend_ip'      => ['5.5.5.5','5.5.5.6'],
         'port'             => 25,
         'backends'         => [['smtp-4','1.1.1.4'],['smtp-3','1.1.1.3']],
-        'frontend_options' => 'smtpchk HELO foo.glei.ch',
+        'backend_options'  => 'smtpchk HELO foo.glei.ch',
+        'server_options'   => 'check-ssl',
         'hidden_service'   => 'some_service',
       }
     },
@@ -265,7 +270,6 @@ describe 'gen_haproxy_backend' do
             'mode'        => 'tcp',
             'options'     => {
               'default_backend' => 'smtp',
-              'option'          => ['smtpchk HELO foo.glei.ch']
             }
           }
         },
@@ -274,6 +278,7 @@ describe 'gen_haproxy_backend' do
             'collect_exported' => false,
             'options'          => {
               'balance' => 'first',
+              'option'  => ['smtpchk HELO foo.glei.ch']
             }
           }
         },
@@ -283,6 +288,7 @@ describe 'gen_haproxy_backend' do
             'ports'             => ['25'],
             'server_names'      => ['smtp-4','smtp-3'],
             'ipaddresses'       => ['1.1.1.4','1.1.1.3'],
+            'option'            => ['check','inter 5s','check-ssl']
           },
         },
         'shorewall::rule' => {
