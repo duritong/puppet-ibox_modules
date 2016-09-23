@@ -39,7 +39,7 @@ describe 'gen_haproxy_backend' do
             'ports'             => ['25'],
             'server_names'      => ['smtp-4','smtp-3'],
             'ipaddresses'       => ['1.1.1.4','1.1.1.3'],
-            'option'            => ['check','inter 5s']
+            'options'           => ['check','inter 5s']
           },
         },
         'shorewall::rule' => {
@@ -115,14 +115,14 @@ describe 'gen_haproxy_backend' do
             'ports'             => ['25'],
             'server_names'      => ['smtp-4','smtp-3'],
             'ipaddresses'       => ['1.1.1.4','1.1.1.3'],
-            'option'            => ['check','inter 5s']
+            'options'           => ['check','inter 5s']
           },
           'smtp_submit' => {
             'listening_service' => 'smtp_submit',
             'ports'             => ['587'],
             'server_names'      => ['smtp-4','smtp-3'],
             'ipaddresses'       => ['1.1.1.4','1.1.1.3'],
-            'option'            => ['check','inter 5s']
+            'options'           => ['check','inter 5s']
           },
         },
         'shorewall::rule' => {
@@ -216,7 +216,7 @@ describe 'gen_haproxy_backend' do
             'ports'             => ['25'],
             'server_names'      => ['smtp-4','smtp-3'],
             'ipaddresses'       => ['1.1.1.4','1.1.1.3'],
-            'option'            => ['check','inter 5s']
+            'options'           => ['check','inter 5s']
           },
         },
         'shorewall::rule' => {
@@ -288,7 +288,7 @@ describe 'gen_haproxy_backend' do
             'ports'             => ['25'],
             'server_names'      => ['smtp-4','smtp-3'],
             'ipaddresses'       => ['1.1.1.4','1.1.1.3'],
-            'option'            => ['check','inter 5s','check-ssl']
+            'options'           => ['check','inter 5s','check-ssl']
           },
         },
         'shorewall::rule' => {

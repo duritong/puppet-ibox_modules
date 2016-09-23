@@ -136,7 +136,7 @@ Will return:
         'ports'             => Array(values['port']).collect(&:to_s),
         'server_names'      => values['backends'].collect{|b| b.first },
         'ipaddresses'       => values['backends'].collect{|b| b.last },
-        'option'            => ['check','inter 5s'] | Array(values['server_options']),
+        'options'           => ['check','inter 5s'] | Array(values['server_options']),
       })
       si = dsi['source']
       result['shorewall::rule']["#{si}-me-haproxy-#{service}-tcp"] = dsi.merge({
