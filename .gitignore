@@ -1,0 +1,3 @@
+*/*.lock
+*/.librarian
+*/spec/fixtures
