@@ -50,10 +50,10 @@ class ib_haproxy::base(
   if $ibox::use_munin {
     munin::plugin{
       'haproxy_ng':
-        config => [
-         'env.url http://127.0.0.1:9300/admin;csv;norefresh',
-         'env.username root',
-         "env.password ${monitor_pwd}",
+        config  => [
+          'env.url http://127.0.0.1:9300/admin;csv;norefresh',
+          'env.username root',
+          "env.password ${monitor_pwd}",
         ],
         require => Service['haproxy'],
     }
