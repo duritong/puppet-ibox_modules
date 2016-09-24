@@ -185,7 +185,6 @@ describe 'gen_haproxy_backend' do
         'port'             => 25,
         'backends'         => [['smtp-4','1.1.1.4'],['smtp-3','1.1.1.3']],
         'backend_options'  => 'smtpchk HELO foo.glei.ch',
-        'hidden_service'   => 'some_service',
         'shorewall_in'     => 'ext',
         'shorewall_out'    => 'loc',
       }
@@ -256,7 +255,117 @@ describe 'gen_haproxy_backend' do
         'backends'         => [['smtp-4','1.1.1.4'],['smtp-3','1.1.1.3']],
         'backend_options'  => 'smtpchk HELO foo.glei.ch',
         'server_options'   => 'check-ssl',
-        'hidden_service'   => 'some_service',
+      },
+      'http' => {
+        'frontend_ip'      => ['5.5.5.7','5.5.5.8'],
+        'port'             => 80,
+        'backends'         => [['http-4','1.1.1.5'],['http-3','1.1.1.6']],
+        'backend_options'  => 'httpchk',
+      }
+    },
+    ).and_return(
+    {
+      "haproxy::frontend"=> {
+        "smtp"=> {
+          "mode"=>"tcp",
+          "ipaddress"=>["5.5.5.5", "5.5.5.6"],
+          "ports"=>["25"],
+          "options"=>{"default_backend"=>"smtp"}
+        },
+        "http"=> {
+          "mode"=>"tcp",
+          "ipaddress"=>["5.5.5.7", "5.5.5.8"],
+          "ports"=>["80"],
+          "options"=>{"default_backend"=>"http"}
+        }
+      },
+      "haproxy::backend"=> {
+        "smtp"=> {
+          "collect_exported"=>false,
+          "options"=>{ "balance"=>"first", "option"=>['smtpchk HELO foo.glei.ch']}
+        },
+        "http"=> {
+          "collect_exported"=>false,
+          "options"=>{"balance"=>"first", "option"=>["httpchk"]}
+        }
+      },
+      "haproxy::balancermember"=> {
+        "smtp"=> {
+          "listening_service"=>"smtp",
+          "ports"=>["25"],
+          "server_names"=>["smtp-4", "smtp-3"],
+          "ipaddresses"=>["1.1.1.4", "1.1.1.3"],
+          "options"=>["check", "inter 5s", "check-ssl"]
+        },
+        "http"=>
+          {
+            "listening_service"=>"http",
+            "ports"=>["80"],
+            "server_names"=>["http-4", "http-3"],
+            "ipaddresses"=>["1.1.1.5", "1.1.1.6"],
+            "options"=>["check", "inter 5s"]
+          }
+      },
+      "shorewall::rule"=> {
+        "net-me-haproxy-smtp-tcp"=> {
+          "proto"=>"tcp",
+          "order"=>240,
+          "action"=>"ACCEPT",
+          "source"=>"net",
+          "destination"=>"$FW:5.5.5.5/32,$FW:5.5.5.6/32",
+          "destinationport"=>"25"
+        },
+        "me-net-haproxy-smtp-smtp-4-tcp"=> {
+          "source"=>"$FW",
+          "proto"=>"tcp",
+          "order"=>240,
+          "action"=>"ACCEPT",
+          "destination"=>"net:1.1.1.4/32",
+          "destinationport"=>"25"
+        },
+        "me-net-haproxy-smtp-smtp-3-tcp"=> {
+          "source"=>"$FW",
+          "proto"=>"tcp",
+          "order"=>240,
+          "action"=>"ACCEPT",
+          "destination"=>"net:1.1.1.3/32",
+          "destinationport"=>"25"
+        },
+        "net-me-haproxy-http-tcp"=> {
+          "proto"=>"tcp",
+          "order"=>240,
+          "action"=>"ACCEPT",
+          "source"=>"net",
+          "destination"=>"$FW:5.5.5.7/32,$FW:5.5.5.8/32",
+          "destinationport"=>"80"
+        },
+        "me-net-haproxy-http-http-4-tcp"=> {
+          "source"=>"$FW",
+          "proto"=>"tcp",
+          "order"=>240,
+          "action"=>"ACCEPT",
+          "destination"=>"net:1.1.1.5/32",
+          "destinationport"=>"80"
+        },
+        "me-net-haproxy-http-http-3-tcp"=> {
+          "source"=>"$FW",
+          "proto"=>"tcp",
+          "order"=>240,
+          "action"=>"ACCEPT",
+          "destination"=>"net:1.1.1.6/32",
+          "destinationport"=>"80"
+        }
+      }
+    })}
+  end
+  describe 'with frontend_option and listen_port param and global shorewall params' do
+    it { is_expected.to run.with_params({
+      'smtp' => {
+        'frontend_ip'      => ['5.5.5.5','5.5.5.6'],
+        'port'             => 25,
+        'backends'         => [['smtp-4','1.1.1.4'],['smtp-3','1.1.1.3']],
+        'backend_options'  => 'smtpchk HELO foo.glei.ch',
+        'server_options'   => 'check-ssl',
       }
     },
     'ext',

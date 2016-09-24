@@ -127,7 +127,11 @@ Will return:
       if values['frontend_options']
         result['haproxy::frontend'][service]['options']['option'] = Array(values['frontend_options'])
       end
-      result['haproxy::backend'][service] = default_backend.merge({})
+      # deep copy that hash
+      # otherwise we get shallow copies
+      # https://boonedocks.net/blog/2011/06/06/Rubys-shallow-copies-of-hashes.html
+      result['haproxy::backend'][service] = default_backend.dup
+      result['haproxy::backend'][service]['options'] = default_backend['options'].dup
       if values['backend_options']
         result['haproxy::backend'][service]['options']['option'] = Array(values['backend_options'])
       end
