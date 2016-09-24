@@ -5,6 +5,7 @@ class ib_haproxy::base(
   class{'::haproxy':
     global_options   => {
       'maxconn' => 20000,
+      'ca-base' => '/etc/pki/tls/certs', # verify certs against system CA
       'stats'   => 'socket /var/lib/haproxy/stats mode 600 level admin',
     },
     defaults_options => {
