@@ -3,11 +3,10 @@ class ib_haproxy::base(
   $monitor_pwd = trocla("haproxy_monitor_pwd_${::fqdn}",'plain',{charset => 'alphanumeric', length => 32 })
 ) {
   class{'::haproxy':
-    global_options        => {
-      'maxconn'           => 20000,
-      'ca-base'           => '/etc/pki/tls/certs', # verify certs against system CA
-      'ssl-server-verify' => 'none', # we need proper certs internally for that
-      'stats'             => 'socket /var/lib/haproxy/stats mode 600 level admin',
+    global_options   => {
+      'maxconn' => 20000,
+      'ca-base' => '/etc/pki/tls/certs', # verify certs against system CA
+      'stats'   => 'socket /var/lib/haproxy/stats mode 600 level admin',
     },
     defaults_options => {
       'mode'     => 'tcp',
