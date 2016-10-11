@@ -1,0 +1,31 @@
+# Accept commands received over a local interface, and from hosts
+# for which we relay mail.
+accept
+  hosts =  : +relay_from_hosts
+
+# Accept commands received not via port 25
+accept
+  condition = ${if ={25}{$interface_port} {0} {1}}
+
+# Deny if HELO has no domain
+deny
+  message = Server name $sender_helo_name is not a FQDN.\n\
+Please contact your ISP or system adminstrator.
+  log_message = HELO is a hostname
+  !condition = ${extract{-2}{.}{$sender_helo_name}{true}}
+
+# Deny if HELO is my address
+deny
+  condition = ${if match_domain{$sender_helo_name}\
+      {NET_ADDRESS : $primary_hostname : +local_domains : +relay_domains}}
+  message = Server name $sender_helo_name is not your name, it is mine.\n\
+Please contact your ISP or system adminstrator.
+  log_message = HELO is my address
+
+# Deny if HELO is an IP address
+deny
+  condition = ${if isip {$sender_helo_name}}
+  message = Server name $sender_helo_name is IP address not a FQDN.\n\
+Please contact your ISP or system adminstrator.
+  log_message = HELO is an IP address
+  control = no_pipelining

@@ -1,0 +1,12 @@
+# Accept commands received over a local interface, and from hosts
+# for which we relay mail.
+accept
+  hosts =  : +relay_from_hosts
+
+# Accept commands received not via port 25
+accept
+  condition = ${if ={25}{$interface_port} {0} {1}}
+
+# Delay banner for some seconds to catch spammers
+accept hosts = *
+  delay       = 5s
