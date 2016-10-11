@@ -80,6 +80,7 @@ class ib_exim::relay(
     ['acl_blocked_address_rcpt', 'acl_blocked_address_sender',
       'acl_dns_black_and_whitelists', 'acl_csa_greylisting',
       'acl_set_greylisting', 'acl_do_greylisting',
+      'acl_check_connect', 'acl_check_helo',
       'external_methods',]:;
     'dkim_init':
       content => template('ib_exim/snippets/relay/dkim_init.erb');
