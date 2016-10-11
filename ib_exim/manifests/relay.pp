@@ -116,10 +116,11 @@ class ib_exim::relay(
       mode    => '0640';
   }
   exec{'create_onionrelay_cdb':
-    command => 'cdb -m -c -t onionrelay.tmp onionrelay.cdb onionrelay.txt',
-    cwd     => '/etc/exim',
-    require => Package['tinycdb'],
-    before  => Service['exim'],
+    command     => 'cdb -m -c -t onionrelay.tmp onionrelay.cdb onionrelay.txt',
+    refreshonly => true,
+    cwd         => '/etc/exim',
+    require     => Package['tinycdb'],
+    before      => Service['exim'],
   }
 
   # antispam
