@@ -5,8 +5,20 @@ class ib_exim::relay(
   $dkim_keys_source       = "puppet:///modules/ib_exim/dkim_keys/${::fqdn}",
   $dkim_selector_prefixes = {},
   $dkim_selector          = undef,
+  $onion_relays           = {},
 ) {
   include ::exim_imap_auth
+
+  if !empty($onion_relays) {
+    class{
+      '::tor::daemon':
+        automap_hosts_on_resolve => '1';
+      '::tor::daemon::dns':
+        port            => 5300,
+        liste_addresses => ['127.0.0.1'],
+    }
+    ensure_packages(['bind-utils'])
+  }
 
   $authenticators_content = "plain_server:
   driver = plaintext
@@ -80,6 +92,19 @@ class ib_exim::relay(
       owner   => root,
       group   => exim,
       mode    => '0640';
+    '/etc/exim/onionrelay.txt':
+      content => inline_template('<%= @onion_relays.keys.sort.collect{|k| k + " " + @onion_relays[k] }.join("\n") %>'),
+      require => Package['exim'],
+      notify  => Exec['create_onionrelay_cdb'],
+      owner   => root,
+      group   => exim,
+      mode    => '0640';
+  }
+  exec{'create_onionrelay_cdb':
+    command => 'cdb -m -c -t onionrelay.tmp onionrelay.cdb onionrelay.txt',
+    cwd     => '/etc/exim',
+    require => Package['tinycdb','bind-utils'],
+    before  => Service['exim'],
   }
 
   # antispam

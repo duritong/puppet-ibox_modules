@@ -182,6 +182,14 @@ drain_host:
   route_data    = ${readfile{DRAIN_FILE}}
   transport     = remote_smtp
 
+# send things over tor where we have an entry for it
+onionrelays:
+  driver    = manualroute
+  domains   = +onion_relays
+  transport = onion_relay
+  # messages are being relayed too here
+  route_data = ${run{/usr/bin/dig @127.0.0.1 -p 5300 +short ${lookup{$domain}cdb{ONION_RELAYDB}}} {$value} {fail}}
+  no_more
 
 # This router routes addresses that are not in local domains by doing a DNS
 # lookup on the domain name. Any domain that resolves to 0.0.0.0 or to a

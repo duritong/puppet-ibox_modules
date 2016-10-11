@@ -3,8 +3,10 @@
 # +local_domains, +relay_to_domains, and +relay_from_hosts, respectively. They
 # are all colon-separated lists:
 
-domainlist local_domains = cdb;/etc/exim/sql/local.cdb
-domainlist relay_domains = cdb;/etc/exim/sql/relayto.cdb
+domainlist local_domains    = cdb;/etc/exim/sql/local.cdb
+domainlist relay_domains    = cdb;/etc/exim/sql/relayto.cdb
+ONION_RELAYDB=/etc/exim/onionrelay.cdb
+domainlist onion_relays     = cdb;ONION_RELAYDB
 hostlist   relay_from_hosts = RELAY_FROM_HOSTS
 
 # Most straightforward access control requirements can be obtained by

@@ -18,3 +18,12 @@ remote_smtp_dkim_single_domain:
   # to be changed as soon as ready
   dkim_strict = 0
 
+onion_relay:
+  driver = smtp
+  socks_proxy = 127.0.0.1 port=9050
+  dkim_domain = DKIM_DOMAIN
+  dkim_selector = DKIM_SELECTOR
+  dkim_private_key = DKIM_PRIVATE_KEY
+  # to be changed as soon as ready
+  dkim_strict = 0
+
