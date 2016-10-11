@@ -7,7 +7,16 @@ class ib_exim::relay(
   $dkim_selector          = undef,
   $onion_relays           = {},
 ) {
-  include ::exim_imap_auth
+  package {'perl-Net-IMAP-Simple':
+    ensure => present,
+  } -> file{'/etc/exim/perl-routines.pl':
+    source  => 'puppet:///modules/ib_exim/tools/perl-routines.pl',
+    require => Package['exim'],
+    notify  => Service['exim'],
+    owner   => root,
+    group   => 0,
+    mode    => '0755';
+  }
 
   if !empty($onion_relays) {
     class{
@@ -18,7 +27,12 @@ class ib_exim::relay(
       port             => 5300,
       listen_addresses => ['127.0.0.1'],
     }
-    ensure_packages(['bind-utils'])
+    selinux::policy{
+      'ibox-exim-tor':
+        te_source => 'puppet:///modules/ib_exim/selinux/ibox-exim-tor/ibox-exim-tor.te',
+        require   => Package['exim'],
+        before    => Service['exim'],
+    }
   }
 
   $authenticators_content = "plain_server:

@@ -188,7 +188,8 @@ onionrelays:
   domains   = +onion_relays
   transport = onion_relay
   # messages are being relayed too here
-  route_data = ${run{/usr/bin/dig @127.0.0.1 -p 5300 +short ${lookup{$domain}cdb{ONION_RELAYDB}}} {$value} {fail}}
+  # lookup the IP for the onion address on the tor daemon
+  route_data = ${perl{onionLookup}{${lookup{$domain}cdb{ONION_RELAYDB}}}}
   no_more
 
 # This router routes addresses that are not in local domains by doing a DNS

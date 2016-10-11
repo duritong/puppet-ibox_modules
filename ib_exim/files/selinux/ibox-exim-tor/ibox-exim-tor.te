@@ -1,0 +1,10 @@
+module ibox-exim-tor 1.0;
+
+require {
+        type tor_port_t;
+        type exim_t;
+        class tcp_socket name_connect;
+}
+
+#============= exim_t ==============
+allow exim_t tor_port_t:tcp_socket name_connect;
