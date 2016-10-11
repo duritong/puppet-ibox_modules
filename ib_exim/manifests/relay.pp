@@ -15,8 +15,8 @@ class ib_exim::relay(
         automap_hosts_on_resolve => '1';
     }
     tor::daemon::dns{'exim':
-      port            => 5300,
-      liste_addresses => ['127.0.0.1'],
+      port             => 5300,
+      listen_addresses => ['127.0.0.1'],
     }
     ensure_packages(['bind-utils'])
   }
