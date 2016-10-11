@@ -118,7 +118,7 @@ class ib_exim::relay(
   exec{'create_onionrelay_cdb':
     command => 'cdb -m -c -t onionrelay.tmp onionrelay.cdb onionrelay.txt',
     cwd     => '/etc/exim',
-    require => Package['tinycdb','bind-utils'],
+    require => Package['tinycdb'],
     before  => Service['exim'],
   }
 
