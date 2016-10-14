@@ -104,10 +104,16 @@ IGNORE_BL_HOSTS = ${ignore_bl_hosts_str}
       'smtp_params_accept_queue_per_connection', 'domain_lists',
       'acl_require_sender_verify', 'auth_params', 'acl_message_id', ]:;
   }
+  if ($::osfamily == 'CentOS') and versioncmp($::operatingsystemmajrelease,'6') > 0 {
+    exim::config_snippet{
+      'prdr_enable':
+        content => "prdr_enable = true\n";
+    }
+  }
 
   include ::certs::ssl_config
   # TODO: fix that (newer debian exim are linked against gnutls)
-  if ($::osfamily == 'Debian') and ($::operatingsystemmajrelease > 6){
+  if ($::osfamily == 'Debian') and versioncmp($::operatingsystemmajrelease,'6') > 0{
     Exim::Config_snippet['ssl-ciphers']{
       content => "tls_require_ciphers = \${if =={\$received_port}{25}{NORMAL:%COMPAT}{SECURE256}}"
     }
@@ -118,7 +124,7 @@ IGNORE_BL_HOSTS = ${ignore_bl_hosts_str}
   }
 
   # we do that only for EL6
-  if str2bool($::selinux) and ($::lsbmajdistrelease == 6) {
+  if str2bool($::selinux) and versioncmp($::operatingsystemmajrelease,'6') == 0 {
     selinux::policy{
       'ibox-munin-exim':
         te_source => 'puppet:///modules/ib_exim/selinux/ibox-munin-exim/ibox-munin-exim.te',
