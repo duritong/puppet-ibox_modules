@@ -5,6 +5,7 @@ class ib_exim::relay(
   $dkim_keys_source       = "puppet:///modules/ib_exim/dkim_keys/${::fqdn}",
   $dkim_selector_prefixes = {},
   $dkim_selector          = undef,
+  $reverse_proxies        = [],
   $onion_relays           = {},
 ) {
   package {'perl-Net-IMAP-Simple':
@@ -84,6 +85,12 @@ class ib_exim::relay(
       'external_methods',]:;
     'dkim_init':
       content => template('ib_exim/snippets/relay/dkim_init.erb');
+  }
+  if !empty($reverse_proxies){
+    exim::config_snippet{
+      'reverse_proxies':
+        content => inline_template("hosts_proxy = <%= Array(@reverse_proxies).join(' : ') %>\n");
+    }
   }
   include ::ib_exim::types::special_transports
 
