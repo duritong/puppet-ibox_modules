@@ -17,6 +17,7 @@ class ib_yum::centos::glei(
       enabled       => 1,
       gpgcheck      => 1,
       gpgkey_source => 'puppet:///modules/ib_yum/gpg/packages_glei.ch.asc',
+      gpgkeyid      => 'C9D9B941',
       priority      => 1,
       gpgkey        => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-glei',
     },
