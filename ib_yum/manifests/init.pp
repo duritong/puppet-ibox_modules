@@ -7,7 +7,7 @@ class ib_yum(
     'yum':
       manage_munin                => $ibox::use_munin,
       repo_stage                  => 'yum';
-    [ 'yum::centos::puppetlabs',
+    [ 'yum::centos::puppet',
       'ib_yum::centos::glei' ]:
       stage => 'yum';
   }
