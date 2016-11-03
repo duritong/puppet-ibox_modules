@@ -21,7 +21,7 @@ VARNISH_ADMIN_LISTEN_PORT=6082
 VARNISH_SECRET_FILE=/etc/varnish/secret
 
 # # Backend storage specification
-VARNISH_STORAGE="file,/var/lib/varnish/varnish_storage.bin,<%= (m=scope['ib_disks::datavgs::varnish::size_cache'].match(/(\d+)([G,M])/)); "#{m[1].to_f*0.88}#{m[2]}" %>"
+VARNISH_STORAGE="file,/var/lib/varnish/varnish_storage.bin,<%= (m=scope['ib_disks::datavgs::varnish::size_cache'].match(/(\d+)([G,M])/)); "#{m[1].to_f*0.75}#{m[2]}" %>"
 
 # Default TTL used when the backend does not specify one
 VARNISH_TTL=120
