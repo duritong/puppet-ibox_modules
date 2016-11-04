@@ -1,4 +1,4 @@
-# configures a hidden service server
+# configures a simple haproxy server
 class ibox::types::haproxy {
   include ::ib_haproxy::simple
 }
