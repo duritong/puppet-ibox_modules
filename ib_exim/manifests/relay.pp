@@ -47,7 +47,8 @@ class ib_exim::relay(
   class{'::ib_exim':
     pgsql                  => true,
     greylist               => true,
-    daemon_ports           => [ '25', '587', '465' ],
+    # 2525 for onionservices to deliver
+    daemon_ports           => [ '25', '587', '465', '2525' ],
     component_type         => 'relay',
     # 10025 is because of amavis anti-virus/spam scan
     local_interfaces       => '0.0.0.0 : 127.0.0.1.10025',
@@ -60,6 +61,17 @@ class ib_exim::relay(
       'hostname'  => $nagios_check_host,
     },
     authenticators_content => $authenticators_content,
+  }
+
+  if $ibox::use_shorewall {
+    shorewall::rule { 'net-me-2525-tcp':
+      source          => 'net',
+      destination     => '$FW',
+      proto           => 'tcp',
+      destinationport => '2525',
+      order           => 240,
+      action          => 'ACCEPT';
+    }
   }
 
   $dkim_month = strftime('%Y%m')

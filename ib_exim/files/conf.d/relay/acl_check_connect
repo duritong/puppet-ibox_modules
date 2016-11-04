@@ -1,7 +1,8 @@
 # Accept commands received over a local interface, and from hosts
-# for which we relay mail.
+# for which we relay mail, if they come over standard port.
 accept
   hosts =  : +relay_from_hosts
+  condition = ${if eq{$interface_port}{25} {yes}{no}}
 
 # Accept commands received not via port 25
 accept

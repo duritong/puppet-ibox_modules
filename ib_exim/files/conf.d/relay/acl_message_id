@@ -1,5 +1,7 @@
-  # Add Message-ID if missing and from a relaying host
+  # Add Message-ID if missing and from a relaying host,
+  # we expect them to go over port 25
   warn  condition = ${if !def:h_Message-ID: {1}}
+        condition = ${if eq{$interface_port}{25} {yes}{no}}
         hosts     = +relay_from_hosts
         message   = Message-ID: <E$message_id@$primary_hostname>
 
