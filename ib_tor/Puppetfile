@@ -1,0 +1,4 @@
+# empty
+
+forge 'https://forgeapi.puppetlabs.com'
+mod 'tor', :git => 'https://git-ipuppet.immerda.ch/module-tor'

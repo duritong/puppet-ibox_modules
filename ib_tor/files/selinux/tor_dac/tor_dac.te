@@ -1,0 +1,9 @@
+module tor_dac 1.0;
+
+require {
+  type tor_t;
+  class capability { dac_read_search dac_override };
+}
+
+#============= tor_t ==============
+allow tor_t self:capability { dac_read_search dac_override };
