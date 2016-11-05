@@ -15,13 +15,20 @@ class ib_certs {
 
   $cert_content = trocla("main_cert_${::fqdn}",'x509',merge($options,{ render => { certonly => true } }))
   $key_content  = trocla("main_cert_${::fqdn}",'x509',merge($options,{ render => { keyonly => true } }))
+  if $::osfamily == 'Debian' {
+    $cert_name = '/etc/ssl/localcerts/localhost.crt'
+    $key_name  = '/etc/ssl/localcerts/localhost.key'
+  } else {
+    $cert_name = '/etc/pki/tls/certs/localhost.crt'
+    $key_name  = '/etc/pki/tls/private/localhost.key'
+  }
   file{
-    '/etc/pki/tls/certs/localhost.crt':
+    $cert_name:
       content => $cert_content,
       owner   => root,
       group   => 0,
       mode    => '0644';
-    '/etc/pki/tls/private/localhost.key':
+    $key_name:
       content => $key_content,
       owner   => root,
       group   => 0,
@@ -33,12 +40,6 @@ class ib_certs {
       owner   => root,
       group   => 0,
       mode    => '0644';
-    }
-    File['/etc/pki/tls/certs/localhost.crt']{
-      path => '/etc/ssl/localcerts/localhost.crt'
-    }
-    File['/etc/pki/tls/private/localhost.key']{
-      path => '/etc/ssl/localcerts/localhost.key'
     }
   }
 
