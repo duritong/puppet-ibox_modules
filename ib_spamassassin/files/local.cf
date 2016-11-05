@@ -71,6 +71,11 @@ score RCVD_IN_MSPIKE_L5      4.1
 score RCVD_IN_MSPIKE_L4      3.5
 score RCVD_IN_MSPIKE_L3      2.9
 
+score RDNS_NONE              1.5
+score RDNS_DYNAMIC           0.8
+
+score PYZOR_CHECK            2.5
+
 
 ## additional bodychecks with scores
 rawbody		BODY_LOTTERY		/L.?(?:o|0|\(\)).?t.?t.?[e3].?r.?y.?/i
