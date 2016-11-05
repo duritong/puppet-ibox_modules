@@ -4,9 +4,9 @@ accept
   hosts     =  : +relay_from_hosts
   condition = ${if eq {$interface_port}{25} {yes}{no}}
 
-# Accept commands received not via port 25
+# Accept commands received not via port 25 or 2525
 accept
-  condition = ${if or {eq{25}{$interface_port}{eq{2525}{$interface_port}}} {0} {1}}
+  condition = ${if or{ {eq{25}{$interface_port}} {eq{2525}{$interface_port}}}{0}{1}}
 
 # Deny if HELO has no domain
 deny
