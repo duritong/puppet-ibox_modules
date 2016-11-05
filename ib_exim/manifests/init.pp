@@ -44,7 +44,7 @@ class ib_exim(
     site_source      => $site_source,
   }
   # use our auto ca
-  include ::ib_certs
+  include ::ib_certs::exim
   File[$tls_certificate] ~> Service['exim']
   File[$tls_privatekey] ~> Service['exim']
 
