@@ -16,12 +16,12 @@ class ib_exim(
   $ignore_bl_hosts        = [ '127.0.0.2' ],
   $authenticators_content = '',
   $tls_certificate        = $::operatingsystem ? {
-    'Debian' => '/etc/ssl/public/exim.pem',
-    default  => '/etc/pki/tls/certs/exim.pem',
+    'Debian' => '/etc/ssl/localcerts/localhost.crt',
+    default  => '/etc/pki/tls/certs/localhost.crt',
   },
   $tls_privatekey         = $::operatingsystem ? {
-    'Debian' => '/etc/ssl/private/exim.pem',
-    default  => '/etc/pki/tls/private/exim.pem',
+    'Debian' => '/etc/ssl/localcerts/localhost.key',
+    default  => '/etc/pki/tls/private/localhost.key',
   },
   $dhparams               = $::operatingsystem ? {
     'Debian' => '/etc/ssl/dhparams.pem',
@@ -43,6 +43,10 @@ class ib_exim(
     default_mta      => true,
     site_source      => $site_source,
   }
+  # use our auto ca
+  include ::ib_certs
+  File[$tls_certificate] ~> Service['exim']
+  File[$tls_privatekey] ~> Service['exim']
 
   if $::operatingsystem == 'Debian' {
     include ::exim::debian::heavy
