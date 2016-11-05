@@ -4,7 +4,7 @@ class ib_certs::exim inherits ib_certs {
     'Debian' => 'Debian-exim',
     default  => 'exim',
   }
-  File['/etc/pki/tls/private/localhost.key']{
+  File[$ib_certs::key_name]{
     group => $group,
     mode  => '0640',
   }
