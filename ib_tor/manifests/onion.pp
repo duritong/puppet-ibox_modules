@@ -1,7 +1,7 @@
 # configure a tor for onion services
 class ib_tor::onion(
   $services             = {
-    $hostname => {
+    "${hostname}" => {
       '22' => {},
     }
   },
