@@ -101,10 +101,12 @@ describe 'gen_onion_backend' do
         'destinationport' => '25',
       },
     },
-    'nagios::target' => {
+    '@@nagios_host' => {
       'zmyw3lr3wwspfjvu.onion' => {
         'parents' => 'foo.example.com',
         'address' => 'zmyw3lr3wwspfjvu.onion',
+        'use'     => 'generic-host',
+        'alias'   => 'Onion service smtp',
       }
     },
     'nagios::service' => {

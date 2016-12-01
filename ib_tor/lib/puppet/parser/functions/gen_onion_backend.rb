@@ -103,12 +103,14 @@ Will return:
 
           oa, key = function_generate_onion_key([private_key_path,service])
           oah = "#{oa}.onion"
-          result['nagios::target'] = {
+          result['@@nagios_host'] = {
             oah => {
               'parents' => lookupvar('fqdn'),
               'address' => oah,
+              'use'     => 'generic-host',
+              'alias'   => "Onion service #{service}",
             }
-          } unless result['nagios::target']
+          } unless result['@@nagios_host']
           result['nagios::service'] ||= {}
           result['nagios::service']["os_#{service}_#{port}"] = {
             'host_name'     => oah,
