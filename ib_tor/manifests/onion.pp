@@ -26,11 +26,9 @@ class ib_tor::onion(
     if $ibox::use_shorewall {
       create_resources('shorewall::rule',$gen_full_service['shorewall::rule'])
     }
-    if $ibox::use_nagios {
-      if !empty($gen_full_service['nagios::service']) {
-        create_resources('nagios::target',$gen_full_service['nagios::target'])
-        create_resources('nagios::service',$gen_full_service['nagios::service'])
-      }
+    if $ibox::use_nagios and !empty($gen_full_service['nagios::service']) {
+      create_resources('nagios::target',$gen_full_service['nagios::target'])
+      create_resources('nagios::service',$gen_full_service['nagios::service'])
     }
   }
 }
