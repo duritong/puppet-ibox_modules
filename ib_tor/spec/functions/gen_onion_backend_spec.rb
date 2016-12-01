@@ -103,10 +103,11 @@ describe 'gen_onion_backend' do
     },
     '@@nagios_host' => {
       'zmyw3lr3wwspfjvu.onion' => {
-        'parents' => 'foo.example.com',
-        'address' => 'zmyw3lr3wwspfjvu.onion',
-        'use'     => 'generic-host',
-        'alias'   => 'Onion service smtp',
+        'parents'       => 'foo.example.com',
+        'address'       => 'zmyw3lr3wwspfjvu.onion',
+        'use'           => 'generic-host',
+        'alias'         => 'Onion service smtp',
+        'check_command' => '',
       }
     },
     'nagios::service' => {

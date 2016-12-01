@@ -105,10 +105,11 @@ Will return:
           oah = "#{oa}.onion"
           result['@@nagios_host'] = {
             oah => {
-              'parents' => lookupvar('fqdn'),
-              'address' => oah,
-              'use'     => 'generic-host',
-              'alias'   => "Onion service #{service}",
+              'parents'       => lookupvar('fqdn'),
+              'address'       => oah,
+              'use'           => 'generic-host',
+              'alias'         => "Onion service #{service}",
+              'check_command' => '',
             }
           } unless result['@@nagios_host']
           result['nagios::service'] ||= {}
