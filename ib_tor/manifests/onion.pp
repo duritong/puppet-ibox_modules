@@ -5,7 +5,6 @@ class ib_tor::onion(
       '22' => {},
     }
   },
-  $balanced_services    = {},
   $os_private_keys_path = undef,
 ){
   include ::tor::repo
@@ -21,11 +20,17 @@ class ib_tor::onion(
   }
 
   # custom local
-  $gen_full_service = gen_onion_backend($services)
+  $gen_full_service = gen_onion_backend($services,$os_private_keys_path)
   if !empty($services) {
     create_resources('tor::daemon::onion_service',$gen_full_service['tor::daemon::onion_service'],{private_key_store_path => $os_private_keys_path })
     if $ibox::use_shorewall {
       create_resources('shorewall::rule',$gen_full_service['shorewall::rule'])
+    }
+    if $ibox::use_nagios {
+      if !empty($gen_full_service['nagios::service']) {
+        create_resources('nagios::target',$gen_full_service['nagios::target'])
+        create_resources('nagios::service',$gen_full_service['nagios::service'])
+      }
     }
   }
 }
