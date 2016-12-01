@@ -103,20 +103,25 @@ Will return:
 
           oa, key = function_generate_onion_key([private_key_path,service])
           oah = "#{oa}.onion"
-          result['@@nagios_host'] = {
-            oah => {
-              'parents'       => lookupvar('fqdn'),
-              'address'       => oah,
-              'use'           => 'generic-host',
-              'alias'         => "Onion service #{service}",
-              'check_command' => '',
+          check_cmd = "check_#{v['nagios']}_tor#{v['nagios_args'] ? "!#{Array(v['nagios_args']).join('!')}" : ''}"
+          # we must define a check command for a host, so we use the first service check for it
+          if result['@@nagios_host'].nil?
+            result['@@nagios_host'] = {
+              oah => {
+                'parents'       => lookupvar('fqdn'),
+                'address'       => oah,
+                'use'           => 'generic-host',
+                'alias'         => "Onion service #{service}",
+                'check_command' => check_cmd,
+              }
             }
-          } unless result['@@nagios_host']
-          result['nagios::service'] ||= {}
-          result['nagios::service']["os_#{service}_#{port}"] = {
-            'host_name'     => oah,
-            'check_command' => "check_#{v['nagios']}_tor#{v['nagios_args'] ? "!#{Array(v['nagios_args']).join('!')}" : ''}",
-          }
+          else
+            result['nagios::service'] ||= {}
+            result['nagios::service']["os_#{service}_#{port}"] = {
+              'host_name'     => oah,
+              'check_command' => check_cmd,
+            }
+          end
         end
         result['tor::daemon::onion_service'][service]['ports'] << fp
       end
