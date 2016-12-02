@@ -6,4 +6,5 @@ class ib_apache::webservices {
   if versioncmp($::operatingsystemmajrelease, '6') > 0 {
     include ::ib_apache::services::coquelicot
   }
+  include ::ib_apache::services::piwik
 }
