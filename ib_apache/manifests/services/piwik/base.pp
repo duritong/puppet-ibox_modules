@@ -1,8 +1,10 @@
 # base services for piwik
-class ib_apache::services::piwik::base {
+class ib_apache::services::piwik::base(
+  $php_installation = 'scl56',
+) {
   file{
     '/usr/local/sbin/update_piwik.sh':
-      source  => 'puppet:///modules/ib_apache/services/scripts/update_piwik.sh',
+      content => template('ib_apache/services/scripts/update_piwik.sh.erb'),
       owner   => root,
       group   => 0,
       mode    => '0700';

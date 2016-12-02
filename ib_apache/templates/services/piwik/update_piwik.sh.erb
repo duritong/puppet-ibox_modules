@@ -1,3 +1,17 @@
+<%
+
+  def php_cmd(cmd)
+    if @php_installation == 'system'
+      "php #{cmd}"
+    else
+      prefix = case @php_installation
+        when 'scl54','scl55' then @php_installation.sub(/^scl/,'scl enable php')
+        else @php_installation.sub(/^scl/,'scl enable rh-php')
+      end
+      "#{prefix} '#{cmd}'"
+    end
+  end
+-%>
 #!/bin/bash
 
 piwik=$1
@@ -48,9 +62,9 @@ mv www private/old && mv new www
 [ $res -gt 0 ] && abort "Moving piwik failed with exitcode ${res}"
 echo 'Trying to update piwik from shell'
 chown $runuser:$ftpuser www -R
-run_cmd_as $runuser "yes | php ${basedir}/www/console core:update"
+run_cmd_as $runuser "yes | <%= php_cmd('${basedir}/www/console core:update') %>"
 echo 'Clearing caches'
-run_cmd_as $runuser "yes | php ${basedir}/www/console core:clear-caches"
+run_cmd_as $runuser "yes | <%= php_cmd('${basedir}/www/console core:clear-caches') %>"
 echo 'If this failed:'
 echo "Go to https://${piwik}/ and upgrade the installation"
 chown $ftpuser:$ftpuser www -R

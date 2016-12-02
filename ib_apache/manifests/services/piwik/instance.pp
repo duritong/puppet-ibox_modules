@@ -5,6 +5,8 @@ define ib_apache::services::piwik::instance() {
     /^6/    => 'set Vary User-Agent',
     default => 'always merge Vary User-Agent',
   }
+  require ib_apache::services::piwik::base
+
   webhosting::php{
     $name:
       # mind also the cron below that section
@@ -22,7 +24,7 @@ define ib_apache::services::piwik::instance() {
       run_uid            => 'iuid',
       password           => 'trocla',
       wwwmail            => true,
-      php_installation   => 'scl56',
+      php_installation   => $ib_apache::services::piwik::base::php_installation,
       additional_options => "
   <LocationMatch \"^/$\">
        # set this header to support user-agent
@@ -61,8 +63,6 @@ define ib_apache::services::piwik::instance() {
     creates         => "/var/www/vhosts/${name}/www/piwik.php",
     cleanup         => true,
   }
-
-  require ib_apache::services::piwik::base
 
   nagios::service::http{$name:
     ensure   => 'present',
