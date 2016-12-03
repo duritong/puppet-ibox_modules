@@ -7,6 +7,7 @@ class ib_exim::relay(
   $dkim_selector          = undef,
   $reverse_proxies        = [],
   $onion_relays           = {},
+  $our_onion_relays       = [],
 ) {
   package {'perl-Net-IMAP-Simple':
     ensure => present,
@@ -128,7 +129,7 @@ class ib_exim::relay(
       group   => exim,
       mode    => '0640';
     '/etc/exim/onionrelay.txt':
-      content => inline_template('<%= @onion_relays.keys.sort.collect{|k| k + " " + @onion_relays[k] }.join("\n") %>'),
+      content => inline_template('<%= @onion_relays.keys.reject{|o| @our_onion_relays.include?(o) }.sort.collect{|o| Array(@onion_relays[o]).sort.collect{|d| d + " " + o } }.flatten.join("\n") %>'),
       require => Package['exim'],
       notify  => Exec['create_onionrelay_cdb'],
       owner   => root,
