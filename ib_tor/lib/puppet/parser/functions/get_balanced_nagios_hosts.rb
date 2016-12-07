@@ -58,7 +58,7 @@ Will return:
         'check_command' => "check_#{ids[id]['nagios'] || 'https' }_tor",
         'host_name'     => sbos,
         'parents'       => balanced_services[bos].keys.sort.reject{|k| k == '_key_content' }.collect{|k| "#{balanced_services[bos][k]}.onion" }.join(','),
-        'use'           => 'generic-host',
+        'use'           => 'onion-host',
       }
     end
     result

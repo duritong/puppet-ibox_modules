@@ -105,17 +105,19 @@ describe 'gen_onion_backend' do
       'zmyw3lr3wwspfjvu.onion' => {
         'parents'       => 'foo.example.com',
         'address'       => 'zmyw3lr3wwspfjvu.onion',
-        'use'           => 'generic-host',
+        'use'           => 'onion-host',
         'alias'         => 'Onion service smtp',
         'check_command' => 'check_ssh_port_timeout_tor!2222!600',
       }
     },
     'nagios::service' => {
       'os_smtp_25' => {
+        'use'           => 'onion-service',
         'host_name'     => 'zmyw3lr3wwspfjvu.onion',
         'check_command' => 'check_smtp_tor',
       },
       'os_smtp_2525' => {
+        'use'           => 'onion-service',
         'host_name'     => 'zmyw3lr3wwspfjvu.onion',
         'check_command' => 'check_smtp_port_tor!2525',
       },

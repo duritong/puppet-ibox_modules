@@ -70,7 +70,7 @@ znq+qT/KbJlwy/27X/auCAzD5rJ9VVzyWiu8nnwICS8=
         'check_command' => 'check_smtp_tor',
         'host_name'     => 'mx5guxonqb5cttqg.onion',
         'parents'       => 'drpsyff5srkctr7h.onion',
-        'use'           => 'generic-host',
+        'use'           => 'onion-host',
       },
       'drpsyff5srkctr7h.onion' => {
         'address'       => 'drpsyff5srkctr7h.onion',
@@ -78,7 +78,7 @@ znq+qT/KbJlwy/27X/auCAzD5rJ9VVzyWiu8nnwICS8=
         'check_command' => 'check_https_tor',
         'host_name'     => 'drpsyff5srkctr7h.onion',
         'parents'       => 'mx5guxonqb5cttqg.onion,mx5guxonqb5cttqg.onion,mx5guxonqb5cttqg.onion',
-        'use'           => 'generic-host',
+        'use'           => 'onion-host',
       },
     }
     ) }

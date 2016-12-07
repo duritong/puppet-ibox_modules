@@ -47,12 +47,20 @@ Will return:
         'action'          => 'ACCEPT'
       },
     },
+    '@@nagios_host' => {
+      onion_address => {
+        'parents'       => $::fqdn,
+        'address'       => onion_address,
+        'use'           => 'onion-host',
+        'alias'         => "Onion service smtp",
+        'check_command' => check_smtp_tor,
+      }
+    },
     'nagios::service' => {
-      'os_smtp_25' => {
-        check_command => 'check_smtp_tor',
-      },
       'os_smtp_2525' => {
         check_command => 'check_smtp_port_tor!2525',
+        host          => 'onion_address',
+        use           => 'onion-service',
       },
     },
     'tor::daemon::onion_service' => {
@@ -110,7 +118,7 @@ Will return:
               oah => {
                 'parents'       => lookupvar('fqdn'),
                 'address'       => oah,
-                'use'           => 'generic-host',
+                'use'           => 'onion-host',
                 'alias'         => "Onion service #{service}",
                 'check_command' => check_cmd,
               }
@@ -118,6 +126,7 @@ Will return:
           else
             result['nagios::service'] ||= {}
             result['nagios::service']["os_#{service}_#{port}"] = {
+              'use'           => 'onion-service',
               'host_name'     => oah,
               'check_command' => check_cmd,
             }

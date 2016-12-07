@@ -192,6 +192,14 @@ onionrelays:
   route_data = ${perl{onionLookup}{${lookup{$domain}cdb{ONION_RELAYDB}}}}
   no_more
 
+onionrelays_mx:
+  driver    = manualroute
+  domains   = ! +local_domains
+  condition = ${if forany{${lookup dnsdb{>: mxh=$domain}}}{match_domain{$item}{}}}
+  transport = onion_relay
+  route_data = ${perl{onionLookup}{${lookup{$domain}cdb{ONION_RELAYDB}}}}
+  no_more
+
 # This router routes addresses that are not in local domains by doing a DNS
 # lookup on the domain name. Any domain that resolves to 0.0.0.0 or to a
 # loopback interface address (127.0.0.0/8) is treated as if it had no DNS
