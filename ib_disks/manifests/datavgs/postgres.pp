@@ -6,12 +6,13 @@ class ib_disks::datavgs::postgres(
 
   disks::lv_mount{
     'pgsql_datalv':
-      folder   => '/var/lib/pgsql',
-      size     => $size_data;
+      folder  => '/var/lib/pgsql',
+      size    => $size_data;
     'pgsql_backuplv':
-      folder   => '/var/lib/pgsql/backups',
-      size     => $size_backup,
-      require  => Disks::Lv_mount['pgsql_datalv'],
-      before   => Package['postgresql-server'];
+      folder  => '/var/lib/pgsql/backups',
+      size    => $size_backup,
+      owner   => postgres,
+      require => Disks::Lv_mount['pgsql_datalv'],
+      before  => Package['postgresql-server'];
   }
 }
