@@ -118,6 +118,13 @@ check_virtual_abuse:
   pass_router = amavis
   no_more
 
+# blackhole for onionmx test infrastructure
+oniontesthost:
+   driver      = redirect
+   domains     = onionmx.org
+   local_parts = blackhole
+   data        = :blackhole:
+
 # fail with anything that we don't host,
 # so that we fail before (!) sending it to
 # amavis.
