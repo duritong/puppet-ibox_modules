@@ -185,19 +185,33 @@ drain_host:
 # send things over tor where we have an entry for it
 onionrelays:
   driver    = manualroute
-  domains   = +onion_relays
+  domains   = ! +local_domains : +onion_relays
   transport = onion_relay
-  # messages are being relayed too here
   # lookup the IP for the onion address on the tor daemon
   route_data = ${perl{onionLookup}{${lookup{$domain}cdb{ONION_RELAYDB}}}}
   no_more
 
+# if we have an entry in our onion table for one of the
+# servers in the mx entries route it there
 onionrelays_mx:
   driver    = manualroute
   domains   = ! +local_domains
-  condition = ${if forany{${lookup dnsdb{>: mxh=$domain}}}{match_domain{$item}{}}}
   transport = onion_relay
-  route_data = ${perl{onionLookup}{${lookup{$domain}cdb{ONION_RELAYDB}}}}
+  condition = ${if forany{${lookup dnsdb{>: mxh=$domain}}}{match_domain{$item}{+onion_relays}}}
+  # lookup the IP for the onion address on the tor daemon
+  route_data = ${perl{onionLookup}{${lookup{${filter{${lookup dnsdb{>: mxh=$domain}}}{match_domain{$item}{+onion_relays}}}}cdb{ONION_RELAYDB}}}}
+  no_more
+
+# if there is _onion-mx._tcp.$domain SRV entry we can
+# send it over that transport
+# We need todo the lookup twice atm as we need the domain for
+# route_data, but this should be cached
+onionrelays_srv:
+  driver    = manualroute
+  domains   = ! +local_domains
+  condition = ${lookup dnsdb{srv=_onion-mx._tcp.$domain}{$value}fail}
+  transport = onion_relay
+  route_data = ${perl{onionLookup}{${extract{4}{ }{${reduce{<\n ${lookup dnsdb{srv=_onion-mx._tcp.$domain}}}{70000 .}{${if <{${extract{1}{ }{$item}}}{${extract{1}{ }{$value}}}{$item}{$value}}}}}}}}
   no_more
 
 # This router routes addresses that are not in local domains by doing a DNS
