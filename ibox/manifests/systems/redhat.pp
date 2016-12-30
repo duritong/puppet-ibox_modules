@@ -9,7 +9,7 @@ class ibox::systems::redhat(
   }
 
   #disable some stuff
-  if $::virtual == 'kvm' {
+  if $::virtual == 'kvm' and versioncmp($::operatingsystemmajrelease,'5') > 0 {
     include ::acpid
   } else {
     include ::acpid::disable
