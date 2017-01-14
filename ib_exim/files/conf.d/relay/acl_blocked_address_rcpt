@@ -1,2 +1,9 @@
 deny condition = ${if eq{${lookup{$local_part@$domain} cdb {/etc/exim/sql/blocked.cdb} {$value} {0}}}{1}{yes}{no}}
      message = The address ($local_part@$domain) has been blocked by postmaster(at)$domain
+
+# belongs to the onionmx test
+deny local_parts = blackhole
+     domains     = onionmx.org
+     # TODO: should have a list of onion endpoints
+     !hosts      = +relay_from_hosts
+     message     = blackhole@onionmx.org is only available through onionmx

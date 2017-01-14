@@ -1,0 +1,47 @@
+# Max number of simultaneous SMTP calls to accept
+# (aka max number of exim processes) Default is 20
+smtp_accept_max = 100
+
+# Allow our hosts 50 concurrent smtp connections
+# while everyone else gets 5
+# https://wikitech.wikimedia.org/wiki/Mail
+smtp_accept_max_per_host = ${if match_ip{$sender_host_address}{+relay_from_hosts}{50}{5}}
+
+# Drop the connection if an SMTP line was not received within a 1 minute timeout.
+smtp_receive_timeout = 1m
+
+# Max number of simultaneous incoming SMTP calls before messages
+# are just placed on the queue. Default is 0 (no limit)
+# Any non-zero value is useful only if it is less than the smtp_accept_max
+smtp_accept_queue = 80
+
+# tuneable as we want something else for mailman
+.include CONFSNIPPETDIR/smtp_params_accept_queue_per_connection
+
+# tuneable as we want something else for mailman
+.include CONFSNIPPETDIR/smtp_params_accept_reserve
+
+# When this option is set, a queue run is abandoned if the system load average
+# becomes greater than the value of the option.
+deliver_queue_load_max = 40
+
+# Max number of waiting SMTP connections.
+# Gives some protection against denial-of-service attacks by SYN flooding
+# Default is 20
+#smtp_connect_backlog = 20
+
+# Max number of MAIL commands that Exim is prepared to accept over a
+# single SMTP connection, after which a 421 is given. Default is 1000
+#smtp_accept_max_per_connection = 1000
+
+# Max system load before not accepting SMTP calls,
+# except for hosts defined in smtp_reserve_hosts
+# Default is unset (fixed point)
+smtp_load_reserve = 15.0
+
+# This option defines hosts for which SMTP connections are reserved; see smtp_accept_reserve and smtp_load_reserve above. 
+smtp_reserve_hosts = 127.0.0.1
+
+# http://www.exim.org/mail-archives/exim-users/Week-of-Mon-20050620/msg00069.html
+# smtp_accept_max_nonmail       | Use: main  |  Type: integer  |    Default: 10
+#smtp_accept_max_nonmail = 10

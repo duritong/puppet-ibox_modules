@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'fileutils'
 
-describe 'get_services_to_balance' do
+describe 'get_balanced_nagios_hosts' do
   before(:all) do
     @tmp_path = File.expand_path(File.join(File.dirname(__FILE__),'..','fixtures','tmp'))
     @test_path = File.join(@tmp_path,'test.key')
@@ -41,7 +41,7 @@ znq+qT/KbJlwy/27X/auCAzD5rJ9VVzyWiu8nnwICS8=
     it { is_expected.to run.with_params().and_raise_error(Puppet::ParseError, /Takes a path/) }
     it { is_expected.to run.with_params(1).and_raise_error(Puppet::ParseError, /Takes a path/) }
     it { is_expected.to run.with_params('/tmp','test').and_raise_error(Puppet::ParseError, /Takes a path/) }
-    it { is_expected.to run.with_params('/etc/passwd',['test']).and_raise_error(Puppet::ParseError, /Path \/etc\/passwd must be a directory/) }
+    it { is_expected.to run.with_params('/etc/passwd',{'test' => {}}).and_raise_error(Puppet::ParseError, /Path \/etc\/passwd must be a directory/) }
   end
 
   describe 'normal operation' do
@@ -60,20 +60,28 @@ znq+qT/KbJlwy/27X/auCAzD5rJ9VVzyWiu8nnwICS8=
       FileUtils.rm_rf(@tmp_path) if File.exists?(@tmp_path)
     end
     context 'without an existing key' do
-      it { is_expected.to run.with_params(@tmp_path,['test','foo']).and_return(
-        {
-          'drpsyff5srkctr7h' => {
-            'test_1'       => 'mx5guxonqb5cttqg',
-            'test_2'       => 'mx5guxonqb5cttqg',
-            'test_3'       => 'mx5guxonqb5cttqg',
-            '_key_content' => @drpsyff5srkctr7h_str,
-          },
-          'mx5guxonqb5cttqg' => {
-            'foo_1' => 'drpsyff5srkctr7h',
-            '_key_content' => @mx5guxonqb5cttqg_str,
-          }
-        }
-      ) }
+      it { is_expected.to run.with_params(@tmp_path,{
+      'foo'       => { 'nagios'  => 'smtp' },
+      'test'      => {},
+    }).and_return({
+      'mx5guxonqb5cttqg.onion' => {
+        'address'       => 'mx5guxonqb5cttqg.onion',
+        'alias'         => 'Balanced onion service foo',
+        'check_command' => 'check_smtp_tor',
+        'host_name'     => 'mx5guxonqb5cttqg.onion',
+        'parents'       => 'drpsyff5srkctr7h.onion',
+        'use'           => 'onion-host',
+      },
+      'drpsyff5srkctr7h.onion' => {
+        'address'       => 'drpsyff5srkctr7h.onion',
+        'alias'         => 'Balanced onion service test',
+        'check_command' => 'check_https_tor',
+        'host_name'     => 'drpsyff5srkctr7h.onion',
+        'parents'       => 'mx5guxonqb5cttqg.onion,mx5guxonqb5cttqg.onion,mx5guxonqb5cttqg.onion',
+        'use'           => 'onion-host',
+      },
+    }
+    ) }
     end
   end
 end

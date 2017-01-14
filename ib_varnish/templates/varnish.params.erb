@@ -1,7 +1,7 @@
 # Varnish environment configuration description. This was derived from
 # the old style sysconfig/defaults settings
 
-# Set this to 1 to make systemd reload try to switch vcl without restart.
+# Set this to 1 to make systemd reload try to switch VCL without restart.
 RELOAD_VCL=1
 
 # Main configuration file. You probably want to change it.
@@ -20,7 +20,8 @@ VARNISH_ADMIN_LISTEN_PORT=6082
 # Shared secret file for admin interface
 VARNISH_SECRET_FILE=/etc/varnish/secret
 
-# # Backend storage specification
+# Backend storage specification, see Storage Types in the varnishd(5)
+# man page for details.
 VARNISH_STORAGE="file,/var/lib/varnish/varnish_storage.bin,<%= (m=scope['ib_disks::datavgs::varnish::size_cache'].match(/(\d+)([G,M])/)); "#{m[1].to_f*0.75}#{m[2]}" %>"
 
 # Default TTL used when the backend does not specify one
