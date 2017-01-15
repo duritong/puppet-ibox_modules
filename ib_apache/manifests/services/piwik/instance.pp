@@ -5,6 +5,8 @@ define ib_apache::services::piwik::instance(
   $ensure        = 'present',
   $ssl_mode      = true,
   $configuration = {},
+  $piwik_options = {},
+  $cron          = true,
 ) {
   # header varies based on apache version
   $header_str = $operatingsystemmajrelease ? {
@@ -84,6 +86,18 @@ define ib_apache::services::piwik::instance(
       mode   => '0660',
       before => Service['apache'];
     }
+    if !empty($piwik_options){
+      file{"/var/www/vhosts/${name}/www/config/config.ini.php":
+        content => template('ib_apache/services/config.ini.php.erb'),
+        owner   => $name,
+        group   => $name,
+        mode    => '0640',
+        require => Archive["/var/www/vhosts/${name}/latest.tar.gz"],
+        before  => Service['apache'];
+      }
+    }
+  }
+  if ($ensure == 'present') and ($cron == true or $cron == $fqdn) {
     File["/etc/cron.d/piwik_${name}"]{
       content => "${cron_min} 0 * * * ${name}_run  source ${php_basedir}/enable && php /var/www/vhosts/${name}/www/console core:archive --url=http://${name} > /dev/null\n",
       require => File["/var/www/vhosts/${name}/www/tmp"],
