@@ -5,7 +5,7 @@ define ib_apache::services::piwik::instance(
   $ensure        = 'present',
   $ssl_mode      = true,
   $configuration = {},
-  $piwik_options = {},
+  $piwik_config  = {},
   $cron          = true,
 ) {
   # header varies based on apache version
@@ -86,7 +86,7 @@ define ib_apache::services::piwik::instance(
       mode   => '0660',
       before => Service['apache'];
     }
-    if !empty($piwik_options){
+    if !empty($piwik_config){
       file{"/var/www/vhosts/${name}/www/config/config.ini.php":
         content => template('ib_apache/services/piwik/config.ini.php.erb'),
         owner   => $name,
