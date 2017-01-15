@@ -1,6 +1,9 @@
 # setup a piwik
+#
+#  ssl_mode: is here for compatibility, but handled completely internally atm.
 define ib_apache::services::piwik::instance(
-  $ensure = 'present',
+  $ensure   = 'present',
+  $ssl_mode = true,
 ) {
   # header varies based on apache version
   $header_str = $operatingsystemmajrelease ? {
