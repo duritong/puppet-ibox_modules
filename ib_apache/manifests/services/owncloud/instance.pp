@@ -2,10 +2,13 @@
 define ib_apache::services::owncloud::instance(
   $ensure             = 'present',
   $configuration      = {},
-  $additional_options = '',
   $nagios_check       = 'ensure',
   $disk_size          = false,
   $config             = false,
+  $php_settings       = {},
+  $upload_options     = 'FcgidMaxRequestLen 1048576
+    SSLRenegBufferSize 1048576',
+  $additional_options = '',
   # so that we can set this from external
   $default_dbhost     = 'localhost',
   $ssl_mode           = 'force',
@@ -51,12 +54,18 @@ define ib_apache::services::owncloud::instance(
       additional_options => "<Location />
     Dav Off
   </Location>
+  ${upload_options}
   ${additional_options}",
-      php_settings       => {
-        safe_mode       => false,
-        open_basedir    => undef,
-        allow_url_fopen => on,
-      }
+      php_settings => merge($php_settings,{
+        upload_max_filesize => '1G',
+        post_max_size       => '1G',
+        max_input_time      => 3600,
+        max_execution_time  => 3600,
+        memory_limit        => '1G',
+        safe_mode           => false,
+        open_basedir        => undef,
+        allow_url_fopen     => on,
+      }),
     }
 
     git::clone{
