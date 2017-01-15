@@ -6,7 +6,6 @@ define ib_apache::services::owncloud::instance(
   $disk_size          = false,
   $config             = false,
   $php_settings       = {},
-  $upload_options     = 'FcgidMaxRequestLen 1048576',
   $additional_options = '',
   # so that we can set this from external
   $default_dbhost     = 'localhost',
@@ -53,14 +52,21 @@ define ib_apache::services::owncloud::instance(
       additional_options => "<Location />
     Dav Off
   </Location>
-  ${upload_options}
+  <IfModule mod_fcgid.c>
+    FcgidMaxRequestLen 1073741824
+    FcgidIOTimeout 1200
+  </IfModule>
+  <IfModule mod_security2.c>
+    SecRequestBodyLimit 1073741824
+    SecRuleRemoveById 200003
+  </IfModule>
   ${additional_options}",
       php_settings => merge($php_settings,{
         upload_max_filesize => '1G',
         post_max_size       => '1G',
-        max_input_time      => 3600,
-        max_execution_time  => 3600,
         memory_limit        => '1G',
+        max_input_time      => 1200,
+        max_execution_time  => 1200,
         safe_mode           => false,
         open_basedir        => undef,
         allow_url_fopen     => on,
