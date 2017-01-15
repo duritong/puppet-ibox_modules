@@ -1,0 +1,30 @@
+#!/bin/bash
+
+function run_cmd_as {
+  run_user=$1
+  cmd=$2
+
+  su -s /bin/bash $run_user -c "${cmd}"
+  res=$?
+  [ $res -gt 0 ] && abort "Comand failed with exitcode ${res}"
+}
+
+function abort {
+  echo $1
+  echo "Aborting..."
+  exit 1
+}
+
+oc=$1
+
+[ -z $oc ] && abort "USAGE: $0 oc_install occ_cmd"
+
+basedir=/var/www/vhosts/${oc}
+wwwdir=/var/www/vhosts/${oc}/www
+datadir=/var/www/vhosts/${oc}/data/owncloud
+
+[ -f $wwwdir/occ ] || abort "${wwwdir} does not seem to be an OwnCloud installation"
+
+runuser=$(stat -c%U ${datadir}/index.html)
+
+run_cmd_as $runuser "cd ${wwwdir} && scl enable <%= @php_scl %> 'php -d apc.enable_cli=1 occ ${@:2}'"

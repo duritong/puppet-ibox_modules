@@ -1,0 +1,13 @@
+<?php
+$CONFIG = array(
+  'updatechecker'           => false,
+  'has_internet_connection' => false,
+  'memcache.local'          => '\OC\Memcache\APCu',
+<% @oc_config.keys.sort.each do |k|
+    unless [ 'dbtype', 'dbname', 'dbuser', 'dbpass', 'dbhost',
+             'adminlogin', 'adminpass' ].include?(k)
+           -%>
+  "<%= k %>" => "<%= @oc_config[k] %>",
+<% end
+  end -%>
+);

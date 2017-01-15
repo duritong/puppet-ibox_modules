@@ -1,0 +1,12 @@
+<% require 'digest/sha1' -%>
+<?php
+$AUTOCONFIG = array(
+  "dbtableprefix" => "<%= Digest::SHA1.hexdigest(@oc_config['dbname']+@oc_config['dbpass'])[0..7] %>_",
+  "directory"     => "/var/www/vhosts/<%= @name %>/data/owncloud",
+<% @oc_config.keys.sort.each do |k|
+    if [ 'dbtype', 'dbname', 'dbuser', 'dbpass', 'dbhost',
+     'adminlogin', 'adminpass' ].include?(k)-%>
+  "<%= k %>"      => "<%= @oc_config[k] %>",
+<% end
+  end -%>
+);

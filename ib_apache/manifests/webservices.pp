@@ -8,4 +8,5 @@ class ib_apache::webservices {
   }
   include ::ib_apache::services::piwik
   include ::ib_apache::services::ttrss
+  include ::ib_apache::services::owncloud
 }
