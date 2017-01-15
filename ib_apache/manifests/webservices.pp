@@ -7,4 +7,5 @@ class ib_apache::webservices {
     include ::ib_apache::services::coquelicot
   }
   include ::ib_apache::services::piwik
+  include ::ib_apache::services::ttrss
 }

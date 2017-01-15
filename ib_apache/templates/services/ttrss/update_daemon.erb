@@ -1,0 +1,15 @@
+<%
+  def php_cmd(cmd)
+    if @php_installation == 'system'
+      "php #{cmd}"
+    else
+      prefix = case @php_installation
+        when 'scl54','scl55' then @php_installation.sub(/^scl/,'scl enable php')
+        else @php_installation.sub(/^scl/,'scl enable rh-php')
+      end
+      "#{prefix} '#{cmd}'"
+    end
+  end
+-%>
+#!/bin/bash
+<%= php_cmd("/var/www/vhosts/#{@name}/www/update_daemon2.php") %>
