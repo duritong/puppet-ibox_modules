@@ -2,8 +2,9 @@
 #
 #  ssl_mode: is here for compatibility, but handled completely internally atm.
 define ib_apache::services::piwik::instance(
-  $ensure   = 'present',
-  $ssl_mode = true,
+  $ensure        = 'present',
+  $ssl_mode      = true,
+  $configuration = {},
 ) {
   # header varies based on apache version
   $header_str = $operatingsystemmajrelease ? {
@@ -32,6 +33,7 @@ define ib_apache::services::piwik::instance(
       password           => 'trocla',
       wwwmail            => true,
       php_installation   => $php_installation,
+      configuration      => $configuration,
       additional_options => "
   <LocationMatch \"^/$\">
        # set this header to support user-agent
