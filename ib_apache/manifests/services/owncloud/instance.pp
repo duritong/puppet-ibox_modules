@@ -13,8 +13,6 @@ define ib_apache::services::owncloud::instance(
 ){
 
   # TODO: cron
-  # logfile rotation
-
 
   require ::ib_apache::services::owncloud::base
   $php_installation = $ib_apache::services::owncloud::base::php_installation
@@ -38,6 +36,7 @@ define ib_apache::services::owncloud::instance(
         folder => "/var/www/vhosts/${name}/data/owncloud",
     }
   }
+  file{"/etc/logrotate.d/oc_${name}": }
   if $ensure != 'absent' {
     $inst = regsubst($php_installation,'^scl','php')
     require "::php::scl::${inst}"
@@ -101,6 +100,12 @@ define ib_apache::services::owncloud::instance(
         require => Git::Clone["owncloud_${name}"],
         before  => Service['apache'];
     }
+    File["/etc/logrotate.d/oc_${name}"]{
+      content => template('ib_apache/services/owncloud/logrotate.erb'),
+      owner   => root,
+      group   => 0,
+      mode    => '0644'
+    }
 
     if $config {
       if !('dbname' in $config) {
@@ -151,6 +156,9 @@ define ib_apache::services::owncloud::instance(
   } else {
     if $disk_size {
       Logical_volume["oc-${name}"] -> Webhosting::Php[$name]
+    }
+    File["/etc/logrotate.d/oc_${name}"]{
+      ensure => absent,
     }
   }
 }

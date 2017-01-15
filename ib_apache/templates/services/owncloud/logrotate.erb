@@ -1,0 +1,11 @@
+/var/www/vhosts/<%= @name %>/data/owncloud/owncloud.log {
+  daily
+  dateext
+  missingok
+  rotate 7
+  compress
+  copytruncate
+  notifempty
+  create 640 <%= @name %>_run <%= @name %>
+  su <%= @name %>_run <%= @name %>
+}
