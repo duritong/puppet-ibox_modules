@@ -6,8 +6,7 @@ define ib_apache::services::owncloud::instance(
   $disk_size          = false,
   $config             = false,
   $php_settings       = {},
-  $upload_options     = 'FcgidMaxRequestLen 1048576
-    SSLRenegBufferSize 1048576',
+  $upload_options     = 'FcgidMaxRequestLen 1048576',
   $additional_options = '',
   # so that we can set this from external
   $default_dbhost     = 'localhost',
