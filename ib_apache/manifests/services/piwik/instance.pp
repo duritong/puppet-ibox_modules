@@ -69,9 +69,10 @@ define ib_apache::services::piwik::instance(
       group  => $name,
       mode   => '0660',
       before => Service['apache'];
-    } -> File["/etc/cron.d/piwik_${name}"]{
+    }
+    File["/etc/cron.d/piwik_${name}"]{
       content => "${cron_min} 0 * * * ${name}_run  source ${php_basedir}/enable && php /var/www/vhosts/${name}/www/console core:archive --url=http://${name} > /dev/null\n",
-      require => Webhosting::Php[$name],
+      require => File["/var/www/vhosts/${name}/www/tmp"],
       owner   => root,
       group   => 0,
       mode    => '0644',
