@@ -4,7 +4,7 @@ class ib_apache::services::piwik::base(
 ) {
   file{
     '/usr/local/sbin/update_piwik.sh':
-      content => template('ib_apache/services/scripts/update_piwik.sh.erb'),
+      content => template('ib_apache/services/piwik/update_piwik.sh.erb'),
       owner   => root,
       group   => 0,
       mode    => '0700';

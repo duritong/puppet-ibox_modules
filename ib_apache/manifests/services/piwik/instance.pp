@@ -62,6 +62,12 @@ define ib_apache::services::piwik::instance() {
     source          => 'https://builds.piwik.org/piwik-latest.tar.gz',
     creates         => "/var/www/vhosts/${name}/www/piwik.php",
     cleanup         => true,
+    user            => $name,
+  } -> file{"/var/www/vhosts/${name}/www/tmp":
+    owner  => $name,
+    group  => $name,
+    mode   => '0660',
+    before => Service['apache'],
   }
 
   nagios::service::http{$name:
