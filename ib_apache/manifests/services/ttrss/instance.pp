@@ -53,9 +53,13 @@ define ib_apache::services::ttrss::instance(
         group   => $name,
         mode    => '0750';
       [ "/var/www/vhosts/${name}/www/lock", "/var/www/vhosts/${name}/www/cache",
-        "/var/www/vhosts/${name}/www/cache/htmlpurifier", "/var/www/vhosts/${name}/www/cache/images",
-        "/var/www/vhosts/${name}/www/cache/js", "/var/www/vhosts/${name}/www/cache/export",
-        "/var/www/vhosts/${name}/www/feed-icons", "/var/www/vhosts/${name}/tmp" ]:
+        "/var/www/vhosts/${name}/www/cache/upload",
+        "/var/www/vhosts/${name}/www/cache/htmlpurifier",
+        "/var/www/vhosts/${name}/www/cache/images",
+        "/var/www/vhosts/${name}/www/cache/js",
+        "/var/www/vhosts/${name}/www/cache/export",
+        "/var/www/vhosts/${name}/www/feed-icons",
+        "/var/www/vhosts/${name}/tmp" ]:
         ensure  => directory,
         require => File["/var/www/vhosts/${name}/www/config.php"],
         owner   => $name,
