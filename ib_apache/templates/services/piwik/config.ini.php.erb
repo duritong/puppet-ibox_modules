@@ -3,7 +3,7 @@
 [database]
 host = "<%= @piwik_config['dbhost'] %>"
 username = "<%= dbuser = @piwik_config['dbuser'] ? @piwik_config['dbuser'] : @piwik_config['dbname'] %>"
-password = "<%= @piwik_config['dbpwd'] != nil ? @piwik_config['dbpwd'] : ( @piwik_config['dbpwd'] != 'trocla' ? @piwik_config['dbpwd'] : scope.function_trocla(["mysql_#{dbuser}","plain"]) ) %>"
+password = "<%= [nil,'trocla'].include?(@piwik_config['dbpwd']) ? scope.function_trocla(["mysql_#{dbuser}","plain"]) : @piwik_config['dbpwd'] %>"
 dbname = "<%= @piwik_config['dbname'] %>"
 tables_prefix = "piwik_"
 schema = "Myisam"
