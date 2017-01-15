@@ -88,7 +88,7 @@ define ib_apache::services::piwik::instance(
     }
     if !empty($piwik_options){
       file{"/var/www/vhosts/${name}/www/config/config.ini.php":
-        content => template('ib_apache/services/config.ini.php.erb'),
+        content => template('ib_apache/services/piwik/config.ini.php.erb'),
         owner   => $name,
         group   => $name,
         mode    => '0640',
