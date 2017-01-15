@@ -14,6 +14,18 @@ define ib_apache::services::piwik::instance(
   require ib_apache::services::piwik::base
 
   $php_installation = $ib_apache::services::piwik::base::php_installation
+  if $php_installation == 'scl56' {
+    $php_add_setting = {
+      # https://github.com/piwik/piwik/issues/6465
+      always_populate_raw_post_data => '-1',
+    }
+  } else {
+    $php_add_setting = {}
+  }
+  $php_settings = merge({
+    file_uploads     => 'Off',
+    magic_quotes_gpc => 'Off',
+  },$php_add_setting)
   webhosting::php{
     $name:
       ensure             => $ensure,
@@ -22,16 +34,13 @@ define ib_apache::services::piwik::instance(
       # this is a little bit special see below
       ssl_mode           => true,
       nagios_check       => 'unmanaged',
-      php_settings       => {
-        file_uploads     => 'Off',
-        magic_quotes_gpc => 'Off',
-      },
       run_mode           => 'fcgid',
       nagios_use         => 'http-service',
       uid                => 'iuid',
       run_uid            => 'iuid',
       password           => 'trocla',
       wwwmail            => true,
+      php_settings       => $php_settings,
       php_installation   => $php_installation,
       configuration      => $configuration,
       additional_options => "

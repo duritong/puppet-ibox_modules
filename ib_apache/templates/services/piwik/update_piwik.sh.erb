@@ -50,10 +50,10 @@ cd $basedir
 mkdir new
 chown $runuser new
 cd new
-run_cmd_as $runuser 'wget http://piwik.org/latest.tar.gz && tar --exclude "How*.html" --strip-components=1 latest.tar.gz'
+run_cmd_as $runuser 'wget https://builds.piwik.org/piwik-latest.tar.gz && tar --exclude "How*.html" --strip-components=1 -xzf piwik-latest.tar.gz && rm -f *.gz'
 cp ../www/config/config.ini.php config/
 run_cmd_as $runuser 'mkdir tmp/cache/tracker -p'
-chown $ftpuser:ftpuser . -R
+chown $ftpuser:$ftpuser . -R
 chmod g+w tmp -R
 chmod g+w config
 chmod o-rwx . -R
@@ -62,9 +62,9 @@ mv www private/old && mv new www
 [ $res -gt 0 ] && abort "Moving piwik failed with exitcode ${res}"
 echo 'Trying to update piwik from shell'
 chown $runuser:$ftpuser www -R
-run_cmd_as $runuser "yes | <%= php_cmd('${basedir}/www/console core:update') %>"
+run_cmd_as $runuser "<%= php_cmd('${basedir}/www/console core:update --yes') %>"
 echo 'Clearing caches'
-run_cmd_as $runuser "yes | <%= php_cmd('${basedir}/www/console core:clear-caches') %>"
+run_cmd_as $runuser "<%= php_cmd('${basedir}/www/console core:clear-caches') %>"
 echo 'If this failed:'
 echo "Go to https://${piwik}/ and upgrade the installation"
 chown $ftpuser:$ftpuser www -R
