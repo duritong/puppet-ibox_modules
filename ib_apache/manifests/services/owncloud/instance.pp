@@ -39,9 +39,8 @@ define ib_apache::services::owncloud::instance(
     }
   }
   if $ensure != 'absent' {
-   $inst = regsubst($php_installation,'^scl','php')
-   require "::php::scl::${inst}"
-   $php_basedir = getvar("php::scl::${inst}::basedir")
+    $inst = regsubst($php_installation,'^scl','php')
+    require "::php::scl::${inst}"
 
     Webhosting::Php[$name]{
       configuration         => $configuration,
@@ -53,7 +52,7 @@ define ib_apache::services::owncloud::instance(
       additional_options => "<Location />
     Dav Off
   </Location>
-  ${addition_options}",
+  ${additional_options}",
       php_settings       => {
         safe_mode       => false,
         open_basedir    => undef,
