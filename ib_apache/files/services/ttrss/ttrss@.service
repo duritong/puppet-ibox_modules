@@ -5,7 +5,7 @@ After=network.target mysql.service postgresql.service
 [Service]
 User=%i
 WorkingDirectory=/var/www/vhosts/%i/data
-ExecStart=./update_daemon.sh
+ExecStart=/usr/bin/bash ./update_daemon.sh
 
 [Install]
 WantedBy=multi-user.target
