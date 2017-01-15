@@ -68,7 +68,7 @@ define ib_apache::services::ttrss::instance(
         enable  => true,
         subscribe => File['/etc/systemd/system/ttrss@.service',"/var/www/vhosts/${name}/data/update_daemon.sh","/var/www/vhosts/${name}/www/config.php"],
       }
-      if $ttrss_config['dbserver'] in ['localhost','127.0.0.1','::1'] {
+      if $ttrss_config['dbhost'] in ['localhost','127.0.0.1','::1'] {
         Mysql_database<| title == $db_name |>  -> Git::Clone["ttrss@${name}"]
         Mysql_user<| title == $real_db_user |> -> Git::Clone["ttrss@${name}"]
       }
