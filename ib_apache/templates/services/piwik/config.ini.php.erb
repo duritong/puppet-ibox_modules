@@ -11,7 +11,7 @@ schema = "Myisam"
 [General]
 reverse_proxy = 1
 trusted_hosts[] = "<%= @name %>"
-salt = "<%= @piwik_config['salt'] ? @piwik_config['salt'] : scope.function_sha1([scope.function_trocla([ "piwik_#{@name}_salt",'plain',{ 'profiles' => 'rootpw' }])]) %>"
+salt = "<%= @piwik_config['salt'] ? @piwik_config['salt'] : scope.function_md5([scope.function_trocla([ "piwik_#{@name}_salt",'plain',{ 'profiles' => 'rootpw' }])]) %>"
 
 [Deletelogs]
 delete_logs_enable = 1
