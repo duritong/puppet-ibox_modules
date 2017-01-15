@@ -7,6 +7,7 @@ define ib_apache::services::piwik::instance() {
   }
   require ib_apache::services::piwik::base
 
+  $php_installation = $ib_apache::services::piwik::base::php_installation
   webhosting::php{
     $name:
       # mind also the cron below that section
@@ -24,7 +25,7 @@ define ib_apache::services::piwik::instance() {
       run_uid            => 'iuid',
       password           => 'trocla',
       wwwmail            => true,
-      php_installation   => $ib_apache::services::piwik::base::php_installation,
+      php_installation   => $php_installation,
       additional_options => "
   <LocationMatch \"^/$\">
        # set this header to support user-agent
@@ -45,15 +46,10 @@ define ib_apache::services::piwik::instance() {
   RewriteCond %{REQUEST_URI} (.*)
   RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=permanent]";
   }
-
-  # piwik stuff
-  file{"/etc/cron.d/piwik_${name}":
-      content => "5 0 * * * ${name}_run scl enable scl56 'php /var/www/vhosts/${name}/www/console core:archive --url=http://${name}' > /dev/null\n",
-      require => Webhosting::Php[$name],
-      owner   => root,
-      group   => 0,
-      mode    => '0644';
-  }
+  $inst = regsubst($php_installation,'^scl','php')
+  require "::php::scl::${inst}"
+  $php_basedir = getvar("php::scl::${inst}::basedir")
+  $cron_min = fqdn_rand(60,$name)
   archive { "/var/www/vhosts/${name}/latest.tar.gz":
     ensure          => present,
     extract         => true,
@@ -67,7 +63,13 @@ define ib_apache::services::piwik::instance() {
     owner  => $name,
     group  => $name,
     mode   => '0660',
-    before => Service['apache'],
+    before => Service['apache'];
+  } -> file{"/etc/cron.d/piwik_${name}":
+    content => "${cron_min} 0 * * * ${name}_run  source ${php_basedir}/enable && php /var/www/vhosts/${name}/www/console core:archive --url=http://${name} > /dev/null\n",
+    require => Webhosting::Php[$name],
+    owner   => root,
+    group   => 0,
+    mode    => '0644';
   }
 
   nagios::service::http{$name:
